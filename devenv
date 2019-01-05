@@ -1,0 +1,170 @@
+#!/usr/bin/env bash
+
+UNAMEOUT="$(uname -s)"
+case "${UNAMEOUT}" in
+    Linux*)             MACHINE=linux;;
+    Darwin*)            MACHINE=mac;;
+    MINGW64_NT-10.0*)   MACHINE=mingw64;;
+    *)                  MACHINE="UNKNOWN"
+esac
+
+# Set environment variables for dev
+if [ "$MACHINE" == "linux" ]; then
+    SEDCMD="sed -i"
+elif [ "$MACHINE" == "mac" ]; then
+    SEDCMD="sed -i .bak"
+elif [ "$MACHINE" == "mingw64" ]; then # Git Bash
+    SEDCMD="sed -i"
+fi
+
+export HTTP_PORT=${HTTP_PORT:-80}
+export MYSQL_PORT=${MYSQL_PORT:-3306}
+export ASUSER=${ASUSER:-$UID}
+
+# Is the environment running
+PSRESULT="$(docker-compose ps -q)"
+if [ ! -z "$PSRESULT" ]; then
+    IS_RUNNING="yes"
+else
+    IS_RUNNING="no"
+fi
+
+# Create base docker-compose command to run
+COMPOSE="docker-compose"
+
+if [ $# -eq 0 ]; then
+    $COMPOSE ps
+    exit 0
+fi
+
+if [ -f .env ]; then
+    source .env
+fi
+
+if [ "$1" == "init" ]; then
+    echo "TODO: init"
+
+# Start up containers
+elif [ "$1" == "start" ]; then
+    $COMPOSE up -d
+
+# Stop the containers
+elif [ "$1" == "stop" ]; then
+    $COMPOSE down
+
+# If "php" is used, pass-thru to "php"
+# inside a new container
+elif [ "$1" == "php" ]; then
+    shift 1
+    $COMPOSE exec \
+        -u developer \
+        app \
+        php "$@"
+
+# If "art" is used, pass-thru to "artisan"
+# inside a new container
+elif [ "$1" == "artisan" ] || [ "$1" == "art" ]; then
+    shift 1
+    $COMPOSE exec \
+        -u developer \
+        app \
+        php artisan "$@"
+
+# If "composer" is used, pass-thru to "composer"
+# inside a new container
+elif [ "$1" == "composer" ] || [ "$1" == "comp" ]; then
+    shift 1
+    $COMPOSE exec \
+        -u developer \
+        app \
+        composer "$@"
+
+# If "test" is used, run unit tests,
+# pass-thru any extra arguments to php-unit
+elif [ "$1" == "test" ]; then
+    shift 1
+    $COMPOSE exec \
+        -u developer \
+        app \
+        ./vendor/bin/phpunit "$@"
+
+# If "node" is used, run node
+# from our node container
+elif [ "$1" == "node" ]; then
+    shift 1
+    $COMPOSE run --rm \
+        node \
+        node "$@"
+
+# If "npm" is used, run npm
+# from our node container
+elif [ "$1" == "npm" ]; then
+    shift 1
+    $COMPOSE run --rm \
+        node \
+        npm "$@"
+
+# If "yarn" is used, run yarn
+# from our node container
+elif [ "$1" == "yarn" ]; then
+    shift 1
+    $COMPOSE run --rm \
+        node \
+        yarn "$@"
+
+# If "gulp" is used, run gulp
+# from our node container
+elif [ "$1" == "gulp" ]; then
+    shift 1
+    $COMPOSE run --rm \
+        node \
+        ./node_modules/.bin/gulp "$@"
+
+# If "dump" is used, run mysqldump
+# from our mysql container
+elif [ "$1" == "dump" ]; then
+    shift 1
+    if [ "$IS_RUNNING" == "yes" ]; then
+        $COMPOSE exec \
+            mysql \
+            bash -c 'MYSQL_PWD=$MYSQL_ROOT_PASSWORD mysqldump -u root --default-character-set=utf8mb4 $MYSQL_DATABASE'
+    else
+        $COMPOSE run --rm \
+            mysql \
+            bash -c 'MYSQL_PWD=$MYSQL_ROOT_PASSWORD mysqldump -u root --default-character-set=utf8mb4 $MYSQL_DATABASE'
+    fi
+
+# If "mysql" is used, run mysql
+# from our mysql container
+elif [ "$1" == "mysql" ]; then
+    shift 1
+    if [ "$IS_RUNNING" == "yes" ]; then
+        $COMPOSE exec \
+            mysql \
+            bash -c 'MYSQL_PWD=$MYSQL_ROOT_PASSWORD mysql -u root $MYSQL_DATABASE'
+    else
+        echo "Error: This command can only be run while a MySQL container is running mysqld (mysql server)."
+        echo "This command cannot run the server and the mysql client at the same time."
+    fi
+
+# If "ssh" is used, pass-thru to "ssh"
+# inside a new container
+# e.g.: ./developer ssh app
+# e.g.: ./developer ssh mysql
+elif [ "$1" == "ssh" ]; then
+    shift 1
+    if [ "$1" != "node" ]; then
+        $COMPOSE exec \
+            -u developer \
+            $1 \
+            bash
+    else
+        $COMPOSE run --rm \
+            $1 \
+            bash
+    fi
+
+# Else, pass-thru args to docker-compose
+else
+    $COMPOSE "$@"
+fi

@@ -1,0 +1,47 @@
+version: "2"
+services:
+  app:
+    image: "fireworkweb/app:7.3-alpine"
+    volumes:
+     - .:/var/www/html:cached
+    environment:
+      ASUSER: "${ASUSER}"
+  http:
+    image: "fireworkweb/http:alpine"
+    ports:
+     - "${HTTP_PORT}:80"
+    volumes:
+     - .:/var/www/html:cached
+  chromedriver:
+    image: "fireworkweb/chromedriver:latest"
+    links:
+      - http:web
+  node:
+    image: "fireworkweb/node:alpine"
+    user: developer
+    volumes:
+     - .:/var/www/html:cached
+    environment:
+      ASUSER: "${ASUSER}"
+  mysql:
+    image: "mysql:5.7"
+    ports:
+     - "${MYSQL_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+     - db:/var/lib/mysql:cached
+     # - ./docker/mysql/conf.d:/etc/mysql/conf.d
+     # - ./docker/mysql/logs:/var/log/mysql
+  redis:
+    image: "redis:alpine"
+    volumes:
+     - cache:/data:cached
+volumes:
+  db:
+    driver: "local"
+  cache:
+    driver: "local"
