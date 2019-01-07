@@ -15,7 +15,8 @@ RUN apk add --no-cache su-exec bash git openssh-client icu libpng freetype libjp
     rm -rf /tmp/* && rm -fr /src
 
 RUN adduser -D -u 1337 developer && \
-    sed -i "s/user\ \=.*/user\ \= developer/g" /usr/local/etc/php-fpm.d/www.conf
+    sed -i "s/user\ \=.*/user\ \= developer/g" /usr/local/etc/php-fpm.d/www.conf && \
+    composer global require hirak/prestissimo
 
 COPY entrypoint /entrypoint
 RUN chmod +x /entrypoint
