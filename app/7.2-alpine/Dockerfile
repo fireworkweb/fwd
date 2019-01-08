@@ -18,14 +18,10 @@ RUN adduser -D -u 1337 developer && \
     sed -i "s/user\ \=.*/user\ \= developer/g" /usr/local/etc/php-fpm.d/www.conf && \
     composer global require hirak/prestissimo
 
-ENV PHP_AST_VERSION 0.1.2
-RUN curl -fsSL "https://github.com/nikic/php-ast/archive/v${PHP_AST_VERSION}.zip" -o php-ast.zip && \
-    mkdir -p /usr/src/php/ext && \
-    unzip php-ast.zip -d /usr/src/php/ext && \
-    mv /usr/src/php/ext/php-ast-${PHP_AST_VERSION} /usr/src/php/ext/php-ast && \
-    rm php-ast.zip && \
-    docker-php-ext-configure php-ast && \
-    docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) php-ast
+RUN mkdir -p /usr/src/php/ext && \
+    git clone https://github.com/nikic/php-ast /usr/src/php/ext/ast && \
+    docker-php-ext-configure ast && \
+    docker-php-ext-install ast
 
 COPY entrypoint /entrypoint
 RUN chmod +x /entrypoint
