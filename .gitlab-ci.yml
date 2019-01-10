@@ -1,0 +1,251 @@
+stages:
+  - build
+  - QA
+  - test
+  - deploy
+
+.deploy_template: &deploy_template
+  stage: deploy
+  script:
+    - cd $DEPLOY_PATH
+    - git fetch origin $DEPLOY_BRANCH
+    - git reset --hard
+    - git checkout $DEPLOY_BRANCH
+    - git reset --hard origin/$DEPLOY_BRANCH
+    - composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
+    - php artisan view:clear
+    - php artisan cache:clear
+    - php artisan config:cache
+    - php artisan route:cache
+    - php artisan migrate --force --step
+
+dev:
+  <<: *deploy_template
+  tags:
+    - ssh-dev1
+  only:
+    - develop@master/master
+  after_script:
+    - cp -r public/* $DEPLOY_PATH/public/
+    - echo "" | sudo -S service php7.1-fpm reload
+  environment:
+    name: dev
+    url: http://dev.master.fireworkweb.com
+  variables:
+    DEPLOY_PATH: /home/forge/dev.master.fireworkweb.com
+    DEPLOY_BRANCH: develop
+    GIT_STRATEGY: none
+  dependencies:
+    - assets
+
+staging:
+  <<: *deploy_template
+  tags:
+    - ssh-dev1
+  only:
+    - staging@master/master
+  after_script:
+    - cp -r public/* $DEPLOY_PATH/public/
+    - echo "" | sudo -S service php7.1-fpm reload
+  environment:
+    name: staging
+    url: http://staging.master.fireworkweb.com
+  variables:
+    DEPLOY_PATH: /home/forge/staging.master.fireworkweb.com
+    DEPLOY_BRANCH: staging
+    GIT_STRATEGY: none
+  dependencies:
+    - assets
+
+php-cs-fixer:
+  stage: QA
+  image: jakzal/phpqa:alpine
+  tags:
+    - docker
+  script:
+    - php-cs-fixer fix app --format=txt --dry-run --diff --verbose
+    - php-cs-fixer fix tests --format=txt --dry-run --diff --verbose
+    - php-cs-fixer fix resources/lang --format=txt --dry-run --diff --verbose
+    - php-cs-fixer fix config --format=txt --dry-run --diff --verbose
+    - php-cs-fixer fix database --format=txt --dry-run --diff --verbose
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []
+
+phpmd:
+  stage: QA
+  image: jakzal/phpqa:alpine
+  tags:
+    - docker
+  script:
+    - phpmd app text phpmd/codesize.xml,phpmd/controversial.xml,phpmd/design.xml,phpmd/naming.xml,unusedcode,phpmd/cleancode.xml
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []
+
+eslint:
+  stage: QA
+  image:
+    name: fireworkweb/node:alpine
+    entrypoint: [""]
+  tags:
+    - docker
+  script:
+    - yarn install
+    - yarn lint
+  cache:
+    paths:
+      - node_modules/
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []
+
+phan:
+  stage: QA
+  image: jakzal/phpqa:alpine
+  tags:
+    - docker
+  script:
+    - cp .env.testing .env
+    - phan
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies:
+   - vendor
+
+phpmnd:
+  stage: QA
+  image: jakzal/phpqa:alpine
+  tags:
+    - docker
+  script:
+    - cp .env.testing .env
+    - phpmnd app/ --ignore-funcs=round,sleep,abort,strpad,number_format --exclude=tests --progress --extensions=default_parameter,-return,argument
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies:
+    - vendor
+
+phpcpd:
+  stage: QA
+  image: jakzal/phpqa:alpine
+  tags:
+    - docker
+  script:
+    - phpcpd --fuzzy app/
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []
+
+security-check:
+  stage: QA
+  image: jakzal/phpqa:alpine
+  tags:
+    - docker
+  script:
+    - security-checker security:check composer.lock
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []
+
+phpunit:
+  stage: test
+  image: fireworkweb/dind
+  services:
+    - docker:dind
+  tags:
+    - dind
+  script:
+    - cp .env.testing .env
+    - bash ./fwd up -d
+    - bash ./fwd test --colors=never -vvv # --coverage-text
+  after_script:
+    - bash ./fwd down -v
+  artifacts:
+    paths:
+      - storage/logs/
+    when: on_failure
+    expire_in: 1 week
+  variables:
+    GIT_STRATEGY: fetch
+    COMPOSE_EXEC_FLAGS: "-T"
+  dependencies:
+    - assets
+    - vendor
+
+dusk:
+  stage: test
+  image: fireworkweb/dind
+  services:
+    - name: docker:dind
+  tags:
+    - dind
+  script:
+    - mv .env.dusk.local .env
+    - bash ./fwd up -d
+    - bash ./fwd artisan dusk
+  after_script:
+    - bash ./fwd logs http > storage/logs/nginx.log
+    - bash ./fwd logs app > storage/logs/php-fpm.log
+    - bash ./fwd down -v
+  artifacts:
+    paths:
+      - storage/logs/
+      - tests/Browser/screenshots
+      - tests/Browser/console
+    when: on_failure
+    expire_in: 1 week
+  variables:
+    GIT_STRATEGY: fetch
+    COMPOSE_EXEC_FLAGS: "-T"
+  dependencies:
+    - assets
+    - vendor
+
+assets:
+  stage: build
+  image:
+    name: fireworkweb/node:alpine
+    entrypoint: [""]
+  tags:
+    - docker
+  cache:
+    paths:
+      - node_modules/
+      - .yarn/
+  before_script:
+    - mkdir -p .yarn
+    - yarn install --no-progress --silent --force --cache-folder=.yarn/
+  script:
+    - yarn run production
+  artifacts:
+    paths:
+      - public/js
+      - public/css
+      - public/img
+      - public/mix-manifest.json
+    expire_in: 1 week
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []
+
+vendor:
+  stage: build
+  image:
+    name: fireworkweb/app:7.2-alpine
+    entrypoint: [""]
+  tags:
+    - docker
+  cache:
+    paths:
+      - vendor/
+  script:
+    - cp .env.testing .env
+    - composer install  --prefer-dist --no-progress --no-suggest --no-interaction -v --optimize-autoloader
+  artifacts:
+    paths:
+      - vendor
+    expire_in: 1 hour
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []
