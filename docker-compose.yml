@@ -18,7 +18,6 @@ services:
       - http:web
   node:
     image: "fireworkweb/node:alpine"
-    user: developer
     volumes:
      - .:/var/www/html:cached
     environment:
