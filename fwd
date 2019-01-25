@@ -142,10 +142,22 @@ elif [ "$1" == "dump" ]; then
 # e.g.: ./fwd restore /path/to/dump-file.ext
 elif [ "$1" == "restore" ]; then
     shift 1
+    LOCAL_MYSQL="$COMPOSE run --rm mysql mysql -hmysql -uroot -p$DB_PASSWORD"
+
+    $LOCAL_MYSQL -e "drop database $DB_DATABASE"
+    $LOCAL_MYSQL -e "create database $DB_DATABASE"
+    $LOCAL_MYSQL -e "grant all on $DB_DATABASE.* to $DB_USERNAME@'%'"
+
+    $COMPOSE run --rm mysql mysql -hmysql -u$DB_USERNAME -p$DB_PASSWORD $DB_DATABASE < $1
+
+# If "import" is used, run mysql
+# from our mysql container
+# It expects the dump file path as the second arg
+# e.g.: ./fwd import /path/to/dump-file.ext
+elif [ "$1" == "import" ]; then
+    shift 1
     if [ "$IS_RUNNING" == "yes" ]; then
-        cat $1 | $COMPOSE_EXEC -T \
-            mysql \
-            bash -c 'MYSQL_PWD=$MYSQL_ROOT_PASSWORD mysql -u root $MYSQL_DATABASE'
+        $COMPOSE run --rm mysql mysql -hmysql -u$DB_USERNAME -p$DB_PASSWORD $DB_DATABASE < $1
     else
         echo "Error: This command can only be run while a MySQL container is running mysqld (mysql server)."
         echo "This command cannot run the server and the mysql client at the same time."
