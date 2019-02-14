@@ -4,6 +4,7 @@ services:
     image: "fireworkweb/app:7.3-alpine"
     volumes:
      - .:/app:cached
+     - "${SSH_KEY_PATH}:/home/developer/.ssh/id_rsa:cached"
     environment:
       ASUSER: "${ASUSER}"
   http:
@@ -16,12 +17,6 @@ services:
     image: "fireworkweb/chromedriver:latest"
     links:
       - http:web
-  node:
-    image: "fireworkweb/node:alpine"
-    volumes:
-     - .:/app:cached
-    environment:
-      ASUSER: "${ASUSER}"
   mysql:
     image: "mysql:5.7"
     ports:
