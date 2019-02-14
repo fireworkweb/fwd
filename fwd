@@ -1,26 +1,10 @@
 #!/usr/bin/env bash
 
-UNAMEOUT="$(uname -s)"
-case "${UNAMEOUT}" in
-    Linux*)             MACHINE=linux;;
-    Darwin*)            MACHINE=mac;;
-    MINGW64_NT-10.0*)   MACHINE=mingw64;;
-    *)                  MACHINE="UNKNOWN"
-esac
-
-# Set environment variables for dev
-if [ "$MACHINE" == "linux" ]; then
-    SEDCMD="sed -i"
-elif [ "$MACHINE" == "mac" ]; then
-    SEDCMD="sed -i .bak"
-elif [ "$MACHINE" == "mingw64" ]; then # Git Bash
-    SEDCMD="sed -i"
-fi
-
 export HTTP_PORT=${HTTP_PORT:-80}
 export MYSQL_PORT=${MYSQL_PORT:-3306}
 export ASUSER=${ASUSER:-$UID}
 export COMPOSE_EXEC_FLAGS=${COMPOSE_EXEC_FLAGS:-""}
+export SSH_KEY_PATH=${SSH_KEY_PATH:-"$HOME/.ssh/id_rsa"}
 
 # Is the environment running
 PSRESULT="$(docker-compose ps -q)"
@@ -33,6 +17,15 @@ fi
 # Create base docker-compose command to run
 COMPOSE="docker-compose"
 COMPOSE_EXEC="$COMPOSE exec $COMPOSE_EXEC_FLAGS"
+NODE_RUN="docker run --rm -it \
+    -v "$(pwd):/app:cached" \
+    -v "${SSH_KEY_PATH}:/home/developer/.ssh/id_rsa:cached" \
+    -e "ASUSER=$ASUSER" \
+    fireworkweb/node:alpine"
+QA_RUN="docker run --rm -it \
+    -v "$(pwd):/app:cached" \
+    -w "/app"
+    jakzal/phpqa:alpine"
 
 if [ $# -eq 0 ]; then
     $COMPOSE ps
@@ -90,38 +83,6 @@ elif [ "$1" == "test" ]; then
         app \
         ./vendor/bin/phpunit "$@"
 
-# If "node" is used, run node
-# from our node container
-elif [ "$1" == "node" ]; then
-    shift 1
-    $COMPOSE run --rm \
-        node \
-        node "$@"
-
-# If "npm" is used, run npm
-# from our node container
-elif [ "$1" == "npm" ]; then
-    shift 1
-    $COMPOSE run --rm \
-        node \
-        npm "$@"
-
-# If "yarn" is used, run yarn
-# from our node container
-elif [ "$1" == "yarn" ]; then
-    shift 1
-    $COMPOSE run --rm \
-        node \
-        yarn "$@"
-
-# If "gulp" is used, run gulp
-# from our node container
-elif [ "$1" == "gulp" ]; then
-    shift 1
-    $COMPOSE run --rm \
-        node \
-        ./node_modules/.bin/gulp "$@"
-
 # If "dump" is used, run mysqldump
 # from our mysql container
 elif [ "$1" == "dump" ]; then
@@ -135,7 +96,7 @@ elif [ "$1" == "dump" ]; then
             mysql \
             bash -c 'MYSQL_PWD=$MYSQL_ROOT_PASSWORD mysqldump -u root --default-character-set=utf8mb4 $MYSQL_DATABASE'
     fi
-    
+
 # If "restore" is used, run mysql
 # from our mysql container
 # It expects the dump file path as the second arg
@@ -182,36 +143,54 @@ elif [ "$1" == "mysql" ]; then
 # e.g.: ./developer ssh mysql
 elif [ "$1" == "ssh" ]; then
     shift 1
-    if [ "$1" != "node" ]; then
-        $COMPOSE_EXEC \
-            -u developer \
-            $1 \
-            bash
-    else
-        $COMPOSE run --rm \
-            $1 \
-            bash
-    fi
+    $COMPOSE_EXEC $1 bash
+
+# Now we start some utility commands that aren't related to compose services
+
+# If "node" is used, run node
+# from our node container
+elif [ "$1" == "node" ]; then
+    shift 1
+    $NODE_RUN node "$@"
+
+# If "npm" is used, run npm
+# from our node container
+elif [ "$1" == "npm" ]; then
+    shift 1
+    $NODE_RUN npm "$@"
+
+# If "yarn" is used, run yarn
+# from our node container
+elif [ "$1" == "yarn" ]; then
+    shift 1
+    $NODE_RUN yarn "$@"
+
+# If "gulp" is used, run gulp
+# from our node container
+elif [ "$1" == "gulp" ]; then
+    shift 1
+    $NODE_RUN node ./node_modules/.bin/gulp "$@"
 
 elif [ "$1" == "qa" ]; then
     shift 1
-    $COMPOSE run --rm qa "$@"
+    $QA_RUN "$@"
 
 elif [ "$1" == "phan" ]; then
-    shift 1
-    $COMPOSE run --rm qa phan
+    $QA_RUN phan --color -p -l app -iy 5
 
-elif [ "$1" == "php-cs-fixer" ]; then
-    shift 1
-    $COMPOSE run --rm qa php-cs-fixer fix app/ txt --dry-run
+elif [ "$1" == "phpmd" ]; then
+    $QA_RUN phpmd app/ text \
+        phpmd/codesize.xml,phpmd/controversial.xml,phpmd/design.xml,phpmd/naming.xml,unusedcode,phpmd/cleancode.xml
 
 elif [ "$1" == "phpmnd" ]; then
-    shift 1
-    $COMPOSE run --rm qa phpmnd app/ \
+    $QA_RUN phpmnd app/ \
         --ignore-funcs=round,sleep,abort,strpad,number_format \
         --exclude=tests \
         --progress \
         --extensions=default_parameter,-return,argument
+
+elif [ "$1" == "phpcpd" ]; then
+    $QA_RUN phpcpd --fuzzy app/
 
 # Else, pass-thru args to docker-compose
 else
