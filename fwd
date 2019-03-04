@@ -6,6 +6,10 @@ export ASUSER=${ASUSER:-$UID}
 export COMPOSE_EXEC_FLAGS=${COMPOSE_EXEC_FLAGS:-""}
 export SSH_KEY_PATH=${SSH_KEY_PATH:-"$HOME/.ssh/id_rsa"}
 
+if [ -f .env ]; then
+    source .env
+fi
+
 # Is the environment running
 PSRESULT="$(docker-compose ps -q)"
 if [ ! -z "$PSRESULT" ]; then
@@ -30,10 +34,6 @@ QA_RUN="docker run --rm -it \
 if [ $# -eq 0 ]; then
     $COMPOSE ps
     exit 0
-fi
-
-if [ -f .env ]; then
-    source .env
 fi
 
 if [ "$1" == "init" ]; then
