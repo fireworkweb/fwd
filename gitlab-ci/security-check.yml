@@ -1,0 +1,10 @@
+.security-check:
+  stage: QA
+  image: jakzal/phpqa:alpine
+  tags:
+    - docker
+  script:
+    - security-checker security:check composer.lock
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []

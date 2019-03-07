@@ -1,0 +1,12 @@
+.phpmnd:
+  stage: QA
+  image: jakzal/phpqa:alpine
+  tags:
+    - docker
+  script:
+    - cp .env.testing .env
+    - phpmnd app/ --ignore-funcs=round,sleep,abort,strpad,number_format --exclude=tests --progress --extensions=default_parameter,-return,argument
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies:
+    - vendor
