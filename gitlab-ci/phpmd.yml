@@ -1,0 +1,10 @@
+phpmd:
+  stage: QA
+  image: jakzal/phpqa:alpine
+  tags:
+    - docker
+  script:
+    - phpmd app text phpmd/codesize.xml,phpmd/controversial.xml,phpmd/design.xml,phpmd/naming.xml,unusedcode,phpmd/cleancode.xml
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []

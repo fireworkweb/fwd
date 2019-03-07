@@ -1,0 +1,26 @@
+.assets:
+  stage: build
+  image:
+    name: fireworkweb/node:alpine
+    entrypoint: [""]
+  tags:
+    - docker
+  cache:
+    paths:
+      - node_modules/
+      - .yarn/
+  before_script:
+    - mkdir -p .yarn
+    - yarn install --no-progress --silent --force --cache-folder=.yarn/
+  script:
+    - yarn run production
+  artifacts:
+    paths:
+      - public/js
+      - public/css
+      - public/img
+      - public/mix-manifest.json
+    expire_in: 1 week
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []
