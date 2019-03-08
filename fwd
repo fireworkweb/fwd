@@ -1,13 +1,28 @@
 #!/usr/bin/env bash
 
-export HTTP_PORT=${HTTP_PORT:-80}
-export MYSQL_PORT=${MYSQL_PORT:-3306}
-export ASUSER=${ASUSER:-$UID}
-export COMPOSE_EXEC_FLAGS=${COMPOSE_EXEC_FLAGS:-""}
-export SSH_KEY_PATH=${SSH_KEY_PATH:-"$HOME/.ssh/id_rsa"}
+# Ports - used on docker-compose.yml
+FWD_HTTP_PORT=80
+FWD_MYSQL_PORT=3306
+# Host user for mapping execution within the containers
+FWD_ASUSER=$UID
+# Docker Compose flags
+FWD_COMPOSE_EXEC_FLAGS=""
+# SSH key for mapping within container so compose/npm
+# can have access to secured sources
+FWD_SSH_KEY_PATH="$HOME/.ssh/id_rsa"
+# Images to use out of docker-compose.yml; can be overriden on .env
+FWD_IMAGE_APP="fireworkweb/app:7.2-alpine"
+FWD_IMAGE_NODE="fireworkweb/node:alpine"
+FWD_IMAGE_CACHE="redis:alpine"
+FWD_IMAGE_DATABASE="mysql:5.7"
+FWD_IMAGE_QA="jakzal/phpqa:alpine"
 
 if [ -f .env ]; then
     source .env
+fi
+
+if [ -f .fwd ]; then
+    source .fwd
 fi
 
 # Is the environment running
@@ -20,32 +35,25 @@ fi
 
 # Create base docker-compose command to run
 COMPOSE="docker-compose"
-COMPOSE_EXEC="$COMPOSE exec $COMPOSE_EXEC_FLAGS"
+COMPOSE_EXEC="$COMPOSE exec $FWD_COMPOSE_EXEC_FLAGS"
 NODE_RUN="docker run --rm -it \
     -v "$(pwd):/app:cached" \
-    -v "${SSH_KEY_PATH}:/home/developer/.ssh/id_rsa:cached" \
+    -v "${FWD_SSH_KEY_PATH}:/home/developer/.ssh/id_rsa:cached" \
     -e "ASUSER=$ASUSER" \
-    fireworkweb/node:alpine"
+    $FWD_IMAGE_NODE"
 QA_RUN="docker run --rm -it \
     -v "$(pwd):/app:cached" \
     -w "/app"
-    jakzal/phpqa:alpine"
+    $FWD_IMAGE_QA"
 
 if [ $# -eq 0 ]; then
     $COMPOSE ps
     exit 0
 fi
 
-if [ "$1" == "init" ]; then
-    echo "TODO: init"
-
 # Start up containers
-elif [ "$1" == "start" ]; then
+if [ "$1" == "start" ]; then
     $COMPOSE up -d
-
-# Stop the containers
-elif [ "$1" == "stop" ]; then
-    $COMPOSE down
 
 # If "php" is used, pass-thru to "php"
 # inside a new container
