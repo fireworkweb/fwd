@@ -11,6 +11,7 @@ include:
   - https://raw.githubusercontent.com/fireworkweb/fwd/master/gitlab-ci/phpcpd.yml
   - https://raw.githubusercontent.com/fireworkweb/fwd/master/gitlab-ci/php-cs-fixer.yml
   - https://raw.githubusercontent.com/fireworkweb/fwd/master/gitlab-ci/phan.yml
+  - https://raw.githubusercontent.com/fireworkweb/fwd/master/gitlab-ci/security-check.yml
   - https://raw.githubusercontent.com/fireworkweb/fwd/master/gitlab-ci/phpunit.yml
   - https://raw.githubusercontent.com/fireworkweb/fwd/master/gitlab-ci/dusk.yml
 
@@ -26,10 +27,10 @@ eslint:
 security-check:
   extends: .security-check
 
-.phpmnd:
+phpmnd:
   extends: .phpmnd
 
-.phpcpd:
+phpcpd:
   extends: .phpcpd
 
 php-cs-fixer:

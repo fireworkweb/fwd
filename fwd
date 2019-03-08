@@ -1,14 +1,22 @@
 #!/usr/bin/env bash
 
+# Ports - used on docker-compose.yml
 export HTTP_PORT=${HTTP_PORT:-80}
 export MYSQL_PORT=${MYSQL_PORT:-3306}
+# Host user for mapping execution within the containers
 export ASUSER=${ASUSER:-$UID}
+# Docker Compose flags
 export COMPOSE_EXEC_FLAGS=${COMPOSE_EXEC_FLAGS:-""}
+# SSH key for mapping within container so compose/npmm can have access to secured sources
 export SSH_KEY_PATH=${SSH_KEY_PATH:-"$HOME/.ssh/id_rsa"}
 
 if [ -f .env ]; then
     source .env
 fi
+
+# Images to use out of docker-compose.yml; can be overriden on .env
+FWD_IMAGE_NODE=${$FWD_IMAGE_NODE:-"fireworkweb/node:alpine"}
+FWD_IMAGE_QA=${$FWD_IMAGE_QA:-"jakzal/phpqa:alpine"}
 
 # Is the environment running
 PSRESULT="$(docker-compose ps -q)"
@@ -25,11 +33,11 @@ NODE_RUN="docker run --rm -it \
     -v "$(pwd):/app:cached" \
     -v "${SSH_KEY_PATH}:/home/developer/.ssh/id_rsa:cached" \
     -e "ASUSER=$ASUSER" \
-    fireworkweb/node:alpine"
+    $FWD_IMAGE_NODE"
 QA_RUN="docker run --rm -it \
     -v "$(pwd):/app:cached" \
     -w "/app"
-    jakzal/phpqa:alpine"
+    $FWD_IMAGE_QA"
 
 if [ $# -eq 0 ]; then
     $COMPOSE ps
