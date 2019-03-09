@@ -14,6 +14,7 @@ trait Process
         $timeout = 0,
         $callback = null
     ) {
+        $command = array_filter(array_wrap($command));
         $callback = $callback ?: function ($type, $buffer) {
             $buffer = trim($buffer);
 
