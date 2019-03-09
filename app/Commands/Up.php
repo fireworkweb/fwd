@@ -5,7 +5,7 @@ namespace App\Commands;
 use LaravelZero\Framework\Commands\Command;
 use App\Commands\Traits\Process;
 
-class Start extends Command
+class Up extends Command
 {
     use Process;
 
@@ -14,14 +14,16 @@ class Start extends Command
      *
      * @var string
      */
-    protected $signature = 'start';
+    protected $signature = 'up
+                            {--d|detach : Detached mode: Run containers in the background, print new container names.}
+    ';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Start fwd';
+    protected $description = 'Up fwd';
 
     /**
      * Execute the console command.
@@ -30,6 +32,9 @@ class Start extends Command
      */
     public function handle()
     {
-        $this->process('docker-compose up -d');
+        $this->process(array_filter([
+            'docker-compose', 'up',
+            $this->option('detach') ? '-d' : null,
+        ]));
     }
 }
