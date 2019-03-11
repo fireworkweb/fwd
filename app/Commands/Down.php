@@ -30,6 +30,6 @@ class Down extends Command
      */
     public function handle()
     {
-        $this->process('docker-compose down');
+        $this->dockerCompose('down');
     }
 }

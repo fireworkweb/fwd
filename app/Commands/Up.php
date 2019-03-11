@@ -33,7 +33,8 @@ class Up extends Command
     public function handle()
     {
         $this->process([
-            'docker-compose', 'up',
+            'docker-compose',
+            'up',
             $this->option('detach') ? '-d' : null,
         ]);
     }

@@ -5,7 +5,7 @@ namespace App\Commands;
 use LaravelZero\Framework\Commands\Command;
 use App\Commands\Traits\Process;
 
-class Start extends Command
+class Yarn extends Command
 {
     use Process;
 
@@ -14,14 +14,14 @@ class Start extends Command
      *
      * @var string
      */
-    protected $signature = 'start';
+    protected $signature = 'yarn {--command=}';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Start fwd';
+    protected $description = 'Run command in service.';
 
     /**
      * Execute the console command.
@@ -30,6 +30,10 @@ class Start extends Command
      */
     public function handle()
     {
-        $this->dockerCompose('up', '-d');
+        $this->dockerRun(
+            env('FWD_IMAGE_NODE'),
+            'yarn',
+            $this->option('command')
+        );
     }
 }

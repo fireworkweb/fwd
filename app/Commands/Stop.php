@@ -30,6 +30,6 @@ class Stop extends Command
      */
     public function handle()
     {
-        $this->process('docker-compose stop');
+        $this->dockerCompose('stop');
     }
 }

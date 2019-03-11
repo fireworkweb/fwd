@@ -5,7 +5,7 @@ namespace App\Commands;
 use LaravelZero\Framework\Commands\Command;
 use App\Commands\Traits\Process;
 
-class Start extends Command
+class Composer extends Command
 {
     use Process;
 
@@ -14,14 +14,14 @@ class Start extends Command
      *
      * @var string
      */
-    protected $signature = 'start';
+    protected $signature = 'composer {--command=}';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Start fwd';
+    protected $description = 'Run command in service.';
 
     /**
      * Execute the console command.
@@ -30,6 +30,9 @@ class Start extends Command
      */
     public function handle()
     {
-        $this->dockerCompose('up', '-d');
+        $this->dockerCompose(
+            'exec app composer',
+            $this->option('command')
+        );
     }
 }

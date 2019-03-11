@@ -30,6 +30,6 @@ class Ps extends Command
      */
     public function handle()
     {
-        $this->process('docker-compose ps');
+        $this->dockerCompose('ps');
     }
 }
