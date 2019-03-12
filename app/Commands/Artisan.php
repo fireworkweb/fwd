@@ -2,26 +2,27 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Commands\Traits\HasDynamicArgs;
 use App\Commands\Traits\Process;
+use LaravelZero\Framework\Commands\Command;
 
 class Artisan extends Command
 {
-    use Process;
+    use Process, HasDynamicArgs;
 
     /**
-     * The signature of the command.
+     * The name of the command.
      *
      * @var string
      */
-    protected $signature = 'artisan {--command=}';
+    protected $name = 'artisan';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Run command in service.';
+    protected $description = 'Run artisan commands inside the Application container.';
 
     /**
      * Execute the console command.
@@ -31,8 +32,8 @@ class Artisan extends Command
     public function handle()
     {
         $this->dockerCompose(
-            'exec app artisan',
-            $this->option('command')
+            'exec app php artisan',
+            $this->args
         );
     }
 }

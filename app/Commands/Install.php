@@ -23,7 +23,7 @@ class Install extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Install fwd configuration files locally in your project.';
 
     /**
      * Execute the console command.
@@ -37,8 +37,12 @@ class Install extends Command
             return;
         }
 
-        File::copy($this->getDefaultDockerCompose(), $this->getContextDockerCompose());
-
+        $yml = file_get_contents($this->getDefaultDockerCompose());
+        $yml = str_replace('${FWD_CONTEXT_PATH}', '.', $yml);
+        file_put_contents($this->getContextDockerCompose(), $yml);
         $this->info('File docker-compose.yml copied.');
+
+        File::copy(base_path() . '/.env.default', getcwd() . '/.fwd');
+        $this->info('File .fwd copied.');
     }
 }

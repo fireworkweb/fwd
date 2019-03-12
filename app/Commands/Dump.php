@@ -19,7 +19,7 @@ class Dump extends Command
      *
      * @var string
      */
-    protected $description = 'Dump Envs';
+    protected $description = 'Dump all environment variables parsed for fwd.';
 
     /**
      * Execute the console command.

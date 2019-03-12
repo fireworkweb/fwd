@@ -4,24 +4,25 @@ namespace App\Commands;
 
 use LaravelZero\Framework\Commands\Command;
 use App\Commands\Traits\Process;
+use App\Commands\Traits\HasDynamicArgs;
 
 class Composer extends Command
 {
-    use Process;
+    use Process, HasDynamicArgs;
 
     /**
-     * The signature of the command.
+     * The name of the command.
      *
      * @var string
      */
-    protected $signature = 'composer {--command=}';
+    protected $name = 'composer';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Run command in service.';
+    protected $description = 'Run composer within the Application container.';
 
     /**
      * Execute the console command.
@@ -32,7 +33,7 @@ class Composer extends Command
     {
         $this->dockerCompose(
             'exec app composer',
-            $this->option('command')
+            $this->args
         );
     }
 }

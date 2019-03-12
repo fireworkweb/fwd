@@ -21,7 +21,7 @@ class Start extends Command
      *
      * @var string
      */
-    protected $description = 'Start fwd';
+    protected $description = 'Start fwd environment containers.';
 
     /**
      * Execute the console command.

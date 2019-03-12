@@ -2,26 +2,27 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Commands\Traits\HasDynamicArgs;
 use App\Commands\Traits\Process;
+use LaravelZero\Framework\Commands\Command;
 
 class Stop extends Command
 {
-    use Process;
+    use Process, HasDynamicArgs;
 
     /**
-     * The signature of the command.
+     * The name of the command.
      *
      * @var string
      */
-    protected $signature = 'stop';
+    protected $name = 'stop';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Stop fwd';
+    protected $description = 'Stop containers.';
 
     /**
      * Execute the console command.
@@ -30,6 +31,6 @@ class Stop extends Command
      */
     public function handle()
     {
-        $this->dockerCompose('stop');
+        $this->dockerCompose('stop', $this->args);
     }
 }

@@ -23,7 +23,7 @@ class Up extends Command
      *
      * @var string
      */
-    protected $description = 'Up fwd';
+    protected $description = 'Start fwd environment containers.';
 
     /**
      * Execute the console command.
@@ -32,10 +32,9 @@ class Up extends Command
      */
     public function handle()
     {
-        $this->process([
-            'docker-compose',
+        $this->dockerCompose(
             'up',
-            $this->option('detach') ? '-d' : null,
-        ]);
+            $this->option('detach') ? '-d' : null
+        );
     }
 }

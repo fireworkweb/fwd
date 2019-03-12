@@ -14,14 +14,14 @@ class Ssh extends Command
      *
      * @var string
      */
-    protected $signature = 'ssh {service}';
+    protected $signature = 'ssh {service} {--shell=bash}';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Run command in service.';
+    protected $description = 'Start a bash session on a specific service (app, http, mysql)';
 
     /**
      * Execute the console command.
@@ -33,7 +33,7 @@ class Ssh extends Command
         $this->dockerCompose(
             'exec',
             $this->argument('service'),
-            'bash'
+            $this->option('shell')
         );
     }
 }

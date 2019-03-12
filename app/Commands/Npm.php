@@ -2,26 +2,27 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Commands\Traits\HasDynamicArgs;
 use App\Commands\Traits\Process;
+use LaravelZero\Framework\Commands\Command;
 
 class Npm extends Command
 {
-    use Process;
+    use Process, HasDynamicArgs;
 
     /**
-     * The signature of the command.
+     * The name of the command.
      *
      * @var string
      */
-    protected $signature = 'npm {--command=}';
+    protected $name = 'npm';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Run command in service.';
+    protected $description = 'Run npm in a new container.';
 
     /**
      * Execute the console command.
@@ -33,7 +34,7 @@ class Npm extends Command
         $this->dockerRun(
             env('FWD_IMAGE_NODE'),
             'npm',
-            $this->option('command')
+            $this->args
         );
     }
 }

@@ -21,7 +21,7 @@ class Down extends Command
      *
      * @var string
      */
-    protected $description = 'Down fwd';
+    protected $description = 'Get down all contaniers and destroy them.';
 
     /**
      * Execute the console command.

@@ -6,7 +6,7 @@ use App\Commands\Traits\HasDynamicArgs;
 use App\Commands\Traits\Process;
 use LaravelZero\Framework\Commands\Command;
 
-class Yarn extends Command
+class DockerCompose extends Command
 {
     use Process, HasDynamicArgs;
 
@@ -15,14 +15,14 @@ class Yarn extends Command
      *
      * @var string
      */
-    protected $name = 'yarn';
+    protected $name = 'docker-compose';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Run yarn in a new container.';
+    protected $description = 'Run docker-compose directly.';
 
     /**
      * Execute the console command.
@@ -31,10 +31,6 @@ class Yarn extends Command
      */
     public function handle()
     {
-        $this->dockerRun(
-            env('FWD_IMAGE_NODE'),
-            'yarn',
-            $this->args
-        );
+        $this->dockerCompose($this->args ?: 'ps');
     }
 }

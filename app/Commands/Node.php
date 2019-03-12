@@ -2,26 +2,27 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Commands\Traits\HasDynamicArgs;
 use App\Commands\Traits\Process;
+use LaravelZero\Framework\Commands\Command;
 
 class Node extends Command
 {
-    use Process;
+    use Process, HasDynamicArgs;
 
     /**
-     * The signature of the command.
+     * The name of the command.
      *
      * @var string
      */
-    protected $signature = 'node {--command=}';
+    protected $name = 'node';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Run command in service.';
+    protected $description = 'Run node commands within a new container.';
 
     /**
      * Execute the console command.
@@ -32,7 +33,8 @@ class Node extends Command
     {
         $this->dockerRun(
             env('FWD_IMAGE_NODE'),
-            $this->option('command')
+            'node',
+            $this->args
         );
     }
 }

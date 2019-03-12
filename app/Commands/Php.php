@@ -2,26 +2,27 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Commands\Traits\HasDynamicArgs;
 use App\Commands\Traits\Process;
+use LaravelZero\Framework\Commands\Command;
 
 class Php extends Command
 {
-    use Process;
+    use Process, HasDynamicArgs;
 
     /**
-     * The signature of the command.
+     * The name of the command.
      *
      * @var string
      */
-    protected $signature = 'php {--command=}';
+    protected $name = 'php';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Run command in service.';
+    protected $description = 'Run shell commands in the PHP-FPM container.';
 
     /**
      * Execute the console command.
@@ -32,7 +33,7 @@ class Php extends Command
     {
         $this->dockerCompose(
             'exec app',
-            $this->option('command')
+            $this->args ?: 'php -v'
         );
     }
 }

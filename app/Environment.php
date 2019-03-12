@@ -14,6 +14,7 @@ class Environment
         'FWD_ASUSER',
         'FWD_COMPOSE_EXEC_FLAGS',
         'FWD_SSH_KEY_PATH',
+        'FWD_CONTEXT_PATH',
         'FWD_IMAGE_APP',
         'FWD_IMAGE_NODE',
         'FWD_IMAGE_CACHE',
@@ -68,6 +69,11 @@ class Environment
         $envVariables->set(
             'FWD_SSH_KEY_PATH',
             str_replace('$HOME', $_SERVER['HOME'], env('FWD_SSH_KEY_PATH'))
+        );
+
+        $envVariables->set(
+            'FWD_CONTEXT_PATH',
+            str_replace('$PWD', getcwd(), env('FWD_CONTEXT_PATH'))
         );
 
         $envVariables->set(
