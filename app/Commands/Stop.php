@@ -8,7 +8,7 @@ use LaravelZero\Framework\Commands\Command;
 
 class Stop extends Command
 {
-    use Process, HasDynamicArgs;
+    use HasDynamicArgs, Process;
 
     /**
      * The name of the command.
@@ -22,7 +22,7 @@ class Stop extends Command
      *
      * @var string
      */
-    protected $description = 'Stop containers.';
+    protected $description = 'Stop fwd environment containers.';
 
     /**
      * Execute the console command.
@@ -31,6 +31,6 @@ class Stop extends Command
      */
     public function handle()
     {
-        $this->dockerCompose('stop', $this->args);
+        $this->dockerCompose('stop', $this->getArgs());
     }
 }

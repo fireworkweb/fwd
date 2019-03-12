@@ -2,26 +2,27 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Commands\Traits\HasDynamicArgs;
 use App\Commands\Traits\Process;
+use LaravelZero\Framework\Commands\Command;
 
 class Ps extends Command
 {
-    use Process;
+    use HasDynamicArgs, Process;
 
     /**
-     * The signature of the command.
+     * The name of the command.
      *
      * @var string
      */
-    protected $signature = 'ps';
+    protected $name = 'ps';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'ps';
+    protected $description = 'Show fwd environment containers.';
 
     /**
      * Execute the console command.
@@ -30,6 +31,6 @@ class Ps extends Command
      */
     public function handle()
     {
-        $this->dockerCompose('ps');
+        $this->dockerCompose('ps', $this->getArgs());
     }
 }

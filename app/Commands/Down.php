@@ -2,19 +2,20 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Commands\Traits\HasDynamicArgs;
 use App\Commands\Traits\Process;
+use LaravelZero\Framework\Commands\Command;
 
 class Down extends Command
 {
-    use Process;
+    use HasDynamicArgs, Process;
 
     /**
-     * The signature of the command.
+     * The name of the command.
      *
      * @var string
      */
-    protected $signature = 'down';
+    protected $name = 'down';
 
     /**
      * The description of the command.
@@ -30,6 +31,6 @@ class Down extends Command
      */
     public function handle()
     {
-        $this->dockerCompose('down');
+        $this->dockerCompose('down', $this->getArgs());
     }
 }

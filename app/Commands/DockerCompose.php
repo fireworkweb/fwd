@@ -8,7 +8,7 @@ use LaravelZero\Framework\Commands\Command;
 
 class DockerCompose extends Command
 {
-    use Process, HasDynamicArgs;
+    use HasDynamicArgs, Process;
 
     /**
      * The name of the command.
@@ -31,6 +31,16 @@ class DockerCompose extends Command
      */
     public function handle()
     {
-        $this->dockerCompose($this->args ?: 'ps');
+        $this->dockerCompose($this->getArgs());
+    }
+
+    /**
+     * Get default args when empty.
+     *
+     * @return string
+     */
+    public function getDefaultArgs(): string
+    {
+        return 'ps';
     }
 }

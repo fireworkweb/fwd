@@ -4,22 +4,28 @@ namespace App\Commands\Traits;
 
 trait HasDynamicArgs
 {
-    /** @var string $args */
-    private $args;
-
     protected function specifyParameters()
     {
         // ignores the arguments/options signature
         $this->ignoreValidationErrors();
+    }
 
-        // Access global argv to fetch all incoming arguments
-        // to be forwarded to the destiny command
-        global $argv;
+    public function getArgs()
+    {
+        $args = (string) $this->input;
 
-        if (count($argv) <= 2) {
-            return;
-        }
+        return ($pos = mb_strpos($args, ' '))
+            ? mb_substr($args, $pos + 1)
+            : $this->getDefaultArgs();
+    }
 
-        $this->args = implode(' ', array_slice($argv, 2));
+    /**
+     * Get default args when empty.
+     *
+     * @return string
+     */
+    public function getDefaultArgs(): string
+    {
+        return '';
     }
 }

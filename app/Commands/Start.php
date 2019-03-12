@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
 use App\Commands\Traits\Process;
+use LaravelZero\Framework\Commands\Command;
 
 class Start extends Command
 {

@@ -8,7 +8,7 @@ use LaravelZero\Framework\Commands\Command;
 
 class Node extends Command
 {
-    use Process, HasDynamicArgs;
+    use HasDynamicArgs, Process;
 
     /**
      * The name of the command.
@@ -31,10 +31,16 @@ class Node extends Command
      */
     public function handle()
     {
-        $this->dockerRun(
-            env('FWD_IMAGE_NODE'),
-            'node',
-            $this->args
-        );
+        $this->dockerRun(env('FWD_IMAGE_NODE'), 'node', $this->getArgs());
+    }
+
+    /**
+     * Get default args when empty.
+     *
+     * @return string
+     */
+    public function getDefaultArgs(): string
+    {
+        return '-v';
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
 use App\Environment;
+use LaravelZero\Framework\Commands\Command;
 
 class Dump extends Command
 {

@@ -8,7 +8,7 @@ use LaravelZero\Framework\Commands\Command;
 
 class Artisan extends Command
 {
-    use Process, HasDynamicArgs;
+    use HasDynamicArgs, Process;
 
     /**
      * The name of the command.
@@ -31,9 +31,6 @@ class Artisan extends Command
      */
     public function handle()
     {
-        $this->dockerCompose(
-            'exec app php artisan',
-            $this->args
-        );
+        $this->dockerCompose('exec app php artisan', $this->getArgs());
     }
 }

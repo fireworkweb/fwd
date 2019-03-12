@@ -8,7 +8,7 @@ use LaravelZero\Framework\Commands\Command;
 
 class Php extends Command
 {
-    use Process, HasDynamicArgs;
+    use HasDynamicArgs, Process;
 
     /**
      * The name of the command.
@@ -31,9 +31,16 @@ class Php extends Command
      */
     public function handle()
     {
-        $this->dockerCompose(
-            'exec app',
-            $this->args ?: 'php -v'
-        );
+        $this->dockerCompose('exec app', $this->getArgs());
+    }
+
+    /**
+     * Get default args when empty.
+     *
+     * @return string
+     */
+    public function getDefaultArgs(): string
+    {
+        return 'php -v';
     }
 }

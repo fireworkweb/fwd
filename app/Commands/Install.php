@@ -2,9 +2,9 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
-use Illuminate\Support\Facades\File;
 use App\Commands\Traits\Process;
+use Illuminate\Support\Facades\File;
+use LaravelZero\Framework\Commands\Command;
 
 class Install extends Command
 {

@@ -2,21 +2,20 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Commands\Traits\HasDynamicArgs;
 use App\Commands\Traits\Process;
+use LaravelZero\Framework\Commands\Command;
 
 class Up extends Command
 {
-    use Process;
+    use HasDynamicArgs, Process;
 
     /**
-     * The signature of the command.
+     * The name of the command.
      *
      * @var string
      */
-    protected $signature = 'up
-                            {--d|detach : Detached mode: Run containers in the background, print new container names.}
-    ';
+    protected $name = 'up';
 
     /**
      * The description of the command.
@@ -32,9 +31,6 @@ class Up extends Command
      */
     public function handle()
     {
-        $this->dockerCompose(
-            'up',
-            $this->option('detach') ? '-d' : null
-        );
+        $this->dockerCompose('up', $this->getArgs());
     }
 }

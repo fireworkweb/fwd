@@ -2,13 +2,13 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
 use App\Commands\Traits\Process;
 use App\Commands\Traits\HasDynamicArgs;
+use LaravelZero\Framework\Commands\Command;
 
 class Composer extends Command
 {
-    use Process, HasDynamicArgs;
+    use HasDynamicArgs, Process;
 
     /**
      * The name of the command.
@@ -31,9 +31,6 @@ class Composer extends Command
      */
     public function handle()
     {
-        $this->dockerCompose(
-            'exec app composer',
-            $this->args
-        );
+        $this->dockerCompose('exec app composer', $this->getArgs());
     }
 }
