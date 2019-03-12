@@ -42,19 +42,54 @@ class Environment
 
     public static function load(): void
     {
-        static::loadEnv(getcwd(), '.fwd');
-        static::loadEnv(getcwd(), '.env');
-        static::loadEnv(base_path(), '.env.default');
+        static::loadEnv(static::getContextFwd());
+        static::loadEnv(static::getContextEnv());
+        static::loadEnv(static::getDefaultFwd());
 
         static::fixVariables();
     }
 
-    protected static function loadEnv($path, $envFile): void
+    public static function getDefaultPath()
+    {
+        return base_path();
+    }
+
+    public static function getContextPath()
+    {
+        return getcwd();
+    }
+
+    public static function getDefaultDockerCompose()
+    {
+        return static::getDefaultPath() . '/docker-compose.yml';
+    }
+
+    public static function getContextDockerCompose()
+    {
+        return static::getContextPath() . '/docker-compose.yml';
+    }
+
+    public static function getDefaultFwd()
+    {
+        return static::getDefaultPath() . '/.fwd';
+    }
+
+    public static function getContextFwd()
+    {
+        return static::getContextPath() . '/.fwd';
+    }
+
+    public static function getContextEnv()
+    {
+        return static::getContextPath() . '/.env';
+    }
+
+    protected static function loadEnv($envFile): void
     {
         try {
             Dotenv::create(
-                $path,
-                $envFile
+                pathinfo($envFile, PATHINFO_DIRNAME),
+                pathinfo($envFile, PATHINFO_BASENAME),
             )->safeLoad();
         } catch (InvalidFileException $e) {
             echo 'The environment file is invalid: '.$e->getMessage();

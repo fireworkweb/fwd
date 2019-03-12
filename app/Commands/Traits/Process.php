@@ -2,21 +2,12 @@
 
 namespace App\Commands\Traits;
 
+use App\Environment;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
 trait Process
 {
-    public function getDefaultDockerCompose()
-    {
-        return base_path() . '/docker-compose.yml';
-    }
-
-    public function getContextDockerCompose()
-    {
-        return getcwd() . '/docker-compose.yml';
-    }
-
     public function dockerRun(...$command)
     {
         $commandPrefix = [
@@ -35,8 +26,8 @@ trait Process
             sprintf('docker-compose -p %s', basename(getcwd()))
         ];
 
-        if (! File::exists($this->getContextDockerCompose())) {
-            $commandPrefix[] = sprintf('-f %s', $this->getDefaultDockerCompose());
+        if (! File::exists(Environment::getContextDockerCompose())) {
+            $commandPrefix[] = sprintf('-f %s', Environment::getDefaultDockerCompose());
         }
 
         $this->process(array_merge($commandPrefix, $command));
