@@ -1,23 +1,28 @@
 {
-    "name": "laravel-zero/laravel-zero",
-    "description": "The Laravel Zero Framework.",
-    "keywords": ["framework", "laravel", "laravel zero", "console", "cli"],
-    "homepage": "https://laravel-zero.com",
+    "name": "fireworkweb/fwd",
+    "description": "The FWD tool for simple laravel docker environment.",
+    "keywords": ["framework", "laravel", "laravel zero", "console", "cli", "docker", "docker-compose", "fwd"],
+    "homepage": "https://github.com/fireworkweb/fwd",
     "type": "project",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/laravel-zero/laravel-zero/issues",
-        "source": "https://github.com/laravel-zero/laravel-zero"
+        "issues": "https://github.com/fireworkweb/fwd/issues",
+        "source": "https://github.com/fireworkweb/fwd"
     },
     "authors": [
         {
-            "name": "Nuno Maduro",
-            "email": "enunomaduro@gmail.com"
+            "name": "Daniel Polito",
+            "email": "daniel.polito@fireworkweb.com"
+        },
+        {
+            "name": "Fabricio Souza",
+            "email": "fabricio.souza@fireworkweb.com"
         }
     ],
     "require": {
         "php": "^7.1.3",
         "laravel-zero/framework": "5.8.*",
+        "padraic/phar-updater": "^1.0.6",
         "vlucas/phpdotenv": "^3.3",
         "zendframework/zend-text": "^2.7"
     },

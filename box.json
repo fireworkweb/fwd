@@ -7,7 +7,9 @@
         "vendor"
     ],
     "files": [
-        "composer.json"
+        "composer.json",
+        "docker-compose.yml",
+        ".fwd"
     ],
     "exclude-composer-files": false,
     "compression": "GZ",
