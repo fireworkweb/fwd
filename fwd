@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
 
 # Ports - used on docker-compose.yml
-FWD_HTTP_PORT=80
-FWD_MYSQL_PORT=3306
+export FWD_HTTP_PORT=80
+export FWD_MYSQL_PORT=3306
 # Host user for mapping execution within the containers
-FWD_ASUSER=$UID
+export FWD_ASUSER=${FWD_ASUSER:-$UID}
 # Docker Compose flags
-FWD_COMPOSE_EXEC_FLAGS=""
+export FWD_COMPOSE_EXEC_FLAGS=${COMPOSE_EXEC_FLAGS:-""}
+export COMPOSE_API_VERSION="1.25"
 # SSH key for mapping within container so compose/npm
 # can have access to secured sources
-FWD_SSH_KEY_PATH="$HOME/.ssh/id_rsa"
+export FWD_SSH_KEY_PATH="$HOME/.ssh/id_rsa"
 # Images to use out of docker-compose.yml; can be overriden on .env
-FWD_IMAGE_APP="fireworkweb/app:7.2-alpine"
-FWD_IMAGE_NODE="fireworkweb/node:alpine"
-FWD_IMAGE_CACHE="redis:alpine"
-FWD_IMAGE_DATABASE="mysql:5.7"
-FWD_IMAGE_QA="jakzal/phpqa:alpine"
+export FWD_IMAGE_APP="fireworkweb/app:7.2-alpine"
+export FWD_IMAGE_NODE="fireworkweb/node:alpine"
+export FWD_IMAGE_CACHE="redis:alpine"
+export FWD_IMAGE_DATABASE="mysql:5.7"
+export FWD_IMAGE_QA="jakzal/phpqa:alpine"
 
 if [ -f .env ]; then
     source .env
@@ -189,6 +190,15 @@ elif [ "$1" == "phan" ]; then
 elif [ "$1" == "phpmd" ]; then
     $QA_RUN phpmd app/ text \
         phpmd/codesize.xml,phpmd/controversial.xml,phpmd/design.xml,phpmd/naming.xml,unusedcode,phpmd/cleancode.xml
+
+elif [ "$1" == "php-cs-fixer" ]; then
+    shift 1
+    $QA_RUN php-cs-fixer fix app/ --format=txt --verbose
+    $QA_RUN php-cs-fixer fix tests/ --format=txt --verbose
+    $QA_RUN php-cs-fixer fix resources/lang/ --format=txt --verbose
+    $QA_RUN php-cs-fixer fix config/ --format=txt --verbose
+    $QA_RUN php-cs-fixer fix database/ --format=txt --verbose
+
 
 elif [ "$1" == "phpmnd" ]; then
     $QA_RUN phpmnd app/ \
