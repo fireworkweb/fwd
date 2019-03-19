@@ -36,13 +36,11 @@ abstract class TestCase extends BaseTestCase
             $mock->shouldAllowMockingProtectedMethods()
                 ->shouldReceive('run')
                 ->once()
-                ->with(
-                    $command,
-                    \Mockery::any(),
-                    \Mockery::any(),
-                    \Mockery::any(),
-                    \Mockery::any()
-                )
+                ->withArgs(function($run) use ($command) {
+                    $this->assertEquals($command, $run);
+
+                    return true;
+                })
                 ->andReturnNull();
         })->makePartial();
     }
