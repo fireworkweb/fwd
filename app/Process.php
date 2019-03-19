@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Commands\Traits;
+namespace App;
 
-use App\Environment;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
-trait Process
+class Process
 {
     public function dockerRun(...$command)
     {
@@ -42,19 +41,26 @@ trait Process
     ) {
         $command = $this->buildCommand($command);
 
-        if (env('FWD_DEBUG')) {
-            $this->line($command);
-            return;
-        }
-
-        (new SymfonyProcess($command, $cwd, $env, $timeout))
-            ->setTty(true)
-            ->run($this->buildCallback($callback));
+        return env('FWD_DEBUG')
+            ? $this->line($command)
+            : $this->run($command, $cwd, $env, $timeout, $callback);
     }
 
     protected function buildCommand(array $command)
     {
         return implode(' ', array_filter($command));
+    }
+
+    protected function run(
+        string $command,
+        string $cwd = null,
+        array $env = [],
+        $timeout = 0,
+        $callback = null
+    ) {
+        return (new SymfonyProcess($command, $cwd, $env, $timeout))
+            ->setTty(true)
+            ->run($this->buildCallback($callback));
     }
 
     protected function buildCallback($callback)

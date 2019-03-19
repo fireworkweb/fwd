@@ -2,13 +2,11 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\Process;
+use App\Process;
 use LaravelZero\Framework\Commands\Command;
 
 class Start extends Command
 {
-    use Process;
-
     /**
      * The signature of the command.
      *
@@ -28,8 +26,8 @@ class Start extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(Process $process)
     {
-        $this->dockerCompose('up', '-d');
+        $process->dockerCompose('up', '-d');
     }
 }

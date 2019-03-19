@@ -6,7 +6,7 @@ use App\Commands\Traits\HasDynamicArgs;
 use App\Process;
 use LaravelZero\Framework\Commands\Command;
 
-class Ps extends Command
+class JsInspect extends Command
 {
     use HasDynamicArgs;
 
@@ -15,14 +15,14 @@ class Ps extends Command
      *
      * @var string
      */
-    protected $name = 'ps';
+    protected $name = 'jsinspect';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Show fwd environment containers.';
+    protected $description = 'Run jsinspect in the NODE-QA container.';
 
     /**
      * Execute the console command.
@@ -31,6 +31,16 @@ class Ps extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerCompose('ps', $this->getArgs());
+        $process->dockerRun(env('FWD_IMAGE_NODE_QA'), 'jsinspect', $this->getArgs());
+    }
+
+    /**
+     * Get default args when empty.
+     *
+     * @return string
+     */
+    public function getDefaultArgs(): string
+    {
+        return 'src/';
     }
 }

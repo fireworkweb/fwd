@@ -6,7 +6,7 @@ use App\Commands\Traits\HasDynamicArgs;
 use App\Process;
 use LaravelZero\Framework\Commands\Command;
 
-class Node extends Command
+class PhpMd extends Command
 {
     use HasDynamicArgs;
 
@@ -15,14 +15,14 @@ class Node extends Command
      *
      * @var string
      */
-    protected $name = 'node';
+    protected $name = 'phpmd';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Run node commands within a new container.';
+    protected $description = 'Run phpmd in the PHP-QA container.';
 
     /**
      * Execute the console command.
@@ -31,7 +31,7 @@ class Node extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerRun(env('FWD_IMAGE_NODE'), 'node', $this->getArgs());
+        $process->dockerRun(env('FWD_IMAGE_PHP_QA'), 'phpmd', $this->getArgs());
     }
 
     /**
@@ -41,6 +41,13 @@ class Node extends Command
      */
     public function getDefaultArgs(): string
     {
-        return '-v';
+        return sprintf('app/ text %s', implode(','), [
+            'phpmd/codesize.xml',
+            'phpmd/controversial.xml',
+            'phpmd/design.xml',
+            'phpmd/naming.xml',
+            'unusedcode',
+            'phpmd/cleancode.xml',
+        ]);
     }
 }

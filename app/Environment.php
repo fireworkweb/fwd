@@ -19,7 +19,8 @@ class Environment
         'FWD_IMAGE_NODE',
         'FWD_IMAGE_CACHE',
         'FWD_IMAGE_DATABASE',
-        'FWD_IMAGE_QA',
+        'FWD_IMAGE_NODE_QA',
+        'FWD_IMAGE_PHP_QA',
         'DB_DATABASE',
         'DB_USERNAME',
         'DB_PASSWORD',
@@ -89,7 +90,7 @@ class Environment
         try {
             Dotenv::create(
                 pathinfo($envFile, PATHINFO_DIRNAME),
-                pathinfo($envFile, PATHINFO_BASENAME),
+                pathinfo($envFile, PATHINFO_BASENAME)
             )->safeLoad();
         } catch (InvalidFileException $e) {
             echo 'The environment file is invalid: '.$e->getMessage();

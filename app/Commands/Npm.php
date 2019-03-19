@@ -3,12 +3,12 @@
 namespace App\Commands;
 
 use App\Commands\Traits\HasDynamicArgs;
-use App\Commands\Traits\Process;
+use App\Process;
 use LaravelZero\Framework\Commands\Command;
 
 class Npm extends Command
 {
-    use HasDynamicArgs, Process;
+    use HasDynamicArgs;
 
     /**
      * The name of the command.
@@ -29,9 +29,9 @@ class Npm extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(Process $process)
     {
-        $this->dockerRun(env('FWD_IMAGE_NODE'), 'npm', $this->getArgs());
+        $process->dockerRun(env('FWD_IMAGE_NODE'), 'npm', $this->getArgs());
     }
 
     /**

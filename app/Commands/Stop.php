@@ -3,12 +3,12 @@
 namespace App\Commands;
 
 use App\Commands\Traits\HasDynamicArgs;
-use App\Commands\Traits\Process;
+use App\Process;
 use LaravelZero\Framework\Commands\Command;
 
 class Stop extends Command
 {
-    use HasDynamicArgs, Process;
+    use HasDynamicArgs;
 
     /**
      * The name of the command.
@@ -29,8 +29,8 @@ class Stop extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(Process $process)
     {
-        $this->dockerCompose('stop', $this->getArgs());
+        $process->dockerCompose('stop', $this->getArgs());
     }
 }

@@ -2,15 +2,12 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\Process;
 use App\Environment;
 use Illuminate\Support\Facades\File;
 use LaravelZero\Framework\Commands\Command;
 
 class Install extends Command
 {
-    use Process;
-
     /**
      * The signature of the command.
      *

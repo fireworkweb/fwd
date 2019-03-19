@@ -21,7 +21,8 @@ FWD_IMAGE_APP="fireworkweb/app:7.2-alpine"
 FWD_IMAGE_NODE="fireworkweb/node:alpine"
 FWD_IMAGE_CACHE="redis:alpine"
 FWD_IMAGE_DATABASE="mysql:5.7"
-FWD_IMAGE_QA="jakzal/phpqa:alpine"
+FWD_IMAGE_NODE_QA="fireworkweb/node:qa"
+FWD_IMAGE_PHP_QA="jakzal/phpqa:alpine"
 
 # Database
 DB_DATABASE="docker"
