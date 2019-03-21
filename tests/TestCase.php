@@ -44,4 +44,13 @@ abstract class TestCase extends BaseTestCase
                 ->andReturnNull();
         })->makePartial();
     }
+
+    protected function mockProcess()
+    {
+        $this->mock(Process::class, function ($mock) {
+            $mock->shouldAllowMockingProtectedMethods()
+                ->shouldReceive('run')
+                ->andReturnNull();
+        })->makePartial();
+    }
 }
