@@ -1,5 +1,6 @@
 # Prints commands instead of running
 FWD_DEBUG=false
+COMPOSE_API_VERSION=1.25
 
 # Ports - used on docker-compose.yml
 FWD_HTTP_PORT=80

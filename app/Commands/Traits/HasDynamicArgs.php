@@ -2,6 +2,9 @@
 
 namespace App\Commands\Traits;
 
+use Symfony\Component\Console\Input\ArrayInput;
+
+
 trait HasDynamicArgs
 {
     protected function specifyParameters()

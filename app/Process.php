@@ -42,7 +42,7 @@ class Process
         $command = $this->buildCommand($command);
 
         return env('FWD_DEBUG')
-            ? $this->line($command)
+            ? print("$command\n")
             : $this->run($command, $cwd, $env, $timeout, $callback);
     }
 
