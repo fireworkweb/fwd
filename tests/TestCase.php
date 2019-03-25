@@ -22,6 +22,14 @@ abstract class TestCase extends BaseTestCase
         $this->mockProcess();
     }
 
+    protected function assertDockerCompose(...$command)
+    {
+        $this->assertProcessRun([
+            sprintf('docker-compose -p %s', basename(getcwd())),
+            $this->buildCommand($command),
+        ]);
+    }
+
     protected function assertDockerComposeExec(...$command)
     {
         $this->assertProcessRun([

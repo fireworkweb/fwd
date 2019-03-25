@@ -43,7 +43,7 @@ class PrepareDusk extends Command
             sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
             sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
             sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
-            'app php artisan migrate:fresh --seed',
+            'app php artisan migrate:fresh --seed'
         );
     }
 }

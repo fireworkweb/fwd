@@ -11,7 +11,7 @@ class Environment
 {
     protected $envVariables;
 
-    protected $keys = [
+    protected static $keys = [
         'FWD_HTTP_PORT',
         'FWD_MYSQL_PORT',
         'FWD_ASUSER',
