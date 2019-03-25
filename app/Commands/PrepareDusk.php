@@ -2,12 +2,15 @@
 
 namespace App\Commands;
 
+use App\Commands\Traits\ArtisanCall;
+use App\Environment;
+use App\Process;
 use LaravelZero\Framework\Commands\Command;
-use Illuminate\Support\Facades\Artisan;
-use LaravelZero\Framework\Providers\CommandRecorder\CommandRecorderRepository;
 
 class PrepareDusk extends Command
 {
+    use ArtisanCall;
+
     /**
      * The name of the command.
      *
@@ -22,26 +25,25 @@ class PrepareDusk extends Command
      */
     protected $description = 'Create a test dedicated database named dusk.';
 
-    public function call($command, array $arguments = [])
-    {
-        resolve(CommandRecorderRepository::class)->create($command, $arguments);
-
-        return Artisan::call($command, $arguments);
-    }
-
     /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(Environment $environment, Process $process)
     {
-        $DB_USERNAME = env('DB_USERNAME');
+        $environment->loadEnv($environment->getContextEnv('.env.dusk.local'), true);
 
-        $this->call('mysql', ['-e', 'drop database if exists dusk']);
-        $this->call('mysql', ['-e', 'create database dusk']);
-        $this->call('mysql', ['-e', "grant all on dusk.* to $DB_USERNAME@\"%\""]);
-        $this->call('artisan', ['migrate:fresh', '--seed', '--database=dusk']);
+        $this->artisanCall('mysql-raw', ['-e', sprintf('drop database if exists %s', env('DB_DATABASE'))]);
+        $this->artisanCall('mysql-raw', ['-e', sprintf('create database %s', env('DB_DATABASE'))]);
+        $this->artisanCall('mysql-raw', ['-e', sprintf('grant all on %s.* to %s@"%%"', env('DB_DATABASE'), env('DB_USERNAME'))]);
 
+        $process->dockerCompose(
+            'exec',
+            sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
+            sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
+            sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
+            'app php artisan migrate:fresh --seed',
+        );
     }
 }

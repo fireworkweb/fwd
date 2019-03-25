@@ -28,24 +28,24 @@ class Install extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(Environment $environment)
     {
         if (! $this->option('force')) {
-            if (File::exists(Environment::getContextDockerCompose())) {
+            if (File::exists($environment->getContextDockerCompose())) {
                 $this->error('File "docker-compose.yml" already exists.');
                 return;
             }
 
-            if (File::exists(Environment::getContextFwd())) {
+            if (File::exists($environment->getContextEnv('.fwd'))) {
                 $this->error('File ".fwd" already exists.');
                 return;
             }
         }
 
-        File::copy(Environment::getDefaultDockerCompose(), Environment::getContextDockerCompose());
+        File::copy($environment->getDefaultDockerCompose(), $environment->getContextDockerCompose());
         $this->info('File "docker-compose.yml" copied.');
 
-        File::copy(Environment::getDefaultFwd(), Environment::getContextFwd());
+        File::copy($environment->getDefaultFwd(), $environment->getContextEnv('.fwd'));
         $this->info('File ".fwd" copied.');
     }
 }

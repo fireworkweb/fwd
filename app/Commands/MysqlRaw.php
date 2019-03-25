@@ -2,28 +2,27 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\ArtisanCall;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 use App\Process;
+use LaravelZero\Framework\Commands\Command;
 
-class Mysql extends Command
+class MysqlRaw extends Command
 {
-    use ArtisanCall, HasDynamicArgs;
+    use HasDynamicArgs;
 
     /**
      * The name of the command.
      *
      * @var string
      */
-    protected $name = 'mysql';
+    protected $name = 'mysql-raw';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Run Mysql client inside the container.';
+    protected $description = 'Run Mysql client inside the container without any database.';
 
     /**
      * Execute the console command.
@@ -34,7 +33,6 @@ class Mysql extends Command
     {
         $process->dockerCompose(
             'exec -e MYSQL_PWD='.env('DB_PASSWORD').' mysql mysql -u root',
-            env('DB_DATABASE'),
             $this->getArgs()
         );
     }

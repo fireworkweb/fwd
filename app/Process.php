@@ -7,6 +7,8 @@ use Symfony\Component\Process\Process as SymfonyProcess;
 
 class Process
 {
+    protected $commands = [];
+
     public function dockerRun(...$command)
     {
         $commandPrefix = [
@@ -21,12 +23,13 @@ class Process
 
     public function dockerCompose(...$command)
     {
+        $environment = app(Environment::class);
         $commandPrefix = [
             sprintf('docker-compose -p %s', basename(getcwd()))
         ];
 
-        if (! File::exists(Environment::getContextDockerCompose())) {
-            $commandPrefix[] = sprintf('-f %s', Environment::getDefaultDockerCompose());
+        if (! File::exists($environment->getContextDockerCompose())) {
+            $commandPrefix[] = sprintf('-f %s', $environment->getDefaultDockerCompose());
         }
 
         $this->process(array_merge($commandPrefix, $command));
@@ -41,9 +44,21 @@ class Process
     ) {
         $command = $this->buildCommand($command);
 
+        $this->commands[] = $command;
+
         return env('FWD_DEBUG')
             ? print("$command\n")
             : $this->run($command, $cwd, $env, $timeout, $callback);
+    }
+
+    public function getCommands()
+    {
+        return $this->commands;
+    }
+
+    public function hasCommand($command)
+    {
+        return array_search($command, $this->commands) !== false;
     }
 
     protected function buildCommand(array $command)
