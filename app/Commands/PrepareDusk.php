@@ -32,7 +32,7 @@ class PrepareDusk extends Command
      */
     public function handle(Environment $environment, Process $process)
     {
-        $environment->loadEnv($environment->getContextEnv('.env.dusk.local'), true);
+        $environment->overloadEnv($environment->getContextEnv('.env.dusk.local'));
 
         $this->artisanCall('mysql-raw', ['-e', sprintf('drop database if exists %s', env('DB_DATABASE'))]);
         $this->artisanCall('mysql-raw', ['-e', sprintf('create database %s', env('DB_DATABASE'))]);

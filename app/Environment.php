@@ -46,9 +46,9 @@ class Environment
 
     public function load(): void
     {
-        static::loadEnv(static::getContextEnv('.fwd'));
-        static::loadEnv(static::getContextEnv());
-        static::loadEnv(static::getDefaultFwd());
+        static::safeLoadEnv(static::getContextEnv('.fwd'));
+        static::safeLoadEnv(static::getContextEnv());
+        static::safeLoadEnv(static::getDefaultFwd());
 
         static::fixVariables();
     }
@@ -65,17 +65,17 @@ class Environment
 
     public function getDefaultDockerCompose()
     {
-        return static::getDefaultPath() . '/docker-compose.yml';
+        return sprintf('%s/docker-compose.yml', static::getDefaultPath());
     }
 
     public function getContextDockerCompose()
     {
-        return static::getContextPath() . '/docker-compose.yml';
+        return sprintf('%s/docker-compose.yml', static::getContextPath());
     }
 
     public function getDefaultFwd()
     {
-        return static::getDefaultPath() . '/.fwd';
+        return sprintf('%s/.fwd', static::getDefaultPath());
     }
 
     public function getContextEnv($env = '.env')
@@ -83,7 +83,17 @@ class Environment
         return sprintf('%s/%s', static::getContextPath(), $env);
     }
 
-    public function loadEnv($envFile, $overload = false): void
+    public function safeLoadEnv($envFile): void
+    {
+        $this->loadEnv($envFile);
+    }
+
+    public function overloadEnv($envFile): void
+    {
+        $this->loadEnv($envFile, true);
+    }
+
+    protected function loadEnv($envFile, $overload = false): void
     {
         try {
             $method = $overload ? 'overload' : 'safeLoad';
