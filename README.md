@@ -7,6 +7,7 @@ Download latest version at https://github.com/fireworkweb/fwd/releases and move 
 ```
 fwd install
 fwd start
+fwd composer install
 fwd artisan migrate:fresh --seed
 fwd yarn install
 fwd yarn dev
