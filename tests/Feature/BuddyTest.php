@@ -8,15 +8,15 @@ class BuddyTest extends TestCase
 {
     public function testBuddy()
     {
-        $this->assertDockerRun('fireworkweb/node:qa buddy src/');
-
         $this->artisan('buddy')->assertExitCode(0);
+
+        $this->assertDockerRun('fireworkweb/node:qa buddy src/');
     }
 
     public function testBuddyCustom()
     {
-        $this->assertDockerRun("fireworkweb/node:qa buddy 'app/'");
-
         $this->artisan('buddy app/')->assertExitCode(0);
+
+        $this->assertDockerRun("fireworkweb/node:qa buddy 'app/'");
     }
 }

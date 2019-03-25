@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Environment::load();
+        app(Environment::class)->load();
     }
 
     /**
@@ -25,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(Environment::class);
         $this->app->singleton(Process::class);
     }
 }

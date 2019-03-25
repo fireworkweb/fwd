@@ -26,9 +26,9 @@ class Dump extends Command
      *
      * @return mixed
      */
-    public function handle(): void
+    public function handle(Environment $environment): void
     {
-        $this->table(['Variable', 'Value'], $this->getTableValues());
+        $this->table(['Variable', 'Value'], $this->getTableValues($environment));
     }
 
     /**
@@ -36,9 +36,9 @@ class Dump extends Command
      *
      * @return array
      */
-    protected function getTableValues(): array
+    protected function getTableValues(Environment $environment): array
     {
-        return collect(Environment::getValues())
+        return collect($environment->getValues())
             ->sortKeys()
             ->map(function ($value, $key) {
                 return [ $key, $value ];

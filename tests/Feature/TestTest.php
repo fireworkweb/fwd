@@ -8,15 +8,15 @@ class TestTest extends TestCase
 {
     public function testTest()
     {
-        $this->assertDockerComposeExec('app ./vendor/bin/phpunit');
-
         $this->artisan('test')->assertExitCode(0);
+
+        $this->assertDockerComposeExec('app ./vendor/bin/phpunit');
     }
 
     public function testTestWithFilter()
     {
-        $this->assertDockerComposeExec("app ./vendor/bin/phpunit --filter=something");
-
         $this->artisan('test --filter=something')->assertExitCode(0);
+
+        $this->assertDockerComposeExec("app ./vendor/bin/phpunit --filter=something");
     }
 }

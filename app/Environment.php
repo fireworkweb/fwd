@@ -5,10 +5,13 @@ namespace App;
 use Dotenv\Dotenv;
 use Dotenv\Environment\DotenvFactory;
 use Dotenv\Exception\InvalidFileException;
+use Dotenv\Exception\InvalidPathException;
 
 class Environment
 {
-    protected static $keys = [
+    protected $envVariables;
+
+    protected $keys = [
         'FWD_HTTP_PORT',
         'FWD_MYSQL_PORT',
         'FWD_ASUSER',
@@ -28,91 +31,98 @@ class Environment
 
     public function __construct(DotenvFactory $dotenvFactory)
     {
-        $this->dotenvFactory = $dotenvFactory;
+        $this->envVariables = $dotenvFactory->create();
     }
 
-    public static function getKeys(): array
+    public function getKeys(): array
     {
         return static::$keys;
     }
 
-    public static function getValues(): array
+    public function getValues(): array
     {
         return array_only(getenv(), static::getKeys());
     }
 
-    public static function load(): void
+    public function load(): void
     {
-        static::loadEnv(static::getContextFwd());
-        static::loadEnv(static::getContextEnv());
-        static::loadEnv(static::getDefaultFwd());
+        static::safeLoadEnv(static::getContextEnv('.fwd'));
+        static::safeLoadEnv(static::getContextEnv());
+        static::safeLoadEnv(static::getDefaultFwd());
 
         static::fixVariables();
     }
 
-    public static function getDefaultPath()
+    public function getDefaultPath()
     {
         return base_path();
     }
 
-    public static function getContextPath()
+    public function getContextPath()
     {
         return getcwd();
     }
 
-    public static function getDefaultDockerCompose()
+    public function getDefaultDockerCompose()
     {
-        return static::getDefaultPath() . '/docker-compose.yml';
+        return sprintf('%s/docker-compose.yml', static::getDefaultPath());
     }
 
-    public static function getContextDockerCompose()
+    public function getContextDockerCompose()
     {
-        return static::getContextPath() . '/docker-compose.yml';
+        return sprintf('%s/docker-compose.yml', static::getContextPath());
     }
 
-    public static function getDefaultFwd()
+    public function getDefaultFwd()
     {
-        return static::getDefaultPath() . '/.fwd';
+        return sprintf('%s/.fwd', static::getDefaultPath());
     }
 
-    public static function getContextFwd()
+    public function getContextEnv($env = '.env')
     {
-        return static::getContextPath() . '/.fwd';
+        return sprintf('%s/%s', static::getContextPath(), $env);
     }
 
-    public static function getContextEnv()
+    public function safeLoadEnv($envFile): void
     {
-        return static::getContextPath() . '/.env';
+        $this->loadEnv($envFile);
     }
 
-    protected static function loadEnv($envFile): void
+    public function overloadEnv($envFile): void
+    {
+        $this->loadEnv($envFile, true);
+    }
+
+    protected function loadEnv($envFile, $overload = false): void
     {
         try {
+            $method = $overload ? 'overload' : 'safeLoad';
+
             Dotenv::create(
                 pathinfo($envFile, PATHINFO_DIRNAME),
                 pathinfo($envFile, PATHINFO_BASENAME)
-            )->safeLoad();
+            )->{$method}();
+        } catch (InvalidPathException $e) {
+            // nothing to do
         } catch (InvalidFileException $e) {
             echo 'The environment file is invalid: '.$e->getMessage();
             die(1);
         }
     }
 
-    protected static function fixVariables(): void
+    protected function fixVariables(): void
     {
-        $envVariables = app(DotenvFactory::class)->create();
-
-        $envVariables->set(
+        $this->envVariables->set(
             'FWD_SSH_KEY_PATH',
             str_replace('$HOME', $_SERVER['HOME'], env('FWD_SSH_KEY_PATH'))
         );
 
-        $envVariables->set(
+        $this->envVariables->set(
             'FWD_CONTEXT_PATH',
             str_replace('$PWD', getcwd(), env('FWD_CONTEXT_PATH'))
         );
 
-        $envVariables->set(
+        $this->envVariables->set(
             'FWD_ASUSER',
             str_replace('$UID', posix_geteuid(), env('FWD_ASUSER'))
         );
