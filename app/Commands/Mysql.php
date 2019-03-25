@@ -2,14 +2,13 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\ArtisanCall;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 use App\Process;
+use LaravelZero\Framework\Commands\Command;
 
 class Mysql extends Command
 {
-    use ArtisanCall, HasDynamicArgs;
+    use HasDynamicArgs;
 
     /**
      * The name of the command.
