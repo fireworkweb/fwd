@@ -17,6 +17,6 @@ class ComposerTest extends TestCase
     {
         $this->artisan('composer install')->assertExitCode(0);
 
-        $this->assertDockerComposeExec("app composer install");
+        $this->assertDockerComposeExec('app composer install');
     }
 }
