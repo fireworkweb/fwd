@@ -33,11 +33,13 @@ class Install extends Command
         if (! $this->option('force')) {
             if (File::exists($environment->getContextDockerCompose())) {
                 $this->error('File "docker-compose.yml" already exists.');
+
                 return;
             }
 
             if (File::exists($environment->getContextEnv('.fwd'))) {
                 $this->error('File ".fwd" already exists.');
+
                 return;
             }
         }

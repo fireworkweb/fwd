@@ -17,6 +17,6 @@ class TestTest extends TestCase
     {
         $this->artisan('test --filter=something')->assertExitCode(0);
 
-        $this->assertDockerComposeExec("app ./vendor/bin/phpunit --filter=something");
+        $this->assertDockerComposeExec('app ./vendor/bin/phpunit --filter=something');
     }
 }

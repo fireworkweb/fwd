@@ -17,6 +17,6 @@ class PhpCsFixerTest extends TestCase
     {
         $this->artisan('php-cs-fixer something')->assertExitCode(0);
 
-        $this->assertDockerRun("jakzal/phpqa:alpine php-cs-fixer something");
+        $this->assertDockerRun('jakzal/phpqa:alpine php-cs-fixer something');
     }
 }

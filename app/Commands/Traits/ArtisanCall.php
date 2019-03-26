@@ -2,9 +2,8 @@
 
 namespace App\Commands\Traits;
 
-use LaravelZero\Framework\Providers\CommandRecorder\CommandRecorderRepository;
 use Illuminate\Support\Facades\Artisan;
-
+use LaravelZero\Framework\Providers\CommandRecorder\CommandRecorderRepository;
 
 trait ArtisanCall
 {
