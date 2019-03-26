@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Process;
+use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
 
 class Down extends Command
@@ -22,7 +22,7 @@ class Down extends Command
      *
      * @var string
      */
-    protected $description = 'Get down all contaniers and destroy them.';
+    protected $description = 'Get down all containers and destroy them.';
 
     /**
      * Execute the console command.

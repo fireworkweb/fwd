@@ -1,13 +1,9 @@
 <?php
 
-
 namespace Tests\Feature;
-
 
 use Tests\TestCase;
 use App\Environment;
-use App\Process;
-
 
 class PrepareDuskTest extends TestCase
 {
@@ -30,7 +26,7 @@ class PrepareDuskTest extends TestCase
             '-e DB_DATABASE=dusk',
             '-e DB_USERNAME=docker',
             '-e DB_PASSWORD=secret',
-            'app php artisan migrate:fresh --seed',
+            'app php artisan migrate:fresh --seed'
         );
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Process;
+use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
 
 class Yarn extends Command
@@ -41,6 +41,6 @@ class Yarn extends Command
      */
     public function getDefaultArgs(): string
     {
-        return 'yarn -v';
+        return '-v';
     }
 }

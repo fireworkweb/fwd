@@ -105,7 +105,7 @@ class Environment
         } catch (InvalidPathException $e) {
             // nothing to do
         } catch (InvalidFileException $e) {
-            echo 'The environment file is invalid: '.$e->getMessage();
+            echo 'The environment file is invalid: ' . $e->getMessage();
             die(1);
         }
     }

@@ -4,7 +4,6 @@ namespace Tests;
 
 use App\Process;
 use LaravelZero\Framework\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Facades\Artisan;
 
 abstract class TestCase extends BaseTestCase
 {

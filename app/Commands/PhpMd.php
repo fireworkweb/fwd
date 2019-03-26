@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Process;
+use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
 
 class PhpMd extends Command
@@ -41,13 +41,13 @@ class PhpMd extends Command
      */
     public function getDefaultArgs(): string
     {
-        return sprintf('app/ text %s', implode(','), [
+        return sprintf('app/ text %s', implode(',', [
             'phpmd/codesize.xml',
             'phpmd/controversial.xml',
             'phpmd/design.xml',
             'phpmd/naming.xml',
             'unusedcode',
             'phpmd/cleancode.xml',
-        ]);
+        ]));
     }
 }

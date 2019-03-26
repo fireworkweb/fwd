@@ -41,7 +41,7 @@ class Dump extends Command
         return collect($environment->getValues())
             ->sortKeys()
             ->map(function ($value, $key) {
-                return [ $key, $value ];
+                return [$key, $value];
             })
             ->values()
             ->all();
