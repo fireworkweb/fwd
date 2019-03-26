@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Environment;
-use App\Process;
 
 class PrepareDuskTest extends TestCase
 {
