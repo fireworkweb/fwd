@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Process;
+use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
 
 class Build extends Command

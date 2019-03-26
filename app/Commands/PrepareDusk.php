@@ -2,9 +2,9 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\ArtisanCall;
-use App\Environment;
 use App\Process;
+use App\Environment;
+use App\Commands\Traits\ArtisanCall;
 use LaravelZero\Framework\Commands\Command;
 
 class PrepareDusk extends Command

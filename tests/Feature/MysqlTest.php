@@ -1,11 +1,8 @@
 <?php
 
-
 namespace Tests\Feature;
 
-
 use Tests\TestCase;
-
 
 class MysqlTest extends TestCase
 {
@@ -13,7 +10,7 @@ class MysqlTest extends TestCase
     {
         $this->artisan('mysql')->assertExitCode(0);
 
-        $this->assertDockerComposeExec("-e MYSQL_PWD=secret mysql mysql -u root docker");
+        $this->assertDockerComposeExec('-e MYSQL_PWD=secret mysql mysql -u root docker');
     }
 
     public function testMysqlExecution()

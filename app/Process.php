@@ -25,7 +25,7 @@ class Process
     {
         $environment = app(Environment::class);
         $commandPrefix = [
-            sprintf('docker-compose -p %s', basename(getcwd()))
+            sprintf('docker-compose -p %s', basename(getcwd())),
         ];
 
         if (! File::exists($environment->getContextDockerCompose())) {
