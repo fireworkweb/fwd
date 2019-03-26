@@ -41,6 +41,6 @@ class Npm extends Command
      */
     public function getDefaultArgs(): string
     {
-        return 'npm -v';
+        return '-v';
     }
 }
