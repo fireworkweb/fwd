@@ -41,6 +41,6 @@ class Yarn extends Command
      */
     public function getDefaultArgs(): string
     {
-        return 'yarn -v';
+        return '-v';
     }
 }

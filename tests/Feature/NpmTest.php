@@ -17,6 +17,6 @@ class NpmTest extends TestCase
     {
         $this->artisan('npm install')->assertExitCode(0);
 
-        $this->assertDockerRun("fireworkweb/node:alpine npm install");
+        $this->assertDockerRun('fireworkweb/node:alpine npm install');
     }
 }
