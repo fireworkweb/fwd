@@ -1,5 +1,5 @@
 # Prints commands instead of running
-FWD_DEBUG=true
+FWD_DEBUG=false
 COMPOSE_API_VERSION=1.25
 
 # Ports - used on docker-compose.yml
