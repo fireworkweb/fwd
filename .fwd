@@ -16,6 +16,7 @@ FWD_COMPOSE_EXEC_FLAGS=""
 # can have access to secured sources
 FWD_SSH_KEY_PATH="$HOME/.ssh/id_rsa"
 FWD_CONTEXT_PATH="$PWD"
+FWD_CUSTOM_PATH="$PWD/fwd"
 
 # Images to use out of docker-compose.yml; can be overriden on .env
 FWD_IMAGE_APP="fireworkweb/app:7.2-alpine"
