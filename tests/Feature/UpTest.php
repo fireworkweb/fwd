@@ -15,8 +15,8 @@ class UpTest extends TestCase
 
     public function testUpCustom()
     {
-        $this->artisan('up something')->assertExitCode(0);
+        $this->artisan('up -d')->assertExitCode(0);
 
-        $this->assertDockerCompose('up something');
+        $this->assertDockerCompose('up -d');
     }
 }

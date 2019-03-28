@@ -15,8 +15,8 @@ class PhpTest extends TestCase
 
     public function testPhpInstall()
     {
-        $this->artisan('php something')->assertExitCode(0);
+        $this->artisan('php -a')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('app something');
+        $this->assertDockerComposeExec('app -a');
     }
 }

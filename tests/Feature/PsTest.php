@@ -15,8 +15,8 @@ class PsTest extends TestCase
 
     public function testPsCustom()
     {
-        $this->artisan('ps something')->assertExitCode(0);
+        $this->artisan('ps -a')->assertExitCode(0);
 
-        $this->assertDockerCompose('ps something');
+        $this->assertDockerCompose('ps -a');
     }
 }

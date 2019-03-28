@@ -15,8 +15,8 @@ class DownTest extends TestCase
 
     public function testDownCustom()
     {
-        $this->artisan('down something')->assertExitCode(0);
+        $this->artisan('down --volumes')->assertExitCode(0);
 
-        $this->assertDockerCompose('down something');
+        $this->assertDockerCompose('down --volumes');
     }
 }

@@ -15,8 +15,8 @@ class StopTest extends TestCase
 
     public function testStopCustom()
     {
-        $this->artisan('stop something')->assertExitCode(0);
+        $this->artisan('stop -t 5')->assertExitCode(0);
 
-        $this->assertDockerCompose('stop something');
+        $this->assertDockerCompose('stop -t 5');
     }
 }
