@@ -13,7 +13,7 @@ class Process
     {
         $commandPrefix = [
             'docker run --rm -it',
-            sprintf('-v %s:/app:cached', getcwd()),
+            sprintf('-v %s:/app:cached', env('FWD_CONTEXT_PATH')),
             sprintf('-v %s:/home/developer/.ssh/id_rsa:cached', env('FWD_SSH_KEY_PATH')),
             sprintf('-e ASUSER=%s', env('FWD_ASUSER')),
         ];
@@ -25,12 +25,13 @@ class Process
     {
         $environment = app(Environment::class);
         $commandPrefix = [
-            sprintf('docker-compose -p %s', basename(getcwd())),
+            sprintf('docker-compose -p %s', env('FWD_NAME', basename(getcwd()))),
         ];
 
-        if (! File::exists($environment->getContextDockerCompose())) {
-            $commandPrefix[] = sprintf('-f %s', $environment->getDefaultDockerCompose());
-        }
+        // @TODO: make docker-compose.yml optional
+        // if (! File::exists($environment->getContextDockerCompose())) {
+        //     $commandPrefix[] = sprintf('-f %s', $environment->getDefaultDockerCompose());
+        // }
 
         $this->process(array_merge($commandPrefix, $command));
     }
