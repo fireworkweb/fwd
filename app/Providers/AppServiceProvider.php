@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
                 return $command->getPathname();
             })
             ->each(function ($command) {
-                require_once($command);
+                require_once $command;
             })
             ->map(function ($command) {
                 return pathinfo($command, PATHINFO_FILENAME);
