@@ -2,6 +2,9 @@
 FWD_DEBUG=false
 COMPOSE_API_VERSION=1.25
 
+# Optional, default is folder name
+# FWD_NAME=custom_name
+
 # Ports - used on docker-compose.yml
 FWD_HTTP_PORT=80
 FWD_MYSQL_PORT=3306
@@ -16,6 +19,7 @@ FWD_COMPOSE_EXEC_FLAGS=""
 # can have access to secured sources
 FWD_SSH_KEY_PATH="$HOME/.ssh/id_rsa"
 FWD_CONTEXT_PATH="$PWD"
+FWD_CUSTOM_PATH="$PWD/fwd"
 
 # Images to use out of docker-compose.yml; can be overriden on .env
 FWD_IMAGE_APP="fireworkweb/app:7.2-alpine"

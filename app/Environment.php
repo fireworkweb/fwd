@@ -70,7 +70,7 @@ class Environment
 
     public function getContextDockerCompose()
     {
-        return sprintf('%s/docker-compose.yml', static::getContextPath());
+        return $this->getContextFile('docker-compose.yml');
     }
 
     public function getDefaultFwd()
@@ -80,7 +80,12 @@ class Environment
 
     public function getContextEnv($env = '.env')
     {
-        return sprintf('%s/%s', static::getContextPath(), $env);
+        return $this->getContextFile($env);
+    }
+
+    public function getContextFile($file)
+    {
+        return sprintf('%s/%s', static::getContextPath(), $file);
     }
 
     public function safeLoadEnv($envFile): void
@@ -120,6 +125,11 @@ class Environment
         $this->envVariables->set(
             'FWD_CONTEXT_PATH',
             str_replace('$PWD', getcwd(), env('FWD_CONTEXT_PATH'))
+        );
+
+        $this->envVariables->set(
+            'FWD_CUSTOM_PATH',
+            str_replace('$PWD', getcwd(), env('FWD_CUSTOM_PATH'))
         );
 
         $this->envVariables->set(
