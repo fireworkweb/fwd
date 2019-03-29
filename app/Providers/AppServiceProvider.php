@@ -7,6 +7,7 @@ use App\Environment;
 use Illuminate\Console\Command;
 use Symfony\Component\Finder\Finder;
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\Finder\SplFileInfo;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -42,18 +43,22 @@ class AppServiceProvider extends ServiceProvider
 
     protected function getCommands()
     {
+        if (! is_dir(env('FWD_CUSTOM_PATH'))) {
+            return;
+        }
+
         return collect((new Finder)->in(env('FWD_CUSTOM_PATH'))->files())
-            ->map(function ($command) {
-                return $command->getPathname();
+            ->map(function (SplFileInfo $file) {
+                return $file->getPathname();
             })
-            ->each(function ($command) {
-                require_once $command;
+            ->each(function ($path) {
+                require_once $path;
             })
-            ->map(function ($command) {
-                return pathinfo($command, PATHINFO_FILENAME);
+            ->map(function ($path) {
+                return pathinfo($path, PATHINFO_FILENAME);
             })
-            ->filter(function ($command) {
-                return is_subclass_of($command, Command::class);
+            ->filter(function ($file) {
+                return is_subclass_of($file, Command::class);
             })
             ->values()
             ->toArray();
