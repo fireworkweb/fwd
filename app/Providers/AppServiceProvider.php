@@ -38,7 +38,9 @@ class AppServiceProvider extends ServiceProvider
     {
         app(Environment::class)->load();
 
-        $this->commands($this->getCommands());
+        if ($commands = $this->getCommands()) {
+            $this->commands($commands);
+        }
     }
 
     protected function getCommands()
