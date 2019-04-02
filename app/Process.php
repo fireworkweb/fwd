@@ -12,7 +12,7 @@ class Process
     protected $env = [];
     protected $timeout = 0;
     protected $callback = null;
-    protected $tty = false;
+    protected $tty;
 
     public function dockerRun(...$command)
     {
@@ -110,8 +110,15 @@ class Process
                 $this->env,
                 $this->timeout
             ))
-            ->setTty($this->tty)
+            ->setTty($this->getTty())
             ->run($this->getCallback());
+    }
+
+    protected function getTty()
+    {
+        return ! is_null($this->tty)
+            ? $this->tty
+            : env('FWD_TTY', false);
     }
 
     protected function getCallback()

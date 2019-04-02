@@ -5,6 +5,9 @@ COMPOSE_API_VERSION=1.25
 # Optional, default is folder name
 # FWD_NAME=custom_name
 
+# default is false
+# FWD_TTY=true
+
 # Ports - used on docker-compose.yml
 FWD_HTTP_PORT=80
 FWD_MYSQL_PORT=3306
