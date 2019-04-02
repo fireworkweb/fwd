@@ -133,6 +133,6 @@ class Process
 
     protected function print($line)
     {
-        print($line.PHP_EOL);
+        echo $line . PHP_EOL;
     }
 }

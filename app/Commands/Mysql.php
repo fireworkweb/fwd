@@ -36,7 +36,7 @@ class Mysql extends Command
         }
 
         $process->dockerCompose(
-            sprintf('exec -e MYSQL_PWD=%s mysql mysql -u root',  env('DB_PASSWORD')),
+            sprintf('exec -e MYSQL_PWD=%s mysql mysql -u root', env('DB_PASSWORD')),
             env('DB_DATABASE'),
             $this->getArgs()
         );
