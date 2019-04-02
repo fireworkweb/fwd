@@ -8,6 +8,11 @@ use Symfony\Component\Process\Process as SymfonyProcess;
 class Process
 {
     protected $commands = [];
+    protected $cwd = null;
+    protected $env = [];
+    protected $timeout = 0;
+    protected $callback = null;
+    protected $tty = false;
 
     public function dockerRun(...$command)
     {
@@ -36,25 +41,55 @@ class Process
         $this->process(array_merge($commandPrefix, $command));
     }
 
-    public function process(
-        array $command,
-        string $cwd = null,
-        array $env = [],
-        $timeout = 0,
-        $callback = null
-    ) {
+    public function process(array $command, string $cwd = null)
+    {
         $command = $this->buildCommand($command);
 
         $this->commands[] = $command;
 
         return env('FWD_DEBUG')
-            ? print("$command\n")
-            : $this->run($command, $cwd, $env, $timeout, $callback);
+            ? $this->print($command)
+            : $this->run($command, $cwd);
     }
 
-    public function getCommands()
+    public function commands()
     {
         return $this->commands;
+    }
+
+    public function cwd(string $cwd)
+    {
+        return $this->cwd = $cwd;
+
+        return $this;
+    }
+
+    public function env(array $env)
+    {
+        $this->env = $env;
+
+        return $this;
+    }
+
+    public function timeout(int $timeout)
+    {
+        $this->timeout = $timeout;
+
+        return $this;
+    }
+
+    public function callback(callable $callback)
+    {
+        $this->callback = $callback;
+
+        return $this;
+    }
+
+    public function tty(bool $tty)
+    {
+        $this->tty = $tty;
+
+        return $this;
     }
 
     public function hasCommand($command)
@@ -67,32 +102,37 @@ class Process
         return implode(' ', array_filter($command));
     }
 
-    protected function run(
-        string $command,
-        string $cwd = null,
-        array $env = [],
-        $timeout = 0,
-        $callback = null
-    ) {
-        return (new SymfonyProcess($command, $cwd, $env, $timeout))
-            ->setTty(true)
-            ->run($this->buildCallback($callback));
+    protected function run(string $command)
+    {
+        return (new SymfonyProcess(
+                $command,
+                $this->cwd,
+                $this->env,
+                $this->timeout
+            ))
+            ->setTty($this->tty)
+            ->run($this->getCallback());
     }
 
-    protected function buildCallback($callback)
+    protected function getCallback()
     {
-        return $callback ?: function ($type, $buffer) {
+        return $this->callback ?: function ($type, $buffer) {
             $buffer = trim($buffer);
 
             switch ($type) {
                 case 'err':
-                    $this->warn($buffer);
+                    $this->print($buffer);
                     break;
 
                 case 'out':
-                    $this->line($buffer);
+                    $this->print($buffer);
                     break;
             }
         };
+    }
+
+    protected function print($line)
+    {
+        print($line.PHP_EOL);
     }
 }
