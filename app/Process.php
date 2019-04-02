@@ -108,6 +108,7 @@ class Process
                 $command,
                 $this->cwd,
                 $this->env,
+                null,
                 $this->timeout
             ))
             ->setTty($this->getTty())
