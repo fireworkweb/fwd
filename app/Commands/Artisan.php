@@ -31,6 +31,10 @@ class Artisan extends Command
      */
     public function handle(Process $process)
     {
+        if (str_start($this->getArgs(), 'tinker')) {
+            $process->tty(true);
+        }
+
         $process->dockerCompose('exec app php artisan', $this->getArgs());
     }
 }
