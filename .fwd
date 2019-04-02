@@ -5,7 +5,7 @@ COMPOSE_API_VERSION=1.25
 # Optional, default is folder name
 # FWD_NAME=custom_name
 
-# default is false
+# Optional, default is false
 # FWD_TTY=true
 
 # Ports - used on docker-compose.yml
