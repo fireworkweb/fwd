@@ -31,7 +31,11 @@ class JsInspect extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerRun(env('FWD_IMAGE_NODE_QA'), 'jsinspect', $this->getArgs());
+        $process->tty(true)->dockerRun(
+            env('FWD_IMAGE_NODE_QA'),
+            'jsinspect',
+            $this->getArgs()
+        );
     }
 
     /**

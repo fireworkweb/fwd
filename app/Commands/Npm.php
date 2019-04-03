@@ -31,7 +31,11 @@ class Npm extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerRun(env('FWD_IMAGE_NODE'), 'npm', $this->getArgs());
+        $process->tty(true)->dockerRun(
+            env('FWD_IMAGE_NODE'),
+            'npm',
+            $this->getArgs()
+        );
     }
 
     /**
