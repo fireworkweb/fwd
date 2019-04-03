@@ -25,7 +25,7 @@ class Process
     {
         $environment = app(Environment::class);
         $commandPrefix = [
-            sprintf('docker-compose -p %s', env('FWD_NAME', basename(getcwd()))),
+            sprintf('docker-compose -p %s', env('FWD_NAME')),
         ];
 
         // @TODO: make docker-compose.yml optional

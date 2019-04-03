@@ -12,12 +12,15 @@ class Environment
     protected $envVariables;
 
     protected static $keys = [
+        'FWD_DEBUG',
+        'FWD_NAME',
         'FWD_HTTP_PORT',
         'FWD_MYSQL_PORT',
         'FWD_ASUSER',
         'FWD_COMPOSE_EXEC_FLAGS',
         'FWD_SSH_KEY_PATH',
         'FWD_CONTEXT_PATH',
+        'FWD_CUSTOM_PATH',
         'FWD_IMAGE_APP',
         'FWD_IMAGE_NODE',
         'FWD_IMAGE_CACHE',
@@ -27,6 +30,7 @@ class Environment
         'DB_DATABASE',
         'DB_USERNAME',
         'DB_PASSWORD',
+        'COMPOSE_API_VERSION',
     ];
 
     public function __construct(DotenvFactory $dotenvFactory)
@@ -117,6 +121,13 @@ class Environment
 
     protected function fixVariables(): void
     {
+        if (empty(env('FWD_NAME'))) {
+            $this->envVariables->set(
+                'FWD_NAME',
+                basename(getcwd())
+            );
+        }
+
         $this->envVariables->set(
             'FWD_SSH_KEY_PATH',
             str_replace('$HOME', $_SERVER['HOME'], env('FWD_SSH_KEY_PATH'))
