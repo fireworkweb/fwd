@@ -31,7 +31,10 @@ class NodeQa extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerRun(env('FWD_IMAGE_NODE_QA'), $this->getArgs());
+        $process->tty(true)->dockerRun(
+            env('FWD_IMAGE_NODE_QA'),
+            $this->getArgs()
+        );
     }
 
     /**

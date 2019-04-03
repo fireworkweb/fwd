@@ -31,7 +31,11 @@ class Node extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerRun(env('FWD_IMAGE_NODE'), 'node', $this->getArgs());
+        $process->tty(true)->dockerRun(
+            env('FWD_IMAGE_NODE'),
+            'node',
+            $this->getArgs()
+        );
     }
 
     /**
