@@ -80,6 +80,7 @@ class Process
             null,
             []
         );
+
         return proc_close($proc);
     }
 
