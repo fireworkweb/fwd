@@ -1,12 +1,8 @@
 # Prints commands instead of running
 FWD_DEBUG=false
-COMPOSE_API_VERSION=1.25
 
 # Optional, default is folder name
 # FWD_NAME=custom_name
-
-# Optional, default is false
-# FWD_TTY=true
 
 # Ports - used on docker-compose.yml
 FWD_HTTP_PORT=80
@@ -36,3 +32,6 @@ FWD_IMAGE_PHP_QA="jakzal/phpqa:alpine"
 DB_DATABASE="docker"
 DB_USERNAME="docker"
 DB_PASSWORD="secret"
+
+# Docker Composer
+COMPOSE_API_VERSION=1.25

@@ -3,16 +3,11 @@
 namespace App;
 
 use Illuminate\Support\Facades\File;
-use Symfony\Component\Process\Process as SymfonyProcess;
 
 class Process
 {
     protected $commands = [];
     protected $cwd = null;
-    protected $env = [];
-    protected $timeout = 0;
-    protected $callback = null;
-    protected $tty;
 
     public function dockerRun(...$command)
     {
@@ -30,7 +25,7 @@ class Process
     {
         $environment = app(Environment::class);
         $commandPrefix = [
-            sprintf('docker-compose -p %s', env('FWD_NAME', basename(getcwd()))),
+            sprintf('docker-compose -p %s', env('FWD_NAME')),
         ];
 
         // @TODO: make docker-compose.yml optional
@@ -64,34 +59,6 @@ class Process
         return $this;
     }
 
-    public function env(array $env)
-    {
-        $this->env = $env;
-
-        return $this;
-    }
-
-    public function timeout(int $timeout)
-    {
-        $this->timeout = $timeout;
-
-        return $this;
-    }
-
-    public function callback(callable $callback)
-    {
-        $this->callback = $callback;
-
-        return $this;
-    }
-
-    public function tty(bool $tty)
-    {
-        $this->tty = $tty;
-
-        return $this;
-    }
-
     public function hasCommand($command)
     {
         return array_search($command, $this->commands) !== false;
@@ -104,22 +71,17 @@ class Process
 
     protected function run(string $command)
     {
-        return (new SymfonyProcess(
-                $command,
-                $this->cwd,
-                $this->env,
-                null,
-                $this->timeout
-            ))
-            ->setTty($this->getTty())
-            ->run($this->getCallback());
-    }
+        $pipes = [];
+        $proc = proc_open(
+            $command,
+            [STDIN, STDOUT, STDERR],
+            $pipes,
+            $this->cwd,
+            null,
+            []
+        );
 
-    protected function getTty()
-    {
-        return ! is_null($this->tty)
-            ? $this->tty
-            : env('FWD_TTY', false);
+        return proc_close($proc);
     }
 
     protected function getCallback()
