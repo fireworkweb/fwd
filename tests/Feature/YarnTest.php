@@ -10,7 +10,7 @@ class YarnTest extends TestCase
     {
         $this->artisan('yarn')->assertExitCode(0);
 
-        $this->assertDockerRun('fireworkweb/node:alpine yarn -v');
+        $this->assertDockerRun('fireworkweb/node:alpine yarn');
     }
 
     public function testYarnCustom()
