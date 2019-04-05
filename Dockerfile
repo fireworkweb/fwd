@@ -21,4 +21,5 @@ RUN apk add --no-cache \
 RUN curl -L https://github.com/fireworkweb/fwd/blob/php/builds/fwd?raw=true -o /usr/local/bin/fwd
 RUN chmod +x /usr/local/bin/fwd
 
+ENTRYPOINT [ "" ]
 CMD [ "/usr/local/bin/fwd" ]
