@@ -2,9 +2,6 @@ FROM docker/compose:1.24.0
 
 WORKDIR /app
 
-# installs docker
-COPY --from=docker:latest /usr/local/bin/docker /usr/local/bin/docker
-
 # installs PHP and dependencies
 RUN apk add --no-cache \
     curl \
@@ -19,8 +16,9 @@ RUN apk add --no-cache \
     php-posix
 
 # installs latest fwd version
-RUN curl -L https://github.com/fireworkweb/fwd/blob/php/builds/fwd?raw=true -o /usr/local/bin/fwd
+RUN curl -L https://github.com/fireworkweb/fwd/raw/php/builds/fwd -o /usr/local/bin/fwd
 RUN chmod +x /usr/local/bin/fwd
 
 ENTRYPOINT [ "" ]
-CMD [ "/usr/local/bin/fwd" ]
+
+CMD [ "fwd" ]
