@@ -9,6 +9,7 @@ COPY --from=docker:latest /usr/local/bin/docker /usr/local/bin/docker
 RUN apk add --no-cache \
     curl \
     php-cli \
+    php-phar \
     php-openssl \
     php-json \
     php-tokenizer \
