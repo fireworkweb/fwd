@@ -31,6 +31,6 @@ class Artisan extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerCompose('exec app php artisan', $this->getArgs());
+        $process->dockerComposeExec('app php artisan', $this->getArgs());
     }
 }

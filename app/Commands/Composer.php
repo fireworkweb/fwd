@@ -31,6 +31,6 @@ class Composer extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerCompose('exec app composer', $this->getArgs());
+        $process->dockerComposeExec('app composer', $this->getArgs());
     }
 }

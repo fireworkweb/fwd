@@ -21,14 +21,19 @@ class Process
         $this->process(array_merge($commandPrefix, $command));
     }
 
+    public function dockerComposeExec(...$command)
+    {
+        $this->dockerCompose('exec', env('FWD_COMPOSE_EXEC_FLAGS'), ...$command);
+    }
+
     public function dockerCompose(...$command)
     {
-        $environment = app(Environment::class);
         $commandPrefix = [
             sprintf('docker-compose -p %s', env('FWD_NAME')),
         ];
 
         // @TODO: make docker-compose.yml optional
+        // $environment = app(Environment::class);
         // if (! File::exists($environment->getContextDockerCompose())) {
         //     $commandPrefix[] = sprintf('-f %s', $environment->getDefaultDockerCompose());
         // }
