@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Environment;
 
 class TestTest extends TestCase
 {
@@ -18,5 +19,14 @@ class TestTest extends TestCase
         $this->artisan('test --filter=something')->assertExitCode(0);
 
         $this->assertDockerComposeExec('app ./vendor/bin/phpunit --filter=something');
+    }
+
+    public function testTestingWithDockerComposeFlags()
+    {
+        app(Environment::class)->overloadEnv('tests/fixtures/.env.docker-compose_exec');
+
+        $this->artisan('test')->assertExitCode(0);
+
+        $this->assertDockerComposeExec('-T app ./vendor/bin/phpunit');
     }
 }

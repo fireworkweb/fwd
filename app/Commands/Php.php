@@ -31,7 +31,7 @@ class Php extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerCompose('exec app', $this->getArgs());
+        $process->dockerComposeExec('app', $this->getArgs());
     }
 
     /**

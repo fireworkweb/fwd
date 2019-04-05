@@ -45,16 +45,16 @@ class Environment
 
     public function getValues(): array
     {
-        return array_only(getenv(), static::getKeys());
+        return array_only(getenv(), $this->getKeys());
     }
 
     public function load(): void
     {
-        static::safeLoadEnv(static::getContextEnv('.fwd'));
-        static::safeLoadEnv(static::getContextEnv());
-        static::safeLoadEnv(static::getDefaultFwd());
+        $this->safeLoadEnv($this->getContextEnv('.fwd'));
+        $this->safeLoadEnv($this->getContextEnv('.env'));
+        $this->safeLoadEnv($this->getDefaultFwd());
 
-        static::fixVariables();
+        $this->fixVariables();
     }
 
     public function getDefaultPath()
@@ -69,7 +69,7 @@ class Environment
 
     public function getDefaultDockerCompose()
     {
-        return sprintf('%s/docker-compose.yml', static::getDefaultPath());
+        return sprintf('%s/docker-compose.yml', $this->getDefaultPath());
     }
 
     public function getContextDockerCompose()
@@ -79,7 +79,7 @@ class Environment
 
     public function getDefaultFwd()
     {
-        return sprintf('%s/.fwd', static::getDefaultPath());
+        return sprintf('%s/.fwd', $this->getDefaultPath());
     }
 
     public function getContextEnv($env = '.env')
@@ -89,7 +89,7 @@ class Environment
 
     public function getContextFile($file)
     {
-        return sprintf('%s/%s', static::getContextPath(), $file);
+        return sprintf('%s/%s', $this->getContextPath(), $file);
     }
 
     public function safeLoadEnv($envFile): void
