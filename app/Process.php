@@ -12,7 +12,9 @@ class Process
     public function dockerRun(...$command)
     {
         $commandPrefix = [
-            'docker run --rm -it -w /app',
+            'docker run --rm',
+            env('FWD_DOCKER_RUN_FLAGS'),
+            '-w /app',
             sprintf('-v %s:/app:cached', env('FWD_CONTEXT_PATH')),
             sprintf('-v %s:/home/developer/.ssh/id_rsa:cached', env('FWD_SSH_KEY_PATH')),
             sprintf('-e ASUSER=%s', env('FWD_ASUSER')),
