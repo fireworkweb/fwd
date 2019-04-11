@@ -18,6 +18,7 @@ class Environment
         'FWD_MYSQL_PORT',
         'FWD_ASUSER',
         'FWD_COMPOSE_EXEC_FLAGS',
+        'FWD_DOCKER_RUN_FLAGS',
         'FWD_SSH_KEY_PATH',
         'FWD_CONTEXT_PATH',
         'FWD_CUSTOM_PATH',
