@@ -1,5 +1,9 @@
 FROM docker/compose:1.24.0
 
+# default docker target assuming a docker:dind service is avaibable
+ENV DOCKER_HOST "tcp://docker:2375/"
+ENV DOCKER_DRIVER "overlay2"
+
 WORKDIR /app
 
 # installs PHP and dependencies
