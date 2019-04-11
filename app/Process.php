@@ -49,6 +49,7 @@ class Process
 
         if (env('FWD_DEBUG')) {
             $this->print($command);
+
             return 0;
         }
 
