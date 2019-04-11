@@ -31,6 +31,6 @@ class Build extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerCompose('build', $this->getArgs());
+        return $process->dockerCompose('build', $this->getArgs());
     }
 }

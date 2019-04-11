@@ -31,6 +31,6 @@ class Ps extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerCompose('ps', $this->getArgs());
+        return $process->dockerCompose('ps', $this->getArgs());
     }
 }

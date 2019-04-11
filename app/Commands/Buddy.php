@@ -31,7 +31,7 @@ class Buddy extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerRun(env('FWD_IMAGE_NODE_QA'), 'buddy', $this->getArgs());
+        return $process->dockerRun(env('FWD_IMAGE_NODE_QA'), 'buddy', $this->getArgs());
     }
 
     /**

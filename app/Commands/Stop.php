@@ -31,6 +31,6 @@ class Stop extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerCompose('stop', $this->getArgs());
+        return $process->dockerCompose('stop', $this->getArgs());
     }
 }

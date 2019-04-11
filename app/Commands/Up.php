@@ -31,6 +31,6 @@ class Up extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerCompose('up', $this->getArgs());
+        return $process->dockerCompose('up', $this->getArgs());
     }
 }

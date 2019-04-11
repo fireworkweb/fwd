@@ -61,7 +61,7 @@ abstract class TestCase extends BaseTestCase
         $this->mock(Process::class, function ($mock) {
             $mock->shouldAllowMockingProtectedMethods()
                 ->shouldReceive('run')
-                ->andReturnNull();
+                ->andReturn(0);
         })->makePartial();
     }
 

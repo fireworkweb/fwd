@@ -31,6 +31,6 @@ class Down extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerCompose('down', $this->getArgs());
+        return $process->dockerCompose('down', $this->getArgs());
     }
 }

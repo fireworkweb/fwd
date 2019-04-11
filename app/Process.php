@@ -2,14 +2,12 @@
 
 namespace App;
 
-use Illuminate\Support\Facades\File;
-
 class Process
 {
     protected $commands = [];
     protected $cwd = null;
 
-    public function dockerRun(...$command)
+    public function dockerRun(...$command) : int
     {
         $commandPrefix = [
             'docker run --rm',
@@ -20,7 +18,7 @@ class Process
             sprintf('-e ASUSER=%s', env('FWD_ASUSER')),
         ];
 
-        $this->process(array_merge($commandPrefix, $command));
+        return $this->process(array_merge($commandPrefix, $command));
     }
 
     public function dockerComposeExec(...$command)
@@ -28,7 +26,7 @@ class Process
         $this->dockerCompose('exec', env('FWD_COMPOSE_EXEC_FLAGS'), ...$command);
     }
 
-    public function dockerCompose(...$command)
+    public function dockerCompose(...$command) : int
     {
         $commandPrefix = [
             sprintf('docker-compose -p %s', env('FWD_NAME')),
@@ -40,18 +38,22 @@ class Process
         //     $commandPrefix[] = sprintf('-f %s', $environment->getDefaultDockerCompose());
         // }
 
-        $this->process(array_merge($commandPrefix, $command));
+        return $this->process(array_merge($commandPrefix, $command));
     }
 
-    public function process(array $command, string $cwd = null)
+    public function process(array $command, string $cwd = null) : int
     {
         $command = $this->buildCommand($command);
 
         $this->commands[] = $command;
 
-        return env('FWD_DEBUG')
-            ? $this->print($command)
-            : $this->run($command, $cwd);
+        if (env('FWD_DEBUG')) {
+            $this->print($command);
+
+            return 0;
+        }
+
+        return $this->run($command, $cwd);
     }
 
     public function commands()
@@ -76,7 +78,7 @@ class Process
         return implode(' ', array_filter($command));
     }
 
-    protected function run(string $command)
+    protected function run(string $command) : int
     {
         $pipes = [];
         $proc = proc_open(

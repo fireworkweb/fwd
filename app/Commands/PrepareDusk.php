@@ -38,7 +38,7 @@ class PrepareDusk extends Command
         $this->artisanCall('mysql-raw', ['-e', sprintf('create database %s', env('DB_DATABASE'))]);
         $this->artisanCall('mysql-raw', ['-e', sprintf('grant all on %s.* to %s@"%%"', env('DB_DATABASE'), env('DB_USERNAME'))]);
 
-        $process->dockerCompose(
+        return $process->dockerCompose(
             'exec',
             sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
             sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),

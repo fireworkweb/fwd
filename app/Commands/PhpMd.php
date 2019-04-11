@@ -31,7 +31,7 @@ class PhpMd extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerRun(env('FWD_IMAGE_PHP_QA'), 'phpmd', $this->getArgs());
+        return $process->dockerRun(env('FWD_IMAGE_PHP_QA'), 'phpmd', $this->getArgs());
     }
 
     /**
