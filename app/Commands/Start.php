@@ -28,6 +28,6 @@ class Start extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerCompose('up', '-d');
+        return $process->dockerCompose('up', '-d');
     }
 }

@@ -34,6 +34,6 @@ class Dusk extends Command
     {
         $this->artisanCall('prepare-dusk');
 
-        $process->dockerComposeExec('app php artisan dusk', $this->getArgs());
+        return $process->dockerComposeExec('app php artisan dusk', $this->getArgs());
     }
 }

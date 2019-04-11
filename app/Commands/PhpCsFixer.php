@@ -31,7 +31,7 @@ class PhpCsFixer extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerRun(env('FWD_IMAGE_PHP_QA'), 'php-cs-fixer', $this->getArgs());
+        return $process->dockerRun(env('FWD_IMAGE_PHP_QA'), 'php-cs-fixer', $this->getArgs());
     }
 
     /**

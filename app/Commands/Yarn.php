@@ -31,7 +31,7 @@ class Yarn extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerRun(
+        return $process->dockerRun(
             env('FWD_IMAGE_NODE'),
             'yarn',
             $this->getArgs()

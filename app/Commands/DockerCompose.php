@@ -31,7 +31,7 @@ class DockerCompose extends Command
      */
     public function handle(Process $process)
     {
-        $process->dockerCompose($this->getArgs());
+        return $process->dockerCompose($this->getArgs());
     }
 
     /**
