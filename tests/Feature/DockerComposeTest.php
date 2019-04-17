@@ -12,4 +12,11 @@ class DockerComposeTest extends TestCase
 
         $this->assertDockerCompose('ps');
     }
+
+    public function testCustomDockerCompose()
+    {
+        $this->artisan('docker-compose up -d')->assertExitCode(0);
+
+        $this->assertDockerCompose('up -d');
+    }
 }
