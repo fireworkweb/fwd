@@ -26,6 +26,15 @@ class Process
         $this->dockerCompose('exec', env('FWD_COMPOSE_EXEC_FLAGS'), ...$command);
     }
 
+    public function docker(...$command) : int
+    {
+        $commandPrefix = [
+            'docker',
+        ];
+
+        return $this->process(array_merge($commandPrefix, $command));
+    }
+
     public function dockerCompose(...$command) : int
     {
         $commandPrefix = [
