@@ -58,7 +58,7 @@ class Reset extends Command
 
     protected function composerInstall()
     {
-        return $this->artisanCall('composer',  ['install']);
+        return $this->artisanCall('composer', ['install']);
     }
 
     protected function mysqlDropDatabase()
