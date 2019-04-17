@@ -12,11 +12,11 @@ class Reset extends Command
     use ArtisanCall;
 
     /**
-     * The name of the command.
+     * The signature of the command.
      *
      * @var string
      */
-    protected $name = 'reset {envFile=}';
+    protected $signature = 'reset {envFile?}';
 
     /**
      * The description of the command.
@@ -36,46 +36,74 @@ class Reset extends Command
             $environment->overloadEnv($environment->getContextEnv($envFile));
         }
 
-        return collect([
-            function () use ($process) {
-                return $process->dockerComposeExec('app composer install');
-            },
-            function () {
-                return $this->artisanCall('mysql-raw', [
-                    '-e',
-                    sprintf('drop database if exists %s', env('DB_DATABASE')),
-                ]);
-            },
-            function () {
-                return $this->artisanCall('mysql-raw', [
-                    '-e',
-                    sprintf('create database %s', env('DB_DATABASE')),
-                ]);
-            },
-            function () {
-                return $this->artisanCall('mysql-raw', ['-e', sprintf(
-                    'grant all on %s.* to %s@"%%"',
-                    env('DB_DATABASE'),
-                    env('DB_USERNAME')
-                )]);
-            },
-            function () use ($process) {
-                return $process->dockerCompose(
-                    'exec',
-                    sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
-                    sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
-                    sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
-                    'app php artisan migrate:fresh --seed'
-                );
-            },
-            function () use ($process) {
-                return $process->dockerRun(env('FWD_IMAGE_NODE'), 'yarn install');
-            },
-            function () use ($process) {
-                return $process->dockerRun(env('FWD_IMAGE_NODE'), 'yarn dev');
-            },
-        ])->first(function ($command) {
-            return $command();
-        }, 0);
+        $commands = [
+            [$this, 'composerInstall'],
+            [$this, 'mysqlDropDatabase'],
+            [$this, 'mysqlCreateDatabase'],
+            [$this, 'mysqlGrantDatabase'],
+            [$this, 'artisanMigrateFreshSeed'],
+            [$this, 'yarnInstall'],
+            [$this, 'yarnDev'],
+        ];
+
+        // Run commands, first that isn't success (0) stops and return that exitCode
+        foreach ($commands as $command) {
+            if ($exitCode = call_user_func($command, $process)) {
+                return $exitCode;
+            }
+        }
+
+        return 0;
+    }
+
+    protected function composerInstall()
+    {
+        return $this->artisanCall('composer',  ['install']);
+    }
+
+    protected function mysqlDropDatabase()
+    {
+        return $this->artisanCall('mysql-raw', [
+            '-e',
+            sprintf('drop database if exists %s', env('DB_DATABASE')),
+        ]);
+    }
+
+    protected function mysqlCreateDatabase()
+    {
+        return $this->artisanCall('mysql-raw', [
+            '-e',
+            sprintf('create database %s', env('DB_DATABASE')),
+        ]);
+    }
+
+    protected function mysqlGrantDatabase()
+    {
+        return $this->artisanCall('mysql-raw', ['-e', sprintf(
+            'grant all on %s.* to %s@"%%"',
+            env('DB_DATABASE'),
+            env('DB_USERNAME')
+        )]);
+    }
+
+    protected function artisanMigrateFreshSeed(Process $process)
+    {
+        return $process->dockerCompose(
+            'exec',
+            sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
+            sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
+            sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
+            'app php artisan migrate:fresh --seed'
+        );
+    }
+
+    protected function yarnInstall()
+    {
+        return $this->artisanCall('yarn', ['install']);
+    }
+
+    protected function yarnDev()
+    {
+        return $this->artisanCall('yarn', ['dev']);
     }
 }

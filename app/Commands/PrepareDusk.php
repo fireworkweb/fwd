@@ -12,11 +12,11 @@ class PrepareDusk extends Command
     use ArtisanCall;
 
     /**
-     * The name of the command.
+     * The signature of the command.
      *
      * @var string
      */
-    protected $name = 'prepare-dusk';
+    protected $signature = 'prepare-dusk {envFile=.env.dusk.local}';
 
     /**
      * The description of the command.
@@ -32,18 +32,10 @@ class PrepareDusk extends Command
      */
     public function handle(Environment $environment, Process $process)
     {
-        $environment->overloadEnv($environment->getContextEnv('.env.dusk.local'));
+        $this->line('Deprecated: use "fwd reset .env.dusk.local".');
 
-        $this->artisanCall('mysql-raw', ['-e', sprintf('drop database if exists %s', env('DB_DATABASE'))]);
-        $this->artisanCall('mysql-raw', ['-e', sprintf('create database %s', env('DB_DATABASE'))]);
-        $this->artisanCall('mysql-raw', ['-e', sprintf('grant all on %s.* to %s@"%%"', env('DB_DATABASE'), env('DB_USERNAME'))]);
-
-        return $process->dockerCompose(
-            'exec',
-            sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
-            sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
-            sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
-            'app php artisan migrate:fresh --seed'
-        );
+        return $this->artisanCall('reset', [
+            $this->argument('envFile'),
+        ]);
     }
 }
