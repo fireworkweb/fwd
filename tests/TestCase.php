@@ -67,6 +67,6 @@ abstract class TestCase extends BaseTestCase
 
     protected function buildCommand(array $command)
     {
-        return implode(' ', array_filter($command));
+        return trim(implode(' ', array_filter($command)));
     }
 }

@@ -11,20 +11,39 @@ class ResetTest extends TestCase
     {
         $this->artisan('reset')->assertExitCode(0);
 
-        $this->assertCommandCalled('composer', ['install']);
-        $this->assertCommandCalled('mysql-raw', ['-e', 'drop database if exists docker']);
-        $this->assertCommandCalled('mysql-raw', ['-e', 'create database docker']);
-        $this->assertCommandCalled('mysql-raw', ['-e', 'grant all on docker.* to docker@"%"']);
+        $this->assertReset();
+    }
+
+    public function testResetWithClear()
+    {
+        $this->artisan('reset --clear')->assertExitCode(0);
+
+        $this->assertReset();
+
+        $this->assertCommandCalled('artisan', ['clear-compiled']);
+        $this->assertCommandCalled('artisan', ['cache:clear']);
+        $this->assertCommandCalled('artisan', ['config:clear']);
+        $this->assertCommandCalled('artisan', ['route:clear']);
+        $this->assertCommandCalled('artisan', ['view:clear']);
+    }
+
+    public function testResetWithClearLogs()
+    {
+        $this->artisan('reset --clear-logs')->assertExitCode(0);
+
+        $this->assertReset();
 
         $this->assertDockerComposeExec(
-            '-e DB_DATABASE=docker',
-            '-e DB_USERNAME=docker',
-            '-e DB_PASSWORD=secret',
-            'app php artisan migrate:fresh --seed'
+            'app rm -f',
+            base_path('storage/logs/*.log')
         );
+    }
 
-        $this->assertCommandCalled('yarn', ['install']);
-        $this->assertCommandCalled('yarn', ['dev']);
+    public function testResetWithNoSeed()
+    {
+        $this->artisan('reset --no-seed')->assertExitCode(0);
+
+        $this->assertReset(true);
     }
 
     public function testResetWithDusk()
@@ -48,6 +67,24 @@ class ResetTest extends TestCase
             '-e DB_USERNAME=docker',
             '-e DB_PASSWORD=secret',
             'app php artisan migrate:fresh --seed'
+        );
+
+        $this->assertCommandCalled('yarn', ['install']);
+        $this->assertCommandCalled('yarn', ['dev']);
+    }
+
+    protected function assertReset($noSeed = false)
+    {
+        $this->assertCommandCalled('composer', ['install']);
+        $this->assertCommandCalled('mysql-raw', ['-e', 'drop database if exists docker']);
+        $this->assertCommandCalled('mysql-raw', ['-e', 'create database docker']);
+        $this->assertCommandCalled('mysql-raw', ['-e', 'grant all on docker.* to docker@"%"']);
+
+        $this->assertDockerComposeExec(
+            '-e DB_DATABASE=docker',
+            '-e DB_USERNAME=docker',
+            '-e DB_PASSWORD=secret',
+            'app php artisan migrate:fresh ' . (! $noSeed ? '--seed' : '')
         );
 
         $this->assertCommandCalled('yarn', ['install']);

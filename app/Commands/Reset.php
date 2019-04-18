@@ -53,10 +53,10 @@ class Reset extends Command
 
         if ($this->option('clear')) {
             $commands[] = [$this, 'clearCompiled'];
-            $commands[] = [$this, 'cacheClear'];
-            $commands[] = [$this, 'configClear'];
-            $commands[] = [$this, 'routeClear'];
-            $commands[] = [$this, 'viewClear'];
+            $commands[] = [$this, 'clearCache'];
+            $commands[] = [$this, 'clearConfig'];
+            $commands[] = [$this, 'clearRoute'];
+            $commands[] = [$this, 'clearView'];
         }
 
         if ($this->option('clear-logs')) {
@@ -162,11 +162,9 @@ class Reset extends Command
 
     protected function clearLogs(Environment $environment, Process $process)
     {
-        collect(File::glob($environment->getContextFile('storage/logs/*.log')))
-            ->each(function ($file) {
-                File::delete($file);
-            });
-
-        return 0;
+        return $process->dockerComposeExec(
+            'app rm -f',
+            $environment->getContextFile('storage/logs/*.log')
+        );
     }
 }
