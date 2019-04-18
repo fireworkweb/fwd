@@ -5,8 +5,8 @@ namespace App\Commands;
 use App\Process;
 use App\Environment;
 use App\Commands\Traits\ArtisanCall;
-use LaravelZero\Framework\Commands\Command;
 use Illuminate\Support\Facades\File;
+use LaravelZero\Framework\Commands\Command;
 
 class Reset extends Command
 {
