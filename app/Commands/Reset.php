@@ -6,6 +6,7 @@ use App\Process;
 use App\Environment;
 use App\Commands\Traits\ArtisanCall;
 use LaravelZero\Framework\Commands\Command;
+use Illuminate\Support\Facades\File;
 
 class Reset extends Command
 {
@@ -16,7 +17,7 @@ class Reset extends Command
      *
      * @var string
      */
-    protected $signature = 'reset {envFile?}';
+    protected $signature = 'reset {envFile?} {--clear} {--clear-logs} {--no-seed}';
 
     /**
      * The description of the command.
@@ -36,19 +37,35 @@ class Reset extends Command
             $environment->overloadEnv($environment->getContextEnv($envFile));
         }
 
+        $artisanMigrateFresh = $this->option('no-seed')
+            ? 'artisanMigrateFresh'
+            : 'artisanMigrateFreshSeed';
+
         $commands = [
             [$this, 'composerInstall'],
             [$this, 'mysqlDropDatabase'],
             [$this, 'mysqlCreateDatabase'],
             [$this, 'mysqlGrantDatabase'],
-            [$this, 'artisanMigrateFreshSeed'],
+            [$this, $artisanMigrateFresh],
             [$this, 'yarnInstall'],
             [$this, 'yarnDev'],
         ];
 
+        if ($this->option('clear')) {
+            $commands[] = [$this, 'clearCompiled'];
+            $commands[] = [$this, 'cacheClear'];
+            $commands[] = [$this, 'configClear'];
+            $commands[] = [$this, 'routeClear'];
+            $commands[] = [$this, 'viewClear'];
+        }
+
+        if ($this->option('clear-logs')) {
+            $commands[] = [$this, 'clearLogs'];
+        }
+
         // Run commands, first that isn't success (0) stops and return that exitCode
         foreach ($commands as $command) {
-            if ($exitCode = call_user_func($command, $process)) {
+            if ($exitCode = call_user_func($command, $environment, $process)) {
                 return $exitCode;
             }
         }
@@ -86,7 +103,18 @@ class Reset extends Command
         )]);
     }
 
-    protected function artisanMigrateFreshSeed(Process $process)
+    protected function artisanMigrateFresh(Environment $environment, Process $process)
+    {
+        return $process->dockerCompose(
+            'exec',
+            sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
+            sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
+            sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
+            'app php artisan migrate:fresh'
+        );
+    }
+
+    protected function artisanMigrateFreshSeed(Environment $environment, Process $process)
     {
         return $process->dockerCompose(
             'exec',
@@ -105,5 +133,40 @@ class Reset extends Command
     protected function yarnDev()
     {
         return $this->artisanCall('yarn', ['dev']);
+    }
+
+    protected function clearCompiled()
+    {
+        return $this->artisanCall('artisan', ['clear-compiled']);
+    }
+
+    protected function clearCache()
+    {
+        return $this->artisanCall('artisan', ['cache:clear']);
+    }
+
+    protected function clearConfig()
+    {
+        return $this->artisanCall('artisan', ['config:clear']);
+    }
+
+    protected function clearRoute()
+    {
+        return $this->artisanCall('artisan', ['route:clear']);
+    }
+
+    protected function clearView()
+    {
+        return $this->artisanCall('artisan', ['view:clear']);
+    }
+
+    protected function clearLogs(Environment $environment, Process $process)
+    {
+        collect(File::glob($environment->getContextFile('storage/logs/*.log')))
+            ->each(function ($file) {
+                File::delete($file);
+            });
+
+        return 0;
     }
 }
