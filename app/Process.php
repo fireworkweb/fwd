@@ -84,7 +84,7 @@ class Process
 
     protected function buildCommand(array $command)
     {
-        return implode(' ', array_filter($command));
+        return trim(implode(' ', array_filter($command)));
     }
 
     protected function run(string $command) : int
