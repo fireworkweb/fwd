@@ -31,8 +31,8 @@ class Mysql extends Command
      */
     public function handle(Process $process)
     {
-        return $process->dockerComposeExec(
-            sprintf('-e MYSQL_PWD=%s mysql mysql -u root', env('DB_PASSWORD')),
+        return $process->dockerCompose(
+            sprintf('exec -e MYSQL_PWD=%s mysql mysql -u root', env('DB_PASSWORD')),
             env('DB_DATABASE'),
             $this->getArgs()
         );

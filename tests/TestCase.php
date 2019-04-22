@@ -41,8 +41,6 @@ abstract class TestCase extends BaseTestCase
     {
         $this->assertProcessRun([
             sprintf('docker-compose -p %s exec', basename(getcwd())),
-            '--user',
-            env('FWD_USER'),
             $this->buildCommand($command),
         ]);
     }

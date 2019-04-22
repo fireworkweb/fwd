@@ -28,7 +28,8 @@ class Ssh extends Command
      */
     public function handle(Process $process)
     {
-        return $process->dockerComposeExec(
+        return $process->dockerCompose(
+            'exec',
             $this->argument('service'),
             $this->option('shell')
         );
