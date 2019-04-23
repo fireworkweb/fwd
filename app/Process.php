@@ -23,13 +23,7 @@ class Process
 
     public function dockerComposeExec(...$command)
     {
-        $this->dockerCompose(
-            'exec',
-            '--user',
-            env('FWD_USER'),
-            env('FWD_COMPOSE_EXEC_FLAGS'),
-            ...$command
-        );
+        $this->dockerCompose('exec', env('FWD_COMPOSE_EXEC_FLAGS'), ...$command);
     }
 
     public function docker(...$command) : int

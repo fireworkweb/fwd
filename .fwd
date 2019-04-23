@@ -10,7 +10,6 @@ FWD_MYSQL_PORT=3306
 
 # Host user for mapping execution within the containers
 FWD_ASUSER=$UID
-FWD_USER=developer
 
 # Docker Compose Exec flags
 FWD_COMPOSE_EXEC_FLAGS=""
