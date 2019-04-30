@@ -24,7 +24,7 @@ abstract class TestCase extends BaseTestCase
     protected function assertDocker(...$command)
     {
         $this->assertProcessRun([
-            'docker',
+            env('FWD_DOCKER_BIN', 'docker'),
             $this->buildCommand($command),
         ]);
     }
@@ -32,7 +32,8 @@ abstract class TestCase extends BaseTestCase
     protected function assertDockerCompose(...$command)
     {
         $this->assertProcessRun([
-            sprintf('docker-compose -p %s', basename(getcwd())),
+            env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose'),
+            sprintf('-p %s', basename(getcwd())),
             $this->buildCommand($command),
         ]);
     }
@@ -40,7 +41,8 @@ abstract class TestCase extends BaseTestCase
     protected function assertDockerComposeExec(...$command)
     {
         $this->assertProcessRun([
-            sprintf('docker-compose -p %s exec', basename(getcwd())),
+            env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose'),
+            sprintf('-p %s exec', basename(getcwd())),
             $this->buildCommand($command),
         ]);
     }
@@ -48,7 +50,8 @@ abstract class TestCase extends BaseTestCase
     protected function assertDockerRun(...$command)
     {
         $this->assertProcessRun([
-            'docker run --rm -it -w /app',
+            env('FWD_DOCKER_BIN', 'docker'),
+            'run --rm -it -w /app',
             sprintf('-v %s:/app:cached', env('FWD_CONTEXT_PATH')),
             sprintf('-v %s:/home/developer/.ssh/id_rsa:cached', env('FWD_SSH_KEY_PATH')),
             sprintf('-e ASUSER=%s', env('FWD_ASUSER')),
