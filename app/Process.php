@@ -10,7 +10,7 @@ class Process
     public function dockerRun(...$command) : int
     {
         $commandPrefix = [
-            'docker run --rm',
+            'run --rm',
             env('FWD_DOCKER_RUN_FLAGS'),
             '-w /app',
             sprintf('-v %s:/app:cached', env('FWD_CONTEXT_PATH')),
@@ -18,7 +18,7 @@ class Process
             sprintf('-e ASUSER=%s', env('FWD_ASUSER')),
         ];
 
-        return $this->process(array_merge($commandPrefix, $command));
+        return $this->docker(...array_merge($commandPrefix, $command));
     }
 
     public function dockerComposeExec(...$command) : int
@@ -29,7 +29,7 @@ class Process
     public function docker(...$command) : int
     {
         $commandPrefix = [
-            'docker',
+            env('FWD_DOCKER_BIN', 'docker'),
         ];
 
         return $this->process(array_merge($commandPrefix, $command));
@@ -38,7 +38,8 @@ class Process
     public function dockerCompose(...$command) : int
     {
         $commandPrefix = [
-            sprintf('docker-compose -p %s', env('FWD_NAME')),
+            env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose'),
+            sprintf('-p %s', env('FWD_NAME')),
         ];
 
         // @TODO: make docker-compose.yml optional
