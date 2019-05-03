@@ -4,7 +4,6 @@ namespace Tests;
 
 use App\Process;
 use LaravelZero\Framework\Testing\TestCase as BaseTestCase;
-use App\Environment;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -64,7 +63,7 @@ abstract class TestCase extends BaseTestCase
 
         ];
 
-        if (!empty($this->asUser)) {
+        if (! empty($this->asUser)) {
             $params[] = '--user';
             $params[] = $this->asUser;
         }

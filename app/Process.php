@@ -40,7 +40,7 @@ class Process
             'exec',
         ];
 
-        if (!empty($this->asUser)) {
+        if (! empty($this->asUser)) {
             $params[] = '--user';
             $params[] = $this->asUser;
         }
