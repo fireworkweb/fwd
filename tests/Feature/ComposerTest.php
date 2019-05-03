@@ -10,13 +10,13 @@ class ComposerTest extends TestCase
     {
         $this->artisan('composer')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('app composer');
+        $this->asFWDUSer()->assertDockerComposeExec('app composer');
     }
 
     public function testComposerInstall()
     {
         $this->artisan('composer install')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('app composer install');
+        $this->asFWDUSer()->assertDockerComposeExec('app composer install');
     }
 }

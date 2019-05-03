@@ -20,11 +20,11 @@ class ResetTest extends TestCase
 
         $this->assertReset();
 
-        $this->assertCommandCalled('artisan', ['clear-compiled']);
-        $this->assertCommandCalled('artisan', ['cache:clear']);
-        $this->assertCommandCalled('artisan', ['config:clear']);
-        $this->assertCommandCalled('artisan', ['route:clear']);
-        $this->assertCommandCalled('artisan', ['view:clear']);
+        $this->asFWDUser()->assertCommandCalled('artisan', ['clear-compiled']);
+        $this->asFWDUser()->assertCommandCalled('artisan', ['cache:clear']);
+        $this->asFWDUser()->assertCommandCalled('artisan', ['config:clear']);
+        $this->asFWDUser()->assertCommandCalled('artisan', ['route:clear']);
+        $this->asFWDUser()->assertCommandCalled('artisan', ['view:clear']);
     }
 
     public function testResetWithClearLogs()
@@ -33,7 +33,7 @@ class ResetTest extends TestCase
 
         $this->assertReset();
 
-        $this->assertDockerComposeExec(
+        $this->asFWDUser()->assertDockerComposeExec(
             'app rm -f',
             base_path('storage/logs/*.log')
         );
@@ -75,7 +75,8 @@ class ResetTest extends TestCase
 
     protected function assertReset($noSeed = false)
     {
-        $this->assertCommandCalled('composer', ['install']);
+        $this->asFWDUser()->assertCommandCalled('composer', ['install']);
+        $this->setAsUser(null);
         $this->assertCommandCalled('mysql-raw', ['-e', 'drop database if exists docker']);
         $this->assertCommandCalled('mysql-raw', ['-e', 'create database docker']);
         $this->assertCommandCalled('mysql-raw', ['-e', 'grant all on docker.* to docker@"%"']);

@@ -10,13 +10,13 @@ class ArtisanTest extends TestCase
     {
         $this->artisan('artisan')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('app php artisan');
+        $this->asFWDUSer()->assertDockerComposeExec('app php artisan');
     }
 
     public function testArtisanMigrateFreshSeed()
     {
         $this->artisan('artisan migrate:fresh --seed')->assertExitCode(0);
 
-        $this->assertDockerComposeExec("app php artisan 'migrate:fresh' --seed");
+        $this->asFWDUSer()->assertDockerComposeExec("app php artisan 'migrate:fresh' --seed");
     }
 }

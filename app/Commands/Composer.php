@@ -31,6 +31,6 @@ class Composer extends Command
      */
     public function handle(Process $process)
     {
-        return $process->dockerComposeExec('app composer', $this->getArgs());
+        return $process->asFWDUser()->dockerComposeExec('app composer', $this->getArgs());
     }
 }
