@@ -6,6 +6,19 @@ class Process
 {
     protected $commands = [];
     protected $cwd = null;
+    protected $asUser = null;
+
+    public function setAsUser($user)
+    {
+        $this->asUser = $user;
+
+        return $this;
+    }
+
+    public function asFWDUser()
+    {
+        return $this->setAsUser(env('FWD_ASUSER'));
+    }
 
     public function dockerRun(...$command) : int
     {
@@ -23,7 +36,18 @@ class Process
 
     public function dockerComposeExec(...$command) : int
     {
-        return $this->dockerCompose('exec', env('FWD_COMPOSE_EXEC_FLAGS'), ...$command);
+        $params = [
+            'exec',
+        ];
+
+        if (! empty($this->asUser)) {
+            $params[] = '--user';
+            $params[] = $this->asUser;
+        }
+
+        $params[] = env('FWD_COMPOSE_EXEC_FLAGS');
+
+        return $this->dockerCompose(...$params, ...$command);
     }
 
     public function docker(...$command) : int

@@ -11,14 +11,14 @@ class TestTest extends TestCase
     {
         $this->artisan('test')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('app ./vendor/bin/phpunit');
+        $this->asFWDUSer()->assertDockerComposeExec('app ./vendor/bin/phpunit');
     }
 
     public function testTestWithFilter()
     {
         $this->artisan('test --filter=something')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('app ./vendor/bin/phpunit --filter=something');
+        $this->asFWDUSer()->assertDockerComposeExec('app ./vendor/bin/phpunit --filter=something');
     }
 
     public function testTestingWithDockerComposeFlags()
@@ -27,6 +27,6 @@ class TestTest extends TestCase
 
         $this->artisan('test')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('-T app ./vendor/bin/phpunit');
+        $this->asFWDUSer()->assertDockerComposeExec('-T app ./vendor/bin/phpunit');
     }
 }

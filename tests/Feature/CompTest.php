@@ -10,13 +10,13 @@ class CompTest extends TestCase
     {
         $this->artisan('comp')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('app composer');
+        $this->asFWDUser()->assertDockerComposeExec('app composer');
     }
 
     public function testCompInstall()
     {
         $this->artisan('comp install')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('app composer install');
+        $this->asFWDUser()->assertDockerComposeExec('app composer install');
     }
 }

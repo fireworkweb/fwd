@@ -10,13 +10,13 @@ class PhpTest extends TestCase
     {
         $this->artisan('php')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('app php -v');
+        $this->asFWDUser()->assertDockerComposeExec('app php -v');
     }
 
     public function testPhpInstall()
     {
         $this->artisan('php -a')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('app -a');
+        $this->asFWDUser()->assertDockerComposeExec('app -a');
     }
 }

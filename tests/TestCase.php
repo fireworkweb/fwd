@@ -9,6 +9,8 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    protected $asUser = null;
+
     /**
      * Setup the test environment.
      *
@@ -19,6 +21,21 @@ abstract class TestCase extends BaseTestCase
         parent::setup();
 
         $this->mockProcess();
+
+        // resets intended execution user
+        $this->setAsUser(null);
+    }
+
+    protected function setAsUser($user)
+    {
+        $this->asUser = $user;
+
+        return $this;
+    }
+
+    protected function asFWDUser()
+    {
+        return $this->setAsUser(env('FWD_ASUSER'));
     }
 
     protected function assertDocker(...$command)
@@ -40,11 +57,20 @@ abstract class TestCase extends BaseTestCase
 
     protected function assertDockerComposeExec(...$command)
     {
-        $this->assertProcessRun([
+        $params = [
             env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose'),
             sprintf('-p %s exec', basename(getcwd())),
-            $this->buildCommand($command),
-        ]);
+
+        ];
+
+        if (! empty($this->asUser)) {
+            $params[] = '--user';
+            $params[] = $this->asUser;
+        }
+
+        $params[] = $this->buildCommand($command);
+
+        $this->assertProcessRun($params);
     }
 
     protected function assertDockerRun(...$command)

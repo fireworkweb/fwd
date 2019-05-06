@@ -31,6 +31,9 @@ class Test extends Command
      */
     public function handle(Process $process)
     {
-        return $process->dockerComposeExec('app ./vendor/bin/phpunit', $this->getArgs());
+        return $process->asFWDUser()->dockerComposeExec(
+            'app ./vendor/bin/phpunit',
+            $this->getArgs()
+        );
     }
 }
