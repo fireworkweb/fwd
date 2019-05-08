@@ -62,7 +62,7 @@ class ResetTest extends TestCase
         $this->assertCommandCalled('mysql-raw', ['-e', 'create database dusk']);
         $this->assertCommandCalled('mysql-raw', ['-e', 'grant all on dusk.* to docker@"%"']);
 
-        $this->assertDockerComposeExec(
+        $this->asFWDUser()->assertDockerComposeExec(
             '-e DB_DATABASE=dusk',
             '-e DB_USERNAME=docker',
             '-e DB_PASSWORD=secret',
@@ -81,7 +81,7 @@ class ResetTest extends TestCase
         $this->assertCommandCalled('mysql-raw', ['-e', 'create database docker']);
         $this->assertCommandCalled('mysql-raw', ['-e', 'grant all on docker.* to docker@"%"']);
 
-        $this->assertDockerComposeExec(
+        $this->asFWDUser()->assertDockerComposeExec(
             '-e DB_DATABASE=docker',
             '-e DB_USERNAME=docker',
             '-e DB_PASSWORD=secret',

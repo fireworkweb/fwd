@@ -1,5 +1,7 @@
 # Prints commands instead of running
 FWD_DEBUG=false
+# Prints commands
+FWD_VERBOSE=false
 
 # Optional, default is folder name
 # FWD_NAME=custom_name
