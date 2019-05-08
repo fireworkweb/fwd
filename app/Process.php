@@ -81,9 +81,11 @@ class Process
 
         $this->commands[] = $command;
 
-        if (env('FWD_DEBUG')) {
+        if (env('FWD_DEBUG') || env('FWD_VERBOSE')) {
             $this->print($command);
+        }
 
+        if (env('FWD_DEBUG')) {
             return 0;
         }
 

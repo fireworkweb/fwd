@@ -31,8 +31,8 @@ class MysqlRaw extends Command
      */
     public function handle(Process $process)
     {
-        return $process->dockerCompose(
-            'exec -e MYSQL_PWD=' . env('DB_PASSWORD') . ' mysql mysql -u root',
+        return $process->dockerComposeExec(
+            '-e MYSQL_PWD=' . env('DB_PASSWORD') . ' mysql mysql -u root',
             $this->getArgs()
         );
     }
