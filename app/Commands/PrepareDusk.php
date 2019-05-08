@@ -32,7 +32,7 @@ class PrepareDusk extends Command
      */
     public function handle(Environment $environment, Process $process)
     {
-        $this->line('Deprecated: use "fwd reset .env.dusk.local".');
+        $this->comment('Deprecated: use "fwd reset .env.dusk.local".');
 
         return $this->artisanCall('reset', [
             $this->argument('envFile'),
