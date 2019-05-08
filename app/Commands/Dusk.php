@@ -32,8 +32,6 @@ class Dusk extends Command
      */
     public function handle(Process $process)
     {
-        $this->artisanCall('prepare-dusk');
-
         return $process->asFWDUser()->dockerComposeExec('app php artisan dusk', $this->getArgs());
     }
 }
