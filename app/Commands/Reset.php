@@ -4,12 +4,13 @@ namespace App\Commands;
 
 use App\Process;
 use App\Environment;
+use App\Commands\Traits\RunTask;
 use App\Commands\Traits\ArtisanCall;
 use LaravelZero\Framework\Commands\Command;
 
 class Reset extends Command
 {
-    use ArtisanCall;
+    use ArtisanCall, RunTask;
 
     /**
      * The signature of the command.
@@ -74,94 +75,122 @@ class Reset extends Command
 
     protected function composerInstall()
     {
-        return $this->artisanCall('composer', ['install']);
+        return $this->runTask('Composer Install', function() {
+            return $this->artisanCallNoOutput('composer', ['install']);
+        });
     }
 
     protected function mysqlDropDatabase()
     {
-        return $this->artisanCall('mysql-raw', [
-            '-e',
-            sprintf('drop database if exists %s', env('DB_DATABASE')),
-        ]);
+        return $this->runTask('MySQL Drop Database', function() {
+            return $this->artisanCallNoOutput('mysql-raw', [
+                '-e',
+                sprintf('drop database if exists %s', env('DB_DATABASE')),
+            ]);
+        });
     }
 
     protected function mysqlCreateDatabase()
     {
-        return $this->artisanCall('mysql-raw', [
-            '-e',
-            sprintf('create database %s', env('DB_DATABASE')),
-        ]);
+        return $this->runTask('MySQL Create Database', function() {
+            return $this->artisanCallNoOutput('mysql-raw', [
+                '-e',
+                sprintf('create database %s', env('DB_DATABASE')),
+            ]);
+        });
     }
 
     protected function mysqlGrantDatabase()
     {
-        return $this->artisanCall('mysql-raw', ['-e', sprintf(
-            'grant all on %s.* to %s@"%%"',
-            env('DB_DATABASE'),
-            env('DB_USERNAME')
-        )]);
+        return $this->runTask('MySQL Grant Privileges', function() {
+            return $this->artisanCallNoOutput('mysql-raw', ['-e', sprintf(
+                'grant all on %s.* to %s@"%%"',
+                env('DB_DATABASE'),
+                env('DB_USERNAME')
+            )]);
+        });
     }
 
     protected function artisanMigrateFresh(Environment $environment, Process $process)
     {
-        return $process->dockerComposeExec(
-            sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
-            sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
-            sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
-            'app php artisan migrate:fresh'
-        );
+        return $this->runTask('Migrate Fresh', function() use ($process) {
+            return $process->dockerComposeExec(
+                sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
+                sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
+                sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
+                'app php artisan migrate:fresh'
+            );
+        });
     }
 
     protected function artisanMigrateFreshSeed(Environment $environment, Process $process)
     {
-        return $process->dockerComposeExec(
-            sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
-            sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
-            sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
-            'app php artisan migrate:fresh --seed'
-        );
+        return $this->runTask('Migrate Fresh Seed', function() use ($process) {
+            return $process->dockerComposeExecNoOutput(
+                sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
+                sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
+                sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
+                'app php artisan migrate:fresh --seed'
+            );
+        });
     }
 
     protected function yarnInstall()
     {
-        return $this->artisanCall('yarn', ['install']);
+        return $this->runTask('Yarn Install', function() {
+            return $this->artisanCallNoOutput('yarn', ['install']);
+        });
     }
 
     protected function yarnDev()
     {
-        return $this->artisanCall('yarn', ['dev']);
+        return $this->runTask('Yarn Dev', function() {
+            return $this->artisanCallNoOutput('yarn', ['dev']);
+        });
     }
 
     protected function clearCompiled()
     {
-        return $this->artisanCall('artisan', ['clear-compiled']);
+        return $this->runTask('Clear Compiled', function() {
+            return $this->artisanCallNoOutput('artisan', ['clear-compiled']);
+        });
     }
 
     protected function clearCache()
     {
-        return $this->artisanCall('artisan', ['cache:clear']);
+        return $this->runTask('Clear Cache', function() {
+            return $this->artisanCallNoOutput('artisan', ['cache:clear']);
+        });
     }
 
     protected function clearConfig()
     {
-        return $this->artisanCall('artisan', ['config:clear']);
+        return $this->runTask('Clear Config', function() {
+            return $this->artisanCallNoOutput('artisan', ['config:clear']);
+        });
     }
 
     protected function clearRoute()
     {
-        return $this->artisanCall('artisan', ['route:clear']);
+        return $this->runTask('Clear Route', function() {
+            return $this->artisanCallNoOutput('artisan', ['route:clear']);
+        });
     }
 
     protected function clearView()
     {
-        return $this->artisanCall('artisan', ['view:clear']);
+        return $this->runTask('Clear View', function() {
+            return $this->artisanCallNoOutput('artisan', ['view:clear']);
+        });
     }
 
     protected function clearLogs(Environment $environment, Process $process)
     {
-        return $process->dockerComposeExec(
-            'app rm -f',
-            $environment->getContextFile('storage/logs/*.log')
-        );
+        return $this->runTask('Clear Logs', function() use ($environment, $process) {
+            return $process->dockerComposeExecNoOutput(
+                'app rm -f',
+                $environment->getContextFile('storage/logs/*.log')
+            );
+        });
     }
 }

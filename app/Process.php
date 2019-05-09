@@ -7,6 +7,7 @@ class Process
     protected $commands = [];
     protected $cwd = null;
     protected $asUser = null;
+    protected $output = true;
 
     public function setAsUser($user)
     {
@@ -18,6 +19,20 @@ class Process
     public function asFWDUser()
     {
         return $this->setAsUser(env('FWD_ASUSER'));
+    }
+
+    public function enableOutput()
+    {
+        $this->output = true;
+
+        return $this;
+    }
+
+    public function disableOutput()
+    {
+        $this->output = false;
+
+        return $this;
     }
 
     public function dockerRun(...$command) : int
@@ -48,6 +63,15 @@ class Process
         $params[] = env('FWD_COMPOSE_EXEC_FLAGS');
 
         return $this->dockerCompose(...$params, ...$command);
+    }
+
+    public function dockerComposeExecNoOutput(...$command) : int
+    {
+        $this->disableOutput();
+        $exitCode = $this->dockerComposeExec(...$command);
+        $this->enableOutput();
+
+        return $exitCode;
     }
 
     public function docker(...$command) : int
@@ -119,7 +143,7 @@ class Process
         $pipes = [];
         $proc = proc_open(
             $command,
-            [STDIN, STDOUT, STDERR],
+            $this->getDescriptors(),
             $pipes,
             $this->cwd,
             null,
@@ -129,21 +153,15 @@ class Process
         return proc_close($proc);
     }
 
-    protected function getCallback()
+    protected function getDescriptors() : array
     {
-        return $this->callback ?: function ($type, $buffer) {
-            $buffer = trim($buffer);
+        if ($this->output || env('FWD_VERBOSE')) {
+            return [STDIN, STDOUT, STDERR];
+        }
 
-            switch ($type) {
-                case 'err':
-                    $this->print($buffer);
-                    break;
+        $devNull = fopen('/dev/null', 'w');
 
-                case 'out':
-                    $this->print($buffer);
-                    break;
-            }
-        };
+        return [STDIN, $devNull, $devNull];
     }
 
     protected function print($line)

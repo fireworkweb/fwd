@@ -4,6 +4,7 @@ namespace App\Commands\Traits;
 
 use Illuminate\Support\Facades\Artisan;
 use LaravelZero\Framework\Providers\CommandRecorder\CommandRecorderRepository;
+use App\Process;
 
 trait ArtisanCall
 {
@@ -14,5 +15,15 @@ trait ArtisanCall
         resolve(CommandRecorderRepository::class)->create($command, $arguments);
 
         return Artisan::call($command, $arguments);
+    }
+
+    public function artisanCallNoOutput($command, array $arguments = [])
+    {
+        $process = app(Process::class);
+        $process->disableOutput();
+        $exitCode = $this->artisanCall($command, $arguments);
+        $process->enableOutput();
+
+        return $exitCode;
     }
 }
