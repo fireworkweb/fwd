@@ -10,7 +10,6 @@ class DuskTest extends TestCase
     {
         $this->artisan('dusk')->assertExitCode(0);
 
-        $this->assertCommandCalled('prepare-dusk');
         $this->asFWDUser()->assertDockerComposeExec('app php artisan dusk');
     }
 }

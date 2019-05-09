@@ -8,7 +8,7 @@ trait RunTask
     {
         $exitCode = null;
 
-        $this->task($title, function() use (&$exitCode, $task) {
+        $this->task($title, function () use (&$exitCode, $task) {
             return ! ($exitCode = $task());
         });
 

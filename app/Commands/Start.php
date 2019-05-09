@@ -51,7 +51,7 @@ class Start extends Command
 
     protected function dockerComposePs()
     {
-        return $this->runTask('Checking Docker', function() {
+        return $this->runTask('Checking Docker', function () {
             return $this->runCommand(function () {
                 return $this->artisanCallNoOutput('ps');
             });
@@ -60,14 +60,14 @@ class Start extends Command
 
     protected function dockerComposeUpD()
     {
-        return $this->runTask('Starting fwd', function() {
+        return $this->runTask('Starting fwd', function () {
             return $this->artisanCall('up', ['-d']);
         });
     }
 
     protected function mysql()
     {
-        return $this->runTask('Checking MySQL', function() {
+        return $this->runTask('Checking MySQL', function () {
             return $this->runCommand(function () {
                 return $this->artisanCallNoOutput('mysql-raw', ['-e', 'SELECT 1']);
             });

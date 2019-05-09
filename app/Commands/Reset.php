@@ -75,14 +75,14 @@ class Reset extends Command
 
     protected function composerInstall()
     {
-        return $this->runTask('Composer Install', function() {
+        return $this->runTask('Composer Install', function () {
             return $this->artisanCallNoOutput('composer', ['install']);
         });
     }
 
     protected function mysqlDropDatabase()
     {
-        return $this->runTask('MySQL Drop Database', function() {
+        return $this->runTask('MySQL Drop Database', function () {
             return $this->artisanCallNoOutput('mysql-raw', [
                 '-e',
                 sprintf('drop database if exists %s', env('DB_DATABASE')),
@@ -92,7 +92,7 @@ class Reset extends Command
 
     protected function mysqlCreateDatabase()
     {
-        return $this->runTask('MySQL Create Database', function() {
+        return $this->runTask('MySQL Create Database', function () {
             return $this->artisanCallNoOutput('mysql-raw', [
                 '-e',
                 sprintf('create database %s', env('DB_DATABASE')),
@@ -102,7 +102,7 @@ class Reset extends Command
 
     protected function mysqlGrantDatabase()
     {
-        return $this->runTask('MySQL Grant Privileges', function() {
+        return $this->runTask('MySQL Grant Privileges', function () {
             return $this->artisanCallNoOutput('mysql-raw', ['-e', sprintf(
                 'grant all on %s.* to %s@"%%"',
                 env('DB_DATABASE'),
@@ -113,7 +113,7 @@ class Reset extends Command
 
     protected function artisanMigrateFresh(Environment $environment, Process $process)
     {
-        return $this->runTask('Migrate Fresh', function() use ($process) {
+        return $this->runTask('Migrate Fresh', function () use ($process) {
             return $process->dockerComposeExec(
                 sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
                 sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
@@ -125,7 +125,7 @@ class Reset extends Command
 
     protected function artisanMigrateFreshSeed(Environment $environment, Process $process)
     {
-        return $this->runTask('Migrate Fresh Seed', function() use ($process) {
+        return $this->runTask('Migrate Fresh Seed', function () use ($process) {
             return $process->dockerComposeExecNoOutput(
                 sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
                 sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
@@ -137,56 +137,56 @@ class Reset extends Command
 
     protected function yarnInstall()
     {
-        return $this->runTask('Yarn Install', function() {
+        return $this->runTask('Yarn Install', function () {
             return $this->artisanCallNoOutput('yarn', ['install']);
         });
     }
 
     protected function yarnDev()
     {
-        return $this->runTask('Yarn Dev', function() {
+        return $this->runTask('Yarn Dev', function () {
             return $this->artisanCallNoOutput('yarn', ['dev']);
         });
     }
 
     protected function clearCompiled()
     {
-        return $this->runTask('Clear Compiled', function() {
+        return $this->runTask('Clear Compiled', function () {
             return $this->artisanCallNoOutput('artisan', ['clear-compiled']);
         });
     }
 
     protected function clearCache()
     {
-        return $this->runTask('Clear Cache', function() {
+        return $this->runTask('Clear Cache', function () {
             return $this->artisanCallNoOutput('artisan', ['cache:clear']);
         });
     }
 
     protected function clearConfig()
     {
-        return $this->runTask('Clear Config', function() {
+        return $this->runTask('Clear Config', function () {
             return $this->artisanCallNoOutput('artisan', ['config:clear']);
         });
     }
 
     protected function clearRoute()
     {
-        return $this->runTask('Clear Route', function() {
+        return $this->runTask('Clear Route', function () {
             return $this->artisanCallNoOutput('artisan', ['route:clear']);
         });
     }
 
     protected function clearView()
     {
-        return $this->runTask('Clear View', function() {
+        return $this->runTask('Clear View', function () {
             return $this->artisanCallNoOutput('artisan', ['view:clear']);
         });
     }
 
     protected function clearLogs(Environment $environment, Process $process)
     {
-        return $this->runTask('Clear Logs', function() use ($environment, $process) {
+        return $this->runTask('Clear Logs', function () use ($environment, $process) {
             return $process->dockerComposeExecNoOutput(
                 'app rm -f',
                 $environment->getContextFile('storage/logs/*.log')
