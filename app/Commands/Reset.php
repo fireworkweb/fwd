@@ -114,7 +114,7 @@ class Reset extends Command
     protected function artisanMigrateFresh(Environment $environment, Process $process)
     {
         return $this->runTask('Migrate Fresh', function () use ($process) {
-            return $process->dockerComposeExec(
+            return $process->dockerComposeExecNoOutput(
                 sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
                 sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
                 sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
