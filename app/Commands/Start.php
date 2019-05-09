@@ -61,7 +61,7 @@ class Start extends Command
     protected function dockerComposeUpD()
     {
         return $this->runTask('Starting fwd', function () {
-            return $this->artisanCall('up', ['-d']);
+            return $this->artisanCallNoOutput('up', ['-d']);
         });
     }
 
