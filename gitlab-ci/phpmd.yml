@@ -1,4 +1,4 @@
-phpmd:
+.phpmd:
   stage: QA
   image: jakzal/phpqa:alpine
   tags:
