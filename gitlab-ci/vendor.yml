@@ -1,0 +1,20 @@
+.vendor:
+  stage: build
+  image:
+    name: fireworkweb/app:7.2-alpine
+    entrypoint: [""]
+  tags:
+    - docker
+  cache:
+    paths:
+      - vendor/
+  script:
+    - cp .env.testing .env
+    - composer install  --prefer-dist --no-progress --no-suggest --no-interaction -v --optimize-autoloader
+  artifacts:
+    paths:
+      - vendor
+    expire_in: 1 hour
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []

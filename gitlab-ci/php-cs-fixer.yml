@@ -1,0 +1,14 @@
+.php-cs-fixer:
+  stage: QA
+  image: jakzal/phpqa:alpine
+  tags:
+    - docker
+  script:
+    - php-cs-fixer fix app --format=txt --dry-run --diff --verbose
+    - php-cs-fixer fix tests --format=txt --dry-run --diff --verbose
+    - php-cs-fixer fix resources/lang --format=txt --dry-run --diff --verbose
+    - php-cs-fixer fix config --format=txt --dry-run --diff --verbose
+    - php-cs-fixer fix database --format=txt --dry-run --diff --verbose
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []

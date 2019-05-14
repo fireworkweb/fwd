@@ -1,0 +1,12 @@
+.phan:
+  stage: QA
+  image: jakzal/phpqa:alpine
+  tags:
+    - docker
+  script:
+    - cp .env.testing .env
+    - phan --color -p -l app -iy 5
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies:
+   - vendor

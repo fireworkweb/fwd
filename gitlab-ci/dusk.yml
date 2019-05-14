@@ -1,0 +1,28 @@
+.dusk:
+  stage: test
+  image: fireworkweb/fwd
+  services:
+    - docker:dind
+  tags:
+    - dind
+  script:
+    - mv .env.dusk.local .env
+    - fwd up -d
+    - fwd artisan dusk
+  after_script:
+    - fwd logs http > storage/logs/nginx.log
+    - fwd logs app > storage/logs/php-fpm.log
+    - fwd down -v
+  artifacts:
+    paths:
+      - storage/logs/
+      - tests/Browser/screenshots
+      - tests/Browser/console
+    when: on_failure
+    expire_in: 1 week
+  variables:
+    GIT_STRATEGY: fetch
+    COMPOSE_EXEC_FLAGS: "-T"
+  dependencies:
+    - assets
+    - vendor

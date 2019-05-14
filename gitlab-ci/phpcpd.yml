@@ -1,0 +1,10 @@
+.phpcpd:
+  stage: QA
+  image: jakzal/phpqa:alpine
+  tags:
+    - docker
+  script:
+    - phpcpd --fuzzy app/
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []

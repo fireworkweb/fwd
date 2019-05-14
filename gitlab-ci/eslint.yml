@@ -1,0 +1,16 @@
+.eslint:
+  stage: QA
+  image:
+    name: fireworkweb/node:alpine
+    entrypoint: [""]
+  tags:
+    - docker
+  script:
+    - yarn install
+    - yarn lint
+  cache:
+    paths:
+      - node_modules/
+  variables:
+    GIT_STRATEGY: fetch
+  dependencies: []

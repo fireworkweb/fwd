@@ -1,0 +1,24 @@
+.phpunit:
+  stage: test
+  image: fireworkweb/fwd
+  services:
+    - docker:dind
+  tags:
+    - dind
+  script:
+    - cp .env.testing .env
+    - fwd start
+    - fwd test --colors=never -vvv # --coverage-text
+  after_script:
+    - fwd down -v
+  artifacts:
+    paths:
+      - storage/logs/
+    when: on_failure
+    expire_in: 1 week
+  variables:
+    GIT_STRATEGY: fetch
+    COMPOSE_EXEC_FLAGS: "-T"
+  dependencies:
+    - assets
+    - vendor
