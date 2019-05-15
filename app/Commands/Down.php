@@ -3,12 +3,13 @@
 namespace App\Commands;
 
 use App\Process;
+use App\Commands\Traits\RunTask;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
 
 class Down extends Command
 {
-    use HasDynamicArgs;
+    use HasDynamicArgs, RunTask;
 
     /**
      * The name of the command.
@@ -31,6 +32,8 @@ class Down extends Command
      */
     public function handle(Process $process)
     {
-        return $process->dockerCompose('down', $this->getArgs());
+        return $this->runTask('Shutting down', function () use ($process) {
+            return $process->dockerComposeExecNoOutput('down', $this->getArgs());
+        });
     }
 }
