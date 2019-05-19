@@ -3,6 +3,10 @@
 [![Build Status](https://travis-ci.com/fireworkweb/fwd.svg?branch=php)](https://travis-ci.com/fireworkweb/fwd)
 [![codecov](https://codecov.io/gh/fireworkweb/fwd/branch/php/graph/badge.svg)](https://codecov.io/gh/fireworkweb/fwd)
 
+## Description
+
+fwd it's a command line docker interface to build web applications based in `.env` files
+
 ## Pre Requisites
 
 Docker
