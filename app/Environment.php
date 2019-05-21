@@ -6,9 +6,11 @@ use Dotenv\Dotenv;
 use Dotenv\Environment\DotenvFactory;
 use Dotenv\Exception\InvalidFileException;
 use Dotenv\Exception\InvalidPathException;
+use Dotenv\Environment\DotenvVariables;
 
 class Environment
 {
+    /** @var DotenvVariables $envVariables */
     protected $envVariables;
 
     protected static $keys = [
@@ -101,6 +103,13 @@ class Environment
     public function overloadEnv($envFile): void
     {
         $this->loadEnv($envFile, true);
+    }
+
+    public function set(string $var, string $value) : Environment
+    {
+        $this->envVariables->set($var, $value);
+
+        return $this;
     }
 
     protected function loadEnv($envFile, $overload = false): void

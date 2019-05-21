@@ -4,6 +4,8 @@ namespace Tests;
 
 use App\Process;
 use LaravelZero\Framework\Testing\TestCase as BaseTestCase;
+use App\Environment;
+use App\CommandExecutor;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -21,9 +23,14 @@ abstract class TestCase extends BaseTestCase
         parent::setup();
 
         $this->mockProcess();
+        $this->mockCommandExecutor();
 
         // resets intended execution user
         $this->setAsUser(null);
+        // resets some env
+        $env = app(Environment::class);
+        $env->set('FWD_DOCKER_COMPOSE_BIN', 'docker-compose');
+        $env->set('FWD_DOCKER_BIN', 'docker');
     }
 
     protected function setAsUser($user)
@@ -89,8 +96,13 @@ abstract class TestCase extends BaseTestCase
     {
         $command = $this->buildCommand($command);
 
-        static::assertTrue(app(Process::class)->hasCommand($command),
-            'Failed asserting that this command was called: ' . $command);
+        $hasCommand = app(Process::class)->hasCommand($command) || app(CommandExecutor::class)->hasCommand($command);
+
+        if (!$hasCommand) {
+            dump(app(CommandExecutor::class)->commands());
+        }
+
+        static::assertTrue($hasCommand, 'Failed asserting that this command was called: ' . $command);
     }
 
     protected function mockProcess()
@@ -98,6 +110,15 @@ abstract class TestCase extends BaseTestCase
         $this->mock(Process::class, function ($mock) {
             $mock->shouldAllowMockingProtectedMethods()
                 ->shouldReceive('run')
+                ->andReturn(0);
+        })->makePartial();
+    }
+
+    protected function mockCommandExecutor()
+    {
+        $this->mock(CommandExecutor::class, function ($mock) {
+            $mock->shouldAllowMockingProtectedMethods()
+                ->shouldReceive('execute')
                 ->andReturn(0);
         })->makePartial();
     }
