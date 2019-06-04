@@ -77,7 +77,7 @@ abstract class TestCase extends BaseTestCase
     {
         $this->assertProcessRun([
             env('FWD_DOCKER_BIN', 'docker'),
-            'run --rm -it -w /app',
+            'run --rm -it --init -w /app',
             sprintf('-v %s:/app:cached', env('FWD_CONTEXT_PATH')),
             sprintf('-v %s:/home/developer/.ssh/id_rsa:cached', env('FWD_SSH_KEY_PATH')),
             sprintf('-e ASUSER=%s', env('FWD_ASUSER')),
