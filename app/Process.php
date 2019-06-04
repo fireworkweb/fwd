@@ -83,6 +83,15 @@ class Process
         return $this->process(array_merge($commandPrefix, $command));
     }
 
+    public function dockerNoOutput(...$command) : int
+    {
+        $this->disableOutput();
+        $exitCode = $this->docker(...$command);
+        $this->enableOutput();
+
+        return $exitCode;
+    }
+
     public function dockerCompose(...$command) : int
     {
         $commandPrefix = [
