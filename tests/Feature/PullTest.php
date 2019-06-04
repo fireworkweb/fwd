@@ -20,7 +20,7 @@ class PullTest extends TestCase
         ];
 
         foreach ($images as $image) {
-            $this->assertDocker("pull '{$image}'");
+            $this->assertDocker("pull {$image}");
         }
     }
 }
