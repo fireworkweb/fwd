@@ -2,11 +2,11 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\ArtisanCall;
-use LaravelZero\Framework\Commands\Command;
-use App\Commands\Traits\HasDynamicArgs;
-use App\Commands\Traits\RunTask;
 use App\Process;
+use App\Commands\Traits\RunTask;
+use App\Commands\Traits\ArtisanCall;
+use App\Commands\Traits\HasDynamicArgs;
+use LaravelZero\Framework\Commands\Command;
 
 class Pull extends Command
 {
