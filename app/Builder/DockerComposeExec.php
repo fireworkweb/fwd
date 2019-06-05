@@ -18,9 +18,7 @@ class DockerComposeExec extends Command
     {
         $this->dockerCompose = new DockerCompose();
 
-        parent::__construct('exec', ...[
-            Argument::raw(env('FWD_COMPOSE_EXEC_FLAGS')),
-        ] + $args);
+        parent::__construct('exec', ...$args);
     }
 
     public function getDockerCompose() : DockerCompose
@@ -43,6 +41,8 @@ class DockerComposeExec extends Command
             $this->args->prepend(new Argument('--user', Unescaped::make($this->user), ' '));
         }
 
-        return $this->dockerCompose->addArgument(Unescaped::make(parent::__toString()))->__toString();
+        $this->args->prepend(Argument::raw(env('FWD_COMPOSE_EXEC_FLAGS')));
+
+        return $this->dockerCompose->addArgument(Argument::raw(parent::__toString()))->__toString();
     }
 }
