@@ -86,7 +86,7 @@ abstract class TestCase extends BaseTestCase
             env('FWD_DOCKER_BIN', 'docker'),
             'run',
             sprintf('-e ASUSER=%s', env('FWD_ASUSER')),
-            '-it --rm -w \'/app\'',
+            '-it --init --rm -w \'/app\'',
             sprintf('-v \'%s:/app:cached\'', env('FWD_CONTEXT_PATH')),
             sprintf('-v \'%s:/home/developer/.ssh/id_rsa:cached\'', env('FWD_SSH_KEY_PATH')),
             $this->buildCommand($command),
