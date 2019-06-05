@@ -33,6 +33,6 @@ class Artisan extends Command
      */
     public function handle(CommandExecutor $executor)
     {
-        return $executor->run(new ArtisanCommand(Unescaped::make($this->getArgs())));
+        return $executor->run(ArtisanCommand::make($this->getArgs()));
     }
 }

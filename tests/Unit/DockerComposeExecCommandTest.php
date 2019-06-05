@@ -12,7 +12,7 @@ class DockerComposeExecCommandTest extends TestCase
     {
         $comm = new DockerComposeExec();
 
-        $this->assertEquals($comm->toString(), 'docker-compose -p fwd exec');
+        $this->assertEquals($comm->toString(), 'docker-compose -p fwd exec -T');
     }
 
     public function testDockerComposeExecWithUser()
@@ -21,14 +21,14 @@ class DockerComposeExecCommandTest extends TestCase
 
         $comm->setUser('foo');
 
-        $this->assertEquals($comm->toString(), 'docker-compose -p fwd exec --user foo');
+        $this->assertEquals($comm->toString(), 'docker-compose -p fwd exec -T --user foo');
     }
 
     public function testDockerComposeExecService()
     {
         $comm = new DockerComposeExec(Unescaped::make('foo'));
 
-        $this->assertEquals($comm->toString(), 'docker-compose -p fwd exec foo');
+        $this->assertEquals($comm->toString(), 'docker-compose -p fwd exec -T foo');
     }
 
     public function testDockerComposeExecServiceWithEnv()
@@ -37,7 +37,7 @@ class DockerComposeExecCommandTest extends TestCase
 
         $comm->addEnv('BAR', 'zum');
 
-        $this->assertEquals($comm->toString(), 'docker-compose -p fwd exec -e \'BAR=\'\\\'\'zum\'\\\'\'\' foo');
+        $this->assertEquals('docker-compose -p fwd exec -T -e BAR=\'zum\' foo', $comm->toString());
     }
 
     public function testDockerComposeExecServiceWithEnvEscaped()
@@ -46,6 +46,6 @@ class DockerComposeExecCommandTest extends TestCase
 
         $comm->addEnv('BAR', 'zum zap');
 
-        $this->assertEquals($comm->toString(), 'docker-compose -p fwd exec -e \'BAR=\'\\\'\'zum zap\'\\\'\'\' foo');
+        $this->assertEquals('docker-compose -p fwd exec -T -e BAR=\'zum zap\' foo', $comm->toString());
     }
 }

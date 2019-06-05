@@ -6,12 +6,8 @@ class DockerCompose extends Command
 {
     public function __construct(...$args)
     {
-        $this->setCommand(env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose'));
+        parent::__construct(env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose'), ...$args);
 
-        $this->appendArgument(new Argument('-p', Unescaped::make(env('FWD_NAME')), ' '));
-
-        foreach ($args as $arg) {
-            $this->addArgument($arg);
-        }
+        $this->prependArgument(new Argument('-p', Unescaped::make(env('FWD_NAME')), ' '));
     }
 }

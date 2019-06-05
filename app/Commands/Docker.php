@@ -5,6 +5,9 @@ namespace App\Commands;
 use App\Process;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
+use App\CommandExecutor;
+use App\Builder\Docker as DockerBuilder;
+use App\Builder\Unescaped;
 
 class Docker extends Command
 {
@@ -29,9 +32,9 @@ class Docker extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle(CommandExecutor $executor)
     {
-        return $process->docker($this->getArgs());
+        return $executor->run(DockerBuilder::make($this->getArgs()));
     }
 
     /**

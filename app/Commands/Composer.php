@@ -5,6 +5,9 @@ namespace App\Commands;
 use App\Process;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
+use App\CommandExecutor;
+use App\Builder\Composer as ComposerCommand;
+use App\Builder\Unescaped;
 
 class Composer extends Command
 {
@@ -29,8 +32,8 @@ class Composer extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle(CommandExecutor $executor)
     {
-        return $process->asFWDUser()->dockerComposeExec('app composer', $this->getArgs());
+        return $executor->run(new ComposerCommand(Unescaped::make($this->getArgs())));
     }
 }

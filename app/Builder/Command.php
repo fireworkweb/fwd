@@ -7,8 +7,8 @@ class Command
     /** @var string $cwd */
     protected $cwd;
 
-    /** @var array $args */
-    protected $args = [];
+    /** @var Collection $args */
+    protected $args;
 
     /** @var string $command */
     protected $command;
@@ -17,9 +17,16 @@ class Command
     {
         $this->setCommand($command);
 
+        $this->args = collect();
+
         foreach ($args as $arg) {
             $this->addArgument($arg);
         }
+    }
+
+    public static function make(string $args = '') : Command
+    {
+        return new static(Unescaped::make($args));
     }
 
     public function setCommand(string $command) : Command
@@ -31,21 +38,33 @@ class Command
 
     public function addArgument($argn, $argv = null) : Command
     {
-        $this->appendArgument(new Argument($argn, $argv));
+        $this->appendArgument(is_a($argn, Argument::class)
+            ? $argn
+            : new Argument($argn, $argv)
+        );
 
         return $this;
     }
 
     public function appendArgument(Argument $arg) : Command
     {
-        $this->args[] = $arg;
+        $this->args->push($arg);
+
+        return $this;
+    }
+
+    public function prependArgument(Argument $arg) : Command
+    {
+        $this->args->prepend($arg);
 
         return $this;
     }
 
     public function getArguments() : array
     {
-        return $this->args;
+        return $this->args->map(function ($arg) {
+            return (string) $arg;
+        })->filter()->toArray();
     }
 
     public function setCwd(string $cwd) : Command
@@ -79,6 +98,6 @@ class Command
 
     protected function parseArgumentsToString() : string
     {
-        return implode(' ', $this->args);
+        return implode(' ', $this->getArguments());
     }
 }

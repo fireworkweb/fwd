@@ -132,28 +132,28 @@ class Environment
     protected function fixVariables(): void
     {
         if (empty(env('FWD_NAME'))) {
-            $this->envVariables->set(
+            $this->set(
                 'FWD_NAME',
                 basename(getcwd())
             );
         }
 
-        $this->envVariables->set(
+        $this->set(
             'FWD_SSH_KEY_PATH',
             str_replace('$HOME', $_SERVER['HOME'], env('FWD_SSH_KEY_PATH'))
         );
 
-        $this->envVariables->set(
+        $this->set(
             'FWD_CONTEXT_PATH',
             str_replace('$PWD', getcwd(), env('FWD_CONTEXT_PATH'))
         );
 
-        $this->envVariables->set(
+        $this->set(
             'FWD_CUSTOM_PATH',
             str_replace('$PWD', getcwd(), env('FWD_CUSTOM_PATH'))
         );
 
-        $this->envVariables->set(
+        $this->set(
             'FWD_ASUSER',
             str_replace('$UID', posix_geteuid(), env('FWD_ASUSER'))
         );

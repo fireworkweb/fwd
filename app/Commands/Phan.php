@@ -2,7 +2,9 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\Builder\PhpQa;
+use App\CommandExecutor;
+use App\Builder\Argument;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
 
@@ -29,9 +31,12 @@ class Phan extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle(CommandExecutor $executor)
     {
-        return $process->dockerRun(env('FWD_IMAGE_PHP_QA'), 'phan', $this->getArgs());
+        return $executor->run(new PhpQa(
+            Argument::raw('phan'),
+            Argument::raw($this->getArgs())
+        ));
     }
 
     /**

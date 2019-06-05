@@ -46,9 +46,15 @@ class ArgumentTest extends TestCase
 
     public function testArgumentWithValueAsArgument()
     {
-        $arg = new Argument('--env', new Argument('FOO', 'bar'));
+        $argFoo = new Argument('FOO', 'bar');
 
-        $this->assertEquals($arg->__toString(), '--env=\'FOO=\'\\\'\'bar\'\\\'\'\'');
+        $this->assertEquals($argFoo->__toString(), 'FOO=\'bar\'');
+
+        $argFoo = new Argument('FOO', Unescaped::make('bar'));
+        $argEnv = new Argument('--env', $argFoo);
+
+        $this->assertEquals($argFoo->__toString(), 'FOO=bar');
+        $this->assertEquals($argEnv->__toString(), '--env=\'FOO=bar\'');
     }
 
     public function testArgumentWithValueAsUnscaped()

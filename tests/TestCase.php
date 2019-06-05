@@ -84,10 +84,11 @@ abstract class TestCase extends BaseTestCase
     {
         $this->assertProcessRun([
             env('FWD_DOCKER_BIN', 'docker'),
-            'run --rm -it -w /app',
-            sprintf('-v %s:/app:cached', env('FWD_CONTEXT_PATH')),
-            sprintf('-v %s:/home/developer/.ssh/id_rsa:cached', env('FWD_SSH_KEY_PATH')),
+            'run',
             sprintf('-e ASUSER=%s', env('FWD_ASUSER')),
+            '-it --rm -w \'/app\'',
+            sprintf('-v \'%s:/app:cached\'', env('FWD_CONTEXT_PATH')),
+            sprintf('-v \'%s:/home/developer/.ssh/id_rsa:cached\'', env('FWD_SSH_KEY_PATH')),
             $this->buildCommand($command),
         ]);
     }
@@ -99,7 +100,7 @@ abstract class TestCase extends BaseTestCase
         $hasCommand = app(Process::class)->hasCommand($command) || app(CommandExecutor::class)->hasCommand($command);
 
         if (!$hasCommand) {
-            dump(app(CommandExecutor::class)->commands());
+            dd(app(CommandExecutor::class)->commands(), $command);
         }
 
         static::assertTrue($hasCommand, 'Failed asserting that this command was called: ' . $command);

@@ -7,6 +7,11 @@ use App\Environment;
 use App\Commands\Traits\RunTask;
 use App\Commands\Traits\ArtisanCall;
 use LaravelZero\Framework\Commands\Command;
+use App\CommandExecutor;
+use App\Builder\Artisan;
+use App\Builder\DockerComposeExec;
+use App\Builder\Unescaped;
+use App\Builder\Composer;
 
 class Reset extends Command
 {
@@ -76,7 +81,7 @@ class Reset extends Command
     protected function composerInstall()
     {
         return $this->runTask('Composer Install', function () {
-            return $this->artisanCallNoOutput('composer', ['install']);
+            return app(CommandExecutor::class)->noOutput(new Composer(Unescaped::make('install')));
         });
     }
 
@@ -111,27 +116,31 @@ class Reset extends Command
         });
     }
 
-    protected function artisanMigrateFresh(Environment $environment, Process $process)
+    protected function artisanMigrateFresh()
     {
-        return $this->runTask('Migrate Fresh', function () use ($process) {
-            return $process->dockerComposeExecNoOutput(
-                sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
-                sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
-                sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
-                'app php artisan migrate:fresh'
-            );
+        return $this->runTask('Migrate Fresh', function () {
+            $migrateFresh = new Artisan('migrate:fresh');
+
+            $exec = $migrateFresh->getDockerComposeExec();
+            $exec->addEnv('DB_DATABASE', env('DB_DATABASE'));
+            $exec->addEnv('DB_USERNAME', env('DB_USERNAME'));
+            $exec->addEnv('DB_PASSWORD', env('DB_PASSWORD'));
+
+            return app(CommandExecutor::class)->noOutput($migrateFresh);
         });
     }
 
-    protected function artisanMigrateFreshSeed(Environment $environment, Process $process)
+    protected function artisanMigrateFreshSeed()
     {
-        return $this->runTask('Migrate Fresh Seed', function () use ($process) {
-            return $process->dockerComposeExecNoOutput(
-                sprintf('-e DB_DATABASE=%s', env('DB_DATABASE')),
-                sprintf('-e DB_USERNAME=%s', env('DB_USERNAME')),
-                sprintf('-e DB_PASSWORD=%s', env('DB_PASSWORD')),
-                'app php artisan migrate:fresh --seed'
-            );
+        return $this->runTask('Migrate Fresh Seed', function () {
+            $migrateFreshSeed = new Artisan('migrate:fresh', '--seed');
+
+            $exec = $migrateFreshSeed->getDockerComposeExec();
+            $exec->addEnv('DB_DATABASE', env('DB_DATABASE'));
+            $exec->addEnv('DB_USERNAME', env('DB_USERNAME'));
+            $exec->addEnv('DB_PASSWORD', env('DB_PASSWORD'));
+
+            return app(CommandExecutor::class)->noOutput($migrateFreshSeed);
         });
     }
 
@@ -184,13 +193,16 @@ class Reset extends Command
         });
     }
 
-    protected function clearLogs(Environment $environment, Process $process)
+    protected function clearLogs(Environment $environment)
     {
-        return $this->runTask('Clear Logs', function () use ($environment, $process) {
-            return $process->dockerComposeExecNoOutput(
-                'app rm -f',
+        return $this->runTask('Clear Logs', function () use ($environment) {
+            $rm = new DockerComposeExec(
+                Unescaped::make('app rm'),
+                '-f',
                 $environment->getContextFile('storage/logs/*.log')
             );
+
+            return app(CommandExecutor::class)->noOutput($rm);
         });
     }
 }
