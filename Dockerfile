@@ -19,6 +19,9 @@ RUN apk add --no-cache \
     php-mbstring \
     php-posix
 
+# pdftotext
+RUN apk add --no-cache poppler-utils
+
 # installs latest fwd version
 RUN curl -L https://github.com/fireworkweb/fwd/raw/php/builds/fwd -o /usr/local/bin/fwd
 RUN chmod +x /usr/local/bin/fwd
