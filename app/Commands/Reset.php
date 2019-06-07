@@ -4,14 +4,14 @@ namespace App\Commands;
 
 use App\Process;
 use App\Environment;
+use App\Builder\Artisan;
+use App\CommandExecutor;
+use App\Builder\Composer;
+use App\Builder\Unescaped;
 use App\Commands\Traits\RunTask;
+use App\Builder\DockerComposeExec;
 use App\Commands\Traits\ArtisanCall;
 use LaravelZero\Framework\Commands\Command;
-use App\CommandExecutor;
-use App\Builder\Artisan;
-use App\Builder\DockerComposeExec;
-use App\Builder\Unescaped;
-use App\Builder\Composer;
 
 class Reset extends Command
 {

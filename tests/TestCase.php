@@ -3,9 +3,9 @@
 namespace Tests;
 
 use App\Process;
-use LaravelZero\Framework\Testing\TestCase as BaseTestCase;
 use App\Environment;
 use App\CommandExecutor;
+use LaravelZero\Framework\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -99,7 +99,7 @@ abstract class TestCase extends BaseTestCase
 
         $hasCommand = app(Process::class)->hasCommand($command) || app(CommandExecutor::class)->hasCommand($command);
 
-        if (!$hasCommand) {
+        if (! $hasCommand) {
             dump(app(CommandExecutor::class)->commands(), $command);
         }
 
@@ -131,13 +131,13 @@ abstract class TestCase extends BaseTestCase
 
     protected function makeDockerComposeExecString(string $args = '') : string
     {
-        $flags = env('FWD_COMPOSE_EXEC_FLAGS') ? ' '.env('FWD_COMPOSE_EXEC_FLAGS') : '';
-        return trim('docker-compose -p fwd exec'.$flags.' '.$args);
+        $flags = env('FWD_COMPOSE_EXEC_FLAGS') ? ' ' . env('FWD_COMPOSE_EXEC_FLAGS') : '';
+        return trim('docker-compose -p fwd exec' . $flags . ' ' . $args);
     }
 
     protected function makeDockerComposeExecUserString($user = null, string $args = '') : string
     {
-        $flags = env('FWD_COMPOSE_EXEC_FLAGS') ? ' '.env('FWD_COMPOSE_EXEC_FLAGS') : '';
-        return trim('docker-compose -p fwd exec'.$flags.' --user '.$user.' '.$args);
+        $flags = env('FWD_COMPOSE_EXEC_FLAGS') ? ' ' . env('FWD_COMPOSE_EXEC_FLAGS') : '';
+        return trim('docker-compose -p fwd exec' . $flags . ' --user ' . $user . ' ' . $args);
     }
 }

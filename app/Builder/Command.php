@@ -24,19 +24,19 @@ class Command
         }
     }
 
-    public static function make(string $args = '') : Command
+    public static function make(string $args = '') : self
     {
         return new static(Unescaped::make($args));
     }
 
-    public function setCommand(string $command) : Command
+    public function setCommand(string $command) : self
     {
         $this->command = $command;
 
         return $this;
     }
 
-    public function addArgument($argn, $argv = null) : Command
+    public function addArgument($argn, $argv = null) : self
     {
         $this->appendArgument(is_a($argn, Argument::class)
             ? $argn
@@ -46,14 +46,14 @@ class Command
         return $this;
     }
 
-    public function appendArgument(Argument $arg) : Command
+    public function appendArgument(Argument $arg) : self
     {
         $this->args->push($arg);
 
         return $this;
     }
 
-    public function prependArgument(Argument $arg) : Command
+    public function prependArgument(Argument $arg) : self
     {
         $this->args->prepend($arg);
 
@@ -67,9 +67,9 @@ class Command
         })->filter()->toArray();
     }
 
-    public function setCwd(string $cwd) : Command
+    public function setCwd(string $cwd) : self
     {
-        if ( ! is_dir($cwd)) {
+        if (! is_dir($cwd)) {
             throw new \InvalidArgumentException('cwd must be an existing directory');
         }
 

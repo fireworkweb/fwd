@@ -36,7 +36,7 @@ class ResetTest extends TestCase
         $this->setAsUser(null);
         $this->assertDockerComposeExec(
             'app rm -f',
-            '\''.base_path('storage/logs/*.log').'\''
+            '\'' . base_path('storage/logs/*.log') . '\''
         );
     }
 

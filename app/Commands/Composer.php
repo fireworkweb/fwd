@@ -2,12 +2,11 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\CommandExecutor;
+use App\Builder\Unescaped;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
-use App\CommandExecutor;
 use App\Builder\Composer as ComposerCommand;
-use App\Builder\Unescaped;
 
 class Composer extends Command
 {

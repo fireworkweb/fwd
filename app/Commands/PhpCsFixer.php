@@ -3,10 +3,10 @@
 namespace App\Commands;
 
 use App\CommandExecutor;
+use App\Builder\Argument;
 use App\Builder\PhpQa as PhpQaBuilder;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
-use App\Builder\Argument;
 
 class PhpCsFixer extends Command
 {

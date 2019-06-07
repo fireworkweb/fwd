@@ -2,9 +2,8 @@
 
 namespace App\Builder\Concerns;
 
-use App\Builder\Argument;
-use App\Builder\Unescaped;
 use App\Builder\Command;
+use App\Builder\Unescaped;
 
 trait HasWrapper
 {

@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Builder\Argument;
 use App\Builder\Command;
+use App\Builder\Argument;
 use App\Builder\Unescaped;
 
 class ArgumentTest extends TestCase

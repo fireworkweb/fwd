@@ -13,7 +13,7 @@ class Argument
     /** @var string $separator */
     protected $separator;
 
-    public static function raw(string $arg) : Argument
+    public static function raw(string $arg) : self
     {
         return new static(Unescaped::make($arg));
     }
@@ -27,7 +27,7 @@ class Argument
 
     public function __toString() : string
     {
-        if ( ! is_null($this->argv)) {
+        if (! is_null($this->argv)) {
             return vsprintf('%s%s%s', [
                 $this->argn,
                 $this->separator,

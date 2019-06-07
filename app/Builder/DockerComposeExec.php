@@ -26,7 +26,7 @@ class DockerComposeExec extends Command
         return $this->dockerCompose;
     }
 
-    public function setUser(string $user) : DockerComposeExec
+    public function setUser(string $user) : self
     {
         $this->user = $user;
 

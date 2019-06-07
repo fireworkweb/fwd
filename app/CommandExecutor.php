@@ -13,14 +13,14 @@ class CommandExecutor
     /** @var array $commands */
     protected $commands = [];
 
-    public function enableOutput() : CommandExecutor
+    public function enableOutput() : self
     {
         $this->output = true;
 
         return $this;
     }
 
-    public function disableOutput() : CommandExecutor
+    public function disableOutput() : self
     {
         $this->output = false;
 

@@ -2,12 +2,10 @@
 
 namespace App\Commands;
 
-use App\Process;
-use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 use App\CommandExecutor;
+use App\Commands\Traits\HasDynamicArgs;
 use App\Builder\Docker as DockerBuilder;
-use App\Builder\Unescaped;
+use LaravelZero\Framework\Commands\Command;
 
 class Docker extends Command
 {

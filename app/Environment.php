@@ -4,9 +4,9 @@ namespace App;
 
 use Dotenv\Dotenv;
 use Dotenv\Environment\DotenvFactory;
+use Dotenv\Environment\DotenvVariables;
 use Dotenv\Exception\InvalidFileException;
 use Dotenv\Exception\InvalidPathException;
-use Dotenv\Environment\DotenvVariables;
 
 class Environment
 {
@@ -105,7 +105,7 @@ class Environment
         $this->loadEnv($envFile, true);
     }
 
-    public function set(string $var, string $value) : Environment
+    public function set(string $var, string $value) : self
     {
         $this->envVariables->set($var, $value);
 
