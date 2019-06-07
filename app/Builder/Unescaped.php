@@ -12,7 +12,7 @@ class Unescaped
         $this->string = $string;
     }
 
-    public static function make(string $command) : Unescaped
+    public static function make(string $command) : self
     {
         return new static($command);
     }

@@ -132,12 +132,14 @@ abstract class TestCase extends BaseTestCase
     protected function makeDockerComposeExecString(string $args = '') : string
     {
         $flags = env('FWD_COMPOSE_EXEC_FLAGS') ? ' ' . env('FWD_COMPOSE_EXEC_FLAGS') : '';
+
         return trim('docker-compose -p fwd exec' . $flags . ' ' . $args);
     }
 
     protected function makeDockerComposeExecUserString($user = null, string $args = '') : string
     {
         $flags = env('FWD_COMPOSE_EXEC_FLAGS') ? ' ' . env('FWD_COMPOSE_EXEC_FLAGS') : '';
+
         return trim('docker-compose -p fwd exec' . $flags . ' --user ' . $user . ' ' . $args);
     }
 }

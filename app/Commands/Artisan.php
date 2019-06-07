@@ -3,7 +3,6 @@
 namespace App\Commands;
 
 use App\CommandExecutor;
-use App\Builder\Unescaped;
 use App\Commands\Traits\HasDynamicArgs;
 use App\Builder\Artisan as ArtisanCommand;
 use LaravelZero\Framework\Commands\Command;
