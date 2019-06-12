@@ -67,7 +67,7 @@ class ResetTest extends TestCase
             '-e DB_PASSWORD=\'secret\'',
             '-e DB_USERNAME=\'docker\'',
             '-e DB_DATABASE=\'dusk\'',
-            'app php artisan \'migrate:fresh\' --seed'
+            'app php artisan migrate:fresh --seed'
         );
 
         $this->assertCommandCalled('yarn', ['install']);
@@ -86,7 +86,7 @@ class ResetTest extends TestCase
             '-e DB_PASSWORD=\'secret\'',
             '-e DB_USERNAME=\'docker\'',
             '-e DB_DATABASE=\'docker\'',
-            'app php artisan \'migrate:fresh\' ' . (! $noSeed ? '--seed' : '')
+            'app php artisan migrate:fresh ' . (! $noSeed ? '--seed' : '')
         );
 
         $this->assertCommandCalled('yarn', ['install']);

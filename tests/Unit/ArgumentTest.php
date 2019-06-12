@@ -6,14 +6,19 @@ use Tests\TestCase;
 use App\Builder\Command;
 use App\Builder\Argument;
 use App\Builder\Unescaped;
+use App\Builder\Escaped;
 
 class ArgumentTest extends TestCase
 {
     public function testArgumentOnlyName()
     {
+        $arg = new Argument(Escaped::make('foo'));
+
+        $this->assertEquals('\'foo\'', $arg->__toString());
+
         $arg = new Argument('foo');
 
-        $this->assertEquals($arg->__toString(), '\'foo\'');
+        $this->assertEquals('foo', $arg->__toString());
     }
 
     public function testArgumentWithNameAndValue()
@@ -51,10 +56,10 @@ class ArgumentTest extends TestCase
         $this->assertEquals($argFoo->__toString(), 'FOO=\'bar\'');
 
         $argFoo = new Argument('FOO', Unescaped::make('bar'));
-        $argEnv = new Argument('--env', $argFoo);
+        $argEnv = new Argument('--env', (string) $argFoo);
 
         $this->assertEquals($argFoo->__toString(), 'FOO=bar');
-        $this->assertEquals($argEnv->__toString(), '--env=\'FOO=bar\'');
+        $this->assertEquals('--env=\'FOO=bar\'', $argEnv->__toString());
     }
 
     public function testArgumentWithValueAsUnscaped()

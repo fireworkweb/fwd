@@ -3,7 +3,6 @@
 namespace App\Commands;
 
 use App\CommandExecutor;
-use App\Builder\Argument;
 use App\Builder\PhpQa as PhpQaBuilder;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
@@ -33,10 +32,7 @@ class PhpMd extends Command
      */
     public function handle(CommandExecutor $executor)
     {
-        return $executor->run(new PhpQaBuilder(
-            Argument::raw('phpmd'),
-            Argument::raw($this->getArgs())
-        ));
+        return $executor->run(new PhpQaBuilder('phpmd', $this->getArgs()));
     }
 
     /**

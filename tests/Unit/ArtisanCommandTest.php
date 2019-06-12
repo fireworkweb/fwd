@@ -10,15 +10,15 @@ class ArtisanCommandTest extends TestCase
 {
     public function testArtisan()
     {
-        $comm = new Artisan();
+        $artisan = new Artisan();
 
-        $this->assertEquals($comm->toString(), $this->makeDockerComposeExecUserString(env('FWD_ASUSER'), 'app php artisan'));
+        $this->assertEquals((string) $artisan, $this->makeDockerComposeExecUserString(env('FWD_ASUSER'), 'app php artisan'));
     }
 
     public function testArtisanTinker()
     {
-        $comm = new Artisan(Unescaped::make('tinker'));
+        $comm = new Artisan('tinker');
 
-        $this->assertEquals($comm->toString(), $this->makeDockerComposeExecUserString(env('FWD_ASUSER'), 'app php artisan tinker'));
+        $this->assertEquals($this->makeDockerComposeExecUserString(env('FWD_ASUSER'), 'app php artisan tinker'), (string) $comm);
     }
 }

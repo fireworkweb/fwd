@@ -7,21 +7,18 @@ class Argument
     /** @var string $argn */
     protected $argn;
 
-    /** @var string|null|Unescaped $argv */
+    /** @var string|null|Unescaped|Escaped|Argument $argv */
     protected $argv;
 
     /** @var string $separator */
     protected $separator;
 
-    public static function raw(string $arg) : self
-    {
-        return new static(Unescaped::make($arg));
-    }
-
-    public function __construct($argn = '', $argv = null, string $separator = '=')
+    public function __construct($argn = '', $value = null, string $separator = '=')
     {
         $this->argn = $argn;
-        $this->argv = $argv;
+        $this->argv = is_string($value)
+            ? new Escaped($value)
+            : $value;
         $this->separator = $separator;
     }
 
@@ -29,25 +26,12 @@ class Argument
     {
         if (! is_null($this->argv)) {
             return vsprintf('%s%s%s', [
-                $this->argn,
+                (string) $this->argn,
                 $this->separator,
-                $this->parseValue(),
+                (string) $this->argv,
             ]);
         }
 
-        if (is_string($this->argn) && ! starts_with($this->argn, '-')) {
-            return escapeshellarg($this->argn);
-        }
-
-        return $this->argn;
-    }
-
-    private function parseValue() : string
-    {
-        if (is_object($this->argv) && $this->argv instanceof Unescaped) {
-            return (string) $this->argv;
-        }
-
-        return escapeshellarg($this->argv);
+        return (string) $this->argn;
     }
 }

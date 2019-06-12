@@ -7,7 +7,6 @@ use App\Environment;
 use App\Builder\Artisan;
 use App\CommandExecutor;
 use App\Builder\Composer;
-use App\Builder\Unescaped;
 use App\Commands\Traits\RunTask;
 use App\Builder\DockerComposeExec;
 use App\Commands\Traits\ArtisanCall;
@@ -81,7 +80,7 @@ class Reset extends Command
     protected function composerInstall()
     {
         return $this->runTask('Composer Install', function () {
-            return app(CommandExecutor::class)->noOutput(new Composer(Unescaped::make('install')));
+            return app(CommandExecutor::class)->noOutput(new Composer('install'));
         });
     }
 
@@ -197,9 +196,9 @@ class Reset extends Command
     {
         return $this->runTask('Clear Logs', function () use ($environment) {
             $rm = new DockerComposeExec(
-                Unescaped::make('app rm'),
+                'app rm',
                 '-f',
-                $environment->getContextFile('storage/logs/*.log')
+                escapeshellarg($environment->getContextFile('storage/logs/*.log'))
             );
 
             return app(CommandExecutor::class)->noOutput($rm);

@@ -4,7 +4,6 @@ namespace App\Commands;
 
 use App\Builder\PhpQa;
 use App\CommandExecutor;
-use App\Builder\Argument;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
 
@@ -33,10 +32,7 @@ class Phan extends Command
      */
     public function handle(CommandExecutor $executor)
     {
-        return $executor->run(new PhpQa(
-            Argument::raw('phan'),
-            Argument::raw($this->getArgs())
-        ));
+        return $executor->run(new PhpQa('phan', $this->getArgs()));
     }
 
     /**

@@ -8,22 +8,19 @@ class DockerComposeExec extends Command
 {
     use HasEnvironmentVariables;
 
-    /** @var Command $dockerCompose */
-    protected $dockerCompose;
-
     /** @var string $user */
     protected $user;
 
     public function __construct(...$args)
     {
-        $this->dockerCompose = new DockerCompose();
+        $this->setWrapper(new DockerCompose());
 
         parent::__construct('exec', ...$args);
     }
 
     public function getDockerCompose() : DockerCompose
     {
-        return $this->dockerCompose;
+        return $this->wrapper;
     }
 
     public function setUser(string $user) : self
@@ -33,7 +30,7 @@ class DockerComposeExec extends Command
         return $this;
     }
 
-    public function __toString() : string
+    protected function build()
     {
         $this->parseEnvironmentToArgument();
 
@@ -41,8 +38,8 @@ class DockerComposeExec extends Command
             $this->args->prepend(new Argument('--user', Unescaped::make($this->user), ' '));
         }
 
-        $this->args->prepend(Argument::raw(env('FWD_COMPOSE_EXEC_FLAGS')));
+        $this->args->prepend(env('FWD_COMPOSE_EXEC_FLAGS'));
 
-        return $this->dockerCompose->addArgument(Argument::raw(parent::__toString()))->__toString();
+        return parent::build();
     }
 }

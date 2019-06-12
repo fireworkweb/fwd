@@ -33,9 +33,7 @@ class Node extends Command
      */
     public function handle(CommandExecutor $executor)
     {
-        return $executor->run(new NodeBuilder(
-            Argument::raw($this->getArgs())
-        ));
+        return $executor->run(new NodeBuilder($this->getArgs()));
     }
 
     /**

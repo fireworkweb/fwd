@@ -2,12 +2,8 @@
 
 namespace App\Builder;
 
-use App\Builder\Concerns\HasWrapper;
-
 class Composer extends Command
 {
-    use HasWrapper;
-
     public function __construct(...$args)
     {
         $this->setWrapper(new DockerComposeExec());

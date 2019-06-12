@@ -17,16 +17,12 @@ class Command
     {
         $this->setCommand($command);
 
-        $this->args = collect();
-
-        foreach ($args as $arg) {
-            $this->addArgument($arg);
-        }
+        $this->setArgs(...$args);
     }
 
-    public static function make(string $args = '') : self
+    public static function make(string $command = '') : self
     {
-        return new static(Unescaped::make($args));
+        return new static($command);
     }
 
     public function setCommand(string $command) : self
@@ -36,18 +32,21 @@ class Command
         return $this;
     }
 
-    public function addArgument($argn, $argv = null) : self
+    public function setArgs(...$args)
     {
-        $this->appendArgument(is_a($argn, Argument::class)
-            ? $argn
-            : new Argument($argn, $argv)
-        );
+        $this->args = collect();
 
-        return $this;
+        foreach ($args as $arg) {
+            $this->addArgument($arg);
+        }
     }
 
-    public function appendArgument(Argument $arg) : self
+    public function addArgument($argn, $argv = null) : self
     {
+        $arg = is_a($argn, Argument::class)
+            ? $argn
+            : new Argument($argn, $argv);
+
         $this->args->push($arg);
 
         return $this;
@@ -83,12 +82,37 @@ class Command
         return $this->cwd ?: '';
     }
 
-    public function toString() : string
+    /** @var Command */
+    protected $wrapper;
+
+    public function setWrapper(Command $command)
     {
-        return $this->__toString();
+        $this->wrapper = $command;
+
+        return $this;
+    }
+
+    protected function build()
+    {
+        if ($this->wrapper) {
+            $wrapper = clone $this->wrapper;
+
+            return $wrapper->addArgument($this->toString());
+        }
+
+        return $this;
     }
 
     public function __toString() : string
+    {
+        $built = $this->build();
+
+        return $built === $this
+            ? $built->toString()
+            : (string) $built;
+    }
+
+    protected function toString() : string
     {
         return trim(vsprintf('%s %s', [
             $this->command,

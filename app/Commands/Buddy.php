@@ -4,7 +4,6 @@ namespace App\Commands;
 
 use App\Builder\NodeQa;
 use App\CommandExecutor;
-use App\Builder\Argument;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
 
@@ -34,8 +33,8 @@ class Buddy extends Command
     public function handle(CommandExecutor $executor)
     {
         return $executor->run(new NodeQa(
-            Argument::raw('buddy'),
-            Argument::raw($this->getArgs())
+            'buddy',
+            $this->getArgs()
         ));
     }
 

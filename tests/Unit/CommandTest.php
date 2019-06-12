@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Builder\Command;
+use App\Builder\Escaped;
 
 class CommandTest extends TestCase
 {
@@ -11,7 +12,7 @@ class CommandTest extends TestCase
     {
         $comm = new Command('foo');
 
-        $this->assertEquals($comm->toString(), 'foo');
+        $this->assertEquals((string) $comm, 'foo');
     }
 
     public function testCommandWithArgsToString()
@@ -20,27 +21,27 @@ class CommandTest extends TestCase
 
         $comm->addArgument('--bar');
 
-        $this->assertEquals($comm->toString(), 'foo --bar');
+        $this->assertEquals((string) $comm, 'foo --bar');
     }
 
     public function testCommandWithArgsOnConstructorToString()
     {
         $comm = new Command('foo', '--bar');
 
-        $this->assertEquals($comm->toString(), 'foo --bar');
+        $this->assertEquals((string) $comm, 'foo --bar');
     }
 
     public function testCommandWithArgsEscapedToString()
     {
         $comm = new Command('foo');
-        $comm->addArgument('/path/to/something');
+        $comm->addArgument(Escaped::make('/path/to/something'));
 
-        $this->assertEquals($comm->toString(), 'foo \'/path/to/something\'');
+        $this->assertEquals((string) $comm, 'foo \'/path/to/something\'');
 
         $comm = new Command('foo');
-        $comm->addArgument('/path/t o/something');
+        $comm->addArgument(Escaped::make('/path/t o/something'));
 
-        $this->assertEquals($comm->toString(), 'foo \'/path/t o/something\'');
+        $this->assertEquals((string) $comm, 'foo \'/path/t o/something\'');
     }
 
     public function testCommandWithArgsWithValuesToString()
@@ -49,7 +50,7 @@ class CommandTest extends TestCase
 
         $comm->addArgument('--bar=\'zum\'');
 
-        $this->assertEquals($comm->toString(), 'foo --bar=\'zum\'');
+        $this->assertEquals((string) $comm, 'foo --bar=\'zum\'');
     }
 
     public function testCommandWithArgsWithValuesParsedToString()
@@ -57,7 +58,7 @@ class CommandTest extends TestCase
         $comm = new Command('foo');
         $comm->addArgument('--bar', 'zum');
 
-        $this->assertEquals($comm->toString(), 'foo --bar=\'zum\'');
+        $this->assertEquals((string) $comm, 'foo --bar=\'zum\'');
     }
 
     public function testCommandWithArgsWithValuesEscapedToString()
@@ -65,12 +66,12 @@ class CommandTest extends TestCase
         $comm = new Command('foo');
         $comm->addArgument('--bar', 'zum zap');
 
-        $this->assertEquals($comm->toString(), 'foo --bar=\'zum zap\'');
+        $this->assertEquals((string) $comm, 'foo --bar=\'zum zap\'');
 
         $comm = new Command('foo');
         $comm->addArgument('--bar', 'zum "zap"');
 
-        $this->assertEquals($comm->toString(), 'foo --bar=\'zum "zap"\'');
+        $this->assertEquals((string) $comm, 'foo --bar=\'zum "zap"\'');
     }
 
     public function testCommandWithCommandAsArgsToString()
@@ -78,13 +79,13 @@ class CommandTest extends TestCase
         $comm = new Command('foo');
         $comm->addArgument('--bar');
 
-        $this->assertEquals($comm->toString(), 'foo --bar');
+        $this->assertEquals((string) $comm, 'foo --bar');
 
         $comm2 = new Command('zum');
         $comm2->addArgument('--bar');
         $comm2->addArgument($comm);
 
-        $this->assertEquals($comm2->toString(), 'zum --bar foo --bar');
+        $this->assertEquals((string) $comm2, 'zum --bar foo --bar');
     }
 
     public function testCwd()

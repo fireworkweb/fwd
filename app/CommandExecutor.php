@@ -42,7 +42,7 @@ class CommandExecutor
     {
         event(new BeforeExecuteCommand($command));
 
-        $shellCommand = $command->toString();
+        $shellCommand = (string) $command;
 
         if (env('FWD_DEBUG') || env('FWD_VERBOSE')) {
             $this->print($shellCommand);

@@ -3,7 +3,6 @@
 namespace App\Commands;
 
 use App\CommandExecutor;
-use App\Builder\Unescaped;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
 use App\Builder\Composer as ComposerCommand;
@@ -33,6 +32,6 @@ class Composer extends Command
      */
     public function handle(CommandExecutor $executor)
     {
-        return $executor->run(new ComposerCommand(Unescaped::make($this->getArgs())));
+        return $executor->run(new ComposerCommand($this->getArgs()));
     }
 }

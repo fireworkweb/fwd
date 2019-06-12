@@ -3,7 +3,6 @@
 namespace App\Commands;
 
 use App\CommandExecutor;
-use App\Builder\Argument;
 use App\Builder\Yarn as YarnBuilder;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
@@ -33,6 +32,6 @@ class Yarn extends Command
      */
     public function handle(CommandExecutor $executor)
     {
-        return $executor->run(new YarnBuilder(Argument::raw($this->getArgs())));
+        return $executor->run(new YarnBuilder($this->getArgs()));
     }
 }

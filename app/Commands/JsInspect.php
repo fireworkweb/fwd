@@ -4,7 +4,6 @@ namespace App\Commands;
 
 use App\Builder\NodeQa;
 use App\CommandExecutor;
-use App\Builder\Argument;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
 
@@ -33,10 +32,7 @@ class JsInspect extends Command
      */
     public function handle(CommandExecutor $executor)
     {
-        return $executor->run(new NodeQa(
-            Argument::raw('jsinspect'),
-            Argument::raw($this->getArgs())
-        ));
+        return $executor->run(new NodeQa('jsinspect', $this->getArgs()));
     }
 
     /**

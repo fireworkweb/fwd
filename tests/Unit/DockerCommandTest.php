@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\Builder\Docker;
 use App\Builder\Unescaped;
+use App\Builder\Escaped;
 
 class DockerCommandTest extends TestCase
 {
@@ -12,13 +13,13 @@ class DockerCommandTest extends TestCase
     {
         $comm = new Docker();
 
-        $this->assertEquals($comm->toString(), 'docker');
+        $this->assertEquals('docker', (string) $comm);
     }
 
     public function testDockerInnerCommand()
     {
-        $comm = new Docker(Unescaped::make('run'), '-e', 'FOO=bar');
+        $comm = new Docker('run', '-e', Escaped::make('FOO=bar'));
 
-        $this->assertEquals($comm->toString(), 'docker run -e \'FOO=bar\'');
+        $this->assertEquals('docker run -e \'FOO=bar\'', (string) $comm);
     }
 }
