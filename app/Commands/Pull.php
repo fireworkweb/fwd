@@ -2,12 +2,12 @@
 
 namespace App\Commands;
 
+use App\Builder\Docker;
+use App\CommandExecutor;
 use App\Commands\Traits\RunTask;
 use App\Commands\Traits\ArtisanCall;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
-use App\CommandExecutor;
-use App\Builder\Docker;
 
 class Pull extends Command
 {

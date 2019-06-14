@@ -3,7 +3,6 @@
 namespace App\Commands;
 
 use App\CommandExecutor;
-use App\Builder\Argument;
 use App\Builder\Node as NodeBuilder;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;

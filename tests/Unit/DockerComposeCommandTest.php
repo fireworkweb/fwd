@@ -3,9 +3,9 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
+use App\Builder\Argument;
 use App\Builder\Unescaped;
 use App\Builder\DockerCompose;
-use App\Builder\Argument;
 
 class DockerComposeCommandTest extends TestCase
 {

@@ -48,7 +48,7 @@ class Command
 
     public function addArgument($argn, $argv = null) : self
     {
-        $arg = is_a($argn, Argument::class)
+        $arg = $argn instanceof Argument
             ? $argn
             : new Argument($argn, $argv);
 
@@ -87,12 +87,12 @@ class Command
         return $this->cwd ?: '';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?self
     {
         return null;
     }
 
-    public function setWrapper(?Command $wrapper)
+    public function setWrapper(?self $wrapper)
     {
         if ($wrapper) {
             $this->wrapper = $wrapper;
@@ -101,7 +101,7 @@ class Command
         return $this;
     }
 
-    public function getWrapper() : ?Command
+    public function getWrapper() : ?self
     {
         return $this->wrapper;
     }
@@ -119,7 +119,7 @@ class Command
         return $self;
     }
 
-    protected function beforeBuild(Command $command) : Command
+    protected function beforeBuild(self $command) : self
     {
         return $command;
     }

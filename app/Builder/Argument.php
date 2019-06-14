@@ -16,10 +16,15 @@ class Argument
     public function __construct($argn = '', $value = null, string $separator = '=')
     {
         $this->argn = $argn;
-        $this->argv = is_string($value)
+        $this->argv = static::makeArgv($value);
+        $this->separator = $separator;
+    }
+
+    public static function makeArgv($value)
+    {
+        return is_string($value)
             ? new Escaped($value)
             : $value;
-        $this->separator = $separator;
     }
 
     public function __toString() : string

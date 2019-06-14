@@ -4,9 +4,9 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Builder\Command;
+use App\Builder\Escaped;
 use App\Builder\Argument;
 use App\Builder\Unescaped;
-use App\Builder\Escaped;
 
 class ArgumentTest extends TestCase
 {

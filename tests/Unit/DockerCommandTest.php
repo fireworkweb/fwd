@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Builder\Docker;
-use App\Builder\Unescaped;
 use App\Builder\Escaped;
 
 class DockerCommandTest extends TestCase
