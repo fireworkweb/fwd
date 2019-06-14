@@ -113,6 +113,7 @@ class Command
         if ($wrapper = $self->getWrapper()) {
             $wrapper = clone $wrapper;
             $wrapper->addArgument($self->parseToString());
+
             return $wrapper;
         }
 
