@@ -4,13 +4,14 @@ namespace App\Builder;
 
 class Artisan extends Command
 {
-    public function __construct(...$args)
+    public function getProgramName()
     {
-        $this->setWrapper(new DockerComposeExec());
+        return 'app php artisan';
+    }
 
-        $this->wrapper->setUser(env('FWD_ASUSER'));
-
-        parent::__construct('app php artisan', ...$args);
+    public function makeWrapper() : ?Command
+    {
+        return (new DockerComposeExec())->setUser(env('FWD_ASUSER'));
     }
 
     public function getDockerComposeExec() : DockerComposeExec

@@ -10,35 +10,40 @@ class Command
     /** @var Collection $args */
     protected $args;
 
-    /** @var string $command */
-    protected $command;
+    /** @var Command $wrapper */
+    protected $wrapper;
 
-    public function __construct(string $command = '', ...$args)
+    public function __construct(...$args)
     {
-        $this->setCommand($command);
+        $this->setWrapper($this->makeWrapper());
 
-        $this->setArgs(...$args);
+        $this->setArgs($this->makeArgs(...$args));
     }
 
-    public static function make(string $command = '') : self
+    public static function make(...$args) : self
     {
-        return new static($command);
+        return new static(...$args);
     }
 
-    public function setCommand(string $command) : self
+    public function getProgramName()
     {
-        $this->command = $command;
-
-        return $this;
+        return '';
     }
 
-    public function setArgs(...$args)
+    public function makeArgs(...$args) : array
+    {
+        return $args;
+    }
+
+    public function setArgs(array $args) : self
     {
         $this->args = collect();
 
         foreach ($args as $arg) {
             $this->addArgument($arg);
         }
+
+        return $this;
     }
 
     public function addArgument($argn, $argv = null) : self
@@ -82,40 +87,56 @@ class Command
         return $this->cwd ?: '';
     }
 
-    /** @var Command */
-    protected $wrapper;
-
-    public function setWrapper(Command $command)
+    public function makeWrapper() : ?Command
     {
-        $this->wrapper = $command;
+        return null;
+    }
+
+    public function setWrapper(?Command $wrapper)
+    {
+        if ($wrapper) {
+            $this->wrapper = $wrapper;
+        }
 
         return $this;
     }
 
+    public function getWrapper() : ?Command
+    {
+        return $this->wrapper;
+    }
+
     protected function build()
     {
-        if ($this->wrapper) {
-            $wrapper = clone $this->wrapper;
+        $self = $this->beforeBuild(clone $this);
 
-            return $wrapper->addArgument($this->toString());
+        if ($wrapper = $self->getWrapper()) {
+            $wrapper = clone $wrapper;
+            $wrapper->addArgument($self->parseToString());
+            return $wrapper;
         }
 
-        return $this;
+        return $self;
+    }
+
+    protected function beforeBuild(Command $command) : Command
+    {
+        return $command;
     }
 
     public function __toString() : string
     {
         $built = $this->build();
 
-        return $built === $this
-            ? $built->toString()
+        return get_class($built) === get_class($this)
+            ? $built->parseToString()
             : (string) $built;
     }
 
-    protected function toString() : string
+    protected function parseToString() : string
     {
         return trim(vsprintf('%s %s', [
-            $this->command,
+            $this->getProgramName(),
             $this->parseArgumentsToString(),
         ]));
     }

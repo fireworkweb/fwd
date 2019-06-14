@@ -4,12 +4,13 @@ namespace App\Builder;
 
 class Yarn extends Command
 {
-    public function __construct(...$args)
+    public function getProgramName()
     {
-        $this->setWrapper(new DockerRun());
+        return 'yarn';
+    }
 
-        parent::__construct(env('FWD_IMAGE_NODE'), ...array_merge([
-            'yarn',
-        ], $args));
+    public function makeWrapper() : ?Command
+    {
+        return (new DockerRun())->addArgument(env('FWD_IMAGE_NODE'));
     }
 }

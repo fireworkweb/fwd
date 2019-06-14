@@ -80,7 +80,7 @@ class Reset extends Command
     protected function composerInstall()
     {
         return $this->runTask('Composer Install', function () {
-            return app(CommandExecutor::class)->noOutput(new Composer('install'));
+            return app(CommandExecutor::class)->runQuietly(new Composer('install'));
         });
     }
 
@@ -120,12 +120,13 @@ class Reset extends Command
         return $this->runTask('Migrate Fresh', function () {
             $migrateFresh = new Artisan('migrate:fresh');
 
-            $exec = $migrateFresh->getDockerComposeExec();
-            $exec->addEnv('DB_DATABASE', env('DB_DATABASE'));
-            $exec->addEnv('DB_USERNAME', env('DB_USERNAME'));
-            $exec->addEnv('DB_PASSWORD', env('DB_PASSWORD'));
+            $migrateFresh->getDockerComposeExec()->setEnvs([
+                'DB_DATABASE' => env('DB_DATABASE'),
+                'DB_USERNAME' => env('DB_USERNAME'),
+                'DB_PASSWORD' => env('DB_PASSWORD'),
+            ]);
 
-            return app(CommandExecutor::class)->noOutput($migrateFresh);
+            return app(CommandExecutor::class)->runQuietly($migrateFresh);
         });
     }
 
@@ -134,12 +135,13 @@ class Reset extends Command
         return $this->runTask('Migrate Fresh Seed', function () {
             $migrateFreshSeed = new Artisan('migrate:fresh', '--seed');
 
-            $exec = $migrateFreshSeed->getDockerComposeExec();
-            $exec->addEnv('DB_DATABASE', env('DB_DATABASE'));
-            $exec->addEnv('DB_USERNAME', env('DB_USERNAME'));
-            $exec->addEnv('DB_PASSWORD', env('DB_PASSWORD'));
+            $migrateFreshSeed->getDockerComposeExec()->setEnvs([
+                'DB_DATABASE' => env('DB_DATABASE'),
+                'DB_USERNAME' => env('DB_USERNAME'),
+                'DB_PASSWORD' => env('DB_PASSWORD'),
+            ]);
 
-            return app(CommandExecutor::class)->noOutput($migrateFreshSeed);
+            return app(CommandExecutor::class)->runQuietly($migrateFreshSeed);
         });
     }
 
@@ -201,7 +203,7 @@ class Reset extends Command
                 escapeshellarg($environment->getContextFile('storage/logs/*.log'))
             );
 
-            return app(CommandExecutor::class)->noOutput($rm);
+            return app(CommandExecutor::class)->runQuietly($rm);
         });
     }
 }

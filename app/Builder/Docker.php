@@ -4,8 +4,8 @@ namespace App\Builder;
 
 class Docker extends Command
 {
-    public function __construct(...$args)
+    public function getProgramName()
     {
-        parent::__construct(env('FWD_DOCKER_BIN', 'docker'), ...$args);
+        return env('FWD_DOCKER_BIN', 'docker');
     }
 }

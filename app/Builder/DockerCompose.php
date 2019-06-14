@@ -4,10 +4,16 @@ namespace App\Builder;
 
 class DockerCompose extends Command
 {
-    public function __construct(...$args)
+    public function getProgramName()
     {
-        parent::__construct(env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose'), ...$args);
+        return env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose');
+    }
 
-        $this->prependArgument(new Argument('-p', Unescaped::make(env('FWD_NAME')), ' '));
+    public function makeArgs(...$args) : array
+    {
+        return array_merge([
+            '-p',
+            env('FWD_NAME'),
+        ], $args);
     }
 }

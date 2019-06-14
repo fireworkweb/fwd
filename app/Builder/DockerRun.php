@@ -8,22 +8,31 @@ class DockerRun extends Command
 {
     use HasEnvironmentVariables;
 
-    public function __construct(...$args)
+    public function getProgramName()
     {
-        $this->setWrapper(new Docker());
-        $this->addEnv('ASUSER', Unescaped::make(env('FWD_ASUSER')));
+        return 'run';
+    }
 
-        parent::__construct('run', ...array_merge([
+    public function makeArgs(...$args) : array
+    {
+        return array_merge([
             env('FWD_DOCKER_RUN_FLAGS'),
             '--rm',
             new Argument('-w', '/app', ' '),
             new Argument('-v', sprintf('%s:/app:cached', env('FWD_CONTEXT_PATH')), ' '),
             new Argument('-v', sprintf('%s:/home/developer/.ssh/id_rsa:cached', env('FWD_SSH_KEY_PATH')), ' '),
-        ], $args));
+        ], $args);
+    }
+
+    public function makeWrapper() : ?Command
+    {
+        return new Docker();
     }
 
     protected function build()
     {
+        $this->addEnv('ASUSER', Unescaped::make(env('FWD_ASUSER')));
+
         $this->parseEnvironmentToArgument();
 
         return parent::build();

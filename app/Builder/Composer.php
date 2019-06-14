@@ -4,13 +4,14 @@ namespace App\Builder;
 
 class Composer extends Command
 {
-    public function __construct(...$args)
+    public function getProgramName()
     {
-        $this->setWrapper(new DockerComposeExec());
+        return 'app composer';
+    }
 
-        $this->wrapper->setUser(env('FWD_ASUSER'));
-
-        parent::__construct('app composer', ...$args);
+    public function makeWrapper() : ?Command
+    {
+        return (new DockerComposeExec())->setUser(env('FWD_ASUSER'));
     }
 
     public function getDockerComposeExec() : DockerComposeExec

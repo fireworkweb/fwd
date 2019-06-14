@@ -27,7 +27,7 @@ class CommandExecutor
         return $this;
     }
 
-    public function noOutput(Command $command) : int
+    public function runQuietly(Command $command) : int
     {
         $this->disableOutput();
 

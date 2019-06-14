@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Builder\Artisan;
-use App\Builder\Unescaped;
 
 class ArtisanCommandTest extends TestCase
 {
@@ -12,7 +11,7 @@ class ArtisanCommandTest extends TestCase
     {
         $artisan = new Artisan();
 
-        $this->assertEquals((string) $artisan, $this->makeDockerComposeExecUserString(env('FWD_ASUSER'), 'app php artisan'));
+        $this->assertEquals($this->makeDockerComposeExecUserString(env('FWD_ASUSER'), 'app php artisan'), (string) $artisan);
     }
 
     public function testArtisanTinker()
