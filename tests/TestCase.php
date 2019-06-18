@@ -3,6 +3,8 @@
 namespace Tests;
 
 use App\Process;
+use App\Environment;
+use App\CommandExecutor;
 use LaravelZero\Framework\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -21,9 +23,14 @@ abstract class TestCase extends BaseTestCase
         parent::setup();
 
         $this->mockProcess();
+        $this->mockCommandExecutor();
 
         // resets intended execution user
         $this->setAsUser(null);
+        // resets some env
+        $env = app(Environment::class);
+        $env->set('FWD_DOCKER_COMPOSE_BIN', 'docker-compose');
+        $env->set('FWD_DOCKER_BIN', 'docker');
     }
 
     protected function setAsUser($user)
@@ -77,10 +84,11 @@ abstract class TestCase extends BaseTestCase
     {
         $this->assertProcessRun([
             env('FWD_DOCKER_BIN', 'docker'),
-            'run --rm -it --init -w /app',
-            sprintf('-v %s:/app:cached', env('FWD_CONTEXT_PATH')),
-            sprintf('-v %s:/home/developer/.ssh/id_rsa:cached', env('FWD_SSH_KEY_PATH')),
+            'run',
             sprintf('-e ASUSER=%s', env('FWD_ASUSER')),
+            '-it --init --rm -w \'/app\'',
+            sprintf('-v \'%s:/app:cached\'', env('FWD_CONTEXT_PATH')),
+            sprintf('-v \'%s:/home/developer/.ssh/id_rsa:cached\'', env('FWD_SSH_KEY_PATH')),
             $this->buildCommand($command),
         ]);
     }
@@ -89,8 +97,13 @@ abstract class TestCase extends BaseTestCase
     {
         $command = $this->buildCommand($command);
 
-        static::assertTrue(app(Process::class)->hasCommand($command),
-            'Failed asserting that this command was called: ' . $command);
+        $hasCommand = app(Process::class)->hasCommand($command) || app(CommandExecutor::class)->hasCommand($command);
+
+        if (! $hasCommand) {
+            dump(app(CommandExecutor::class)->commands(), $command);
+        }
+
+        static::assertTrue($hasCommand, 'Failed asserting that this command was called: ' . $command);
     }
 
     protected function mockProcess()
@@ -102,8 +115,31 @@ abstract class TestCase extends BaseTestCase
         })->makePartial();
     }
 
+    protected function mockCommandExecutor()
+    {
+        $this->mock(CommandExecutor::class, function ($mock) {
+            $mock->shouldAllowMockingProtectedMethods()
+                ->shouldReceive('execute')
+                ->andReturn(0);
+        })->makePartial();
+    }
+
     protected function buildCommand(array $command)
     {
         return trim(implode(' ', array_filter($command)));
+    }
+
+    protected function makeDockerComposeExecString(string $args = '') : string
+    {
+        $flags = env('FWD_COMPOSE_EXEC_FLAGS') ? ' ' . env('FWD_COMPOSE_EXEC_FLAGS') : '';
+
+        return trim('docker-compose -p fwd exec' . $flags . ' ' . $args);
+    }
+
+    protected function makeDockerComposeExecUserString($user = null, string $args = '') : string
+    {
+        $flags = env('FWD_COMPOSE_EXEC_FLAGS') ? ' ' . env('FWD_COMPOSE_EXEC_FLAGS') : '';
+
+        return trim('docker-compose -p fwd exec' . $flags . ' --user ' . $user . ' ' . $args);
     }
 }

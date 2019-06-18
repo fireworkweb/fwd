@@ -2,7 +2,8 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\CommandExecutor;
+use App\Builder\Yarn as YarnBuilder;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
 
@@ -29,12 +30,8 @@ class Yarn extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle(CommandExecutor $executor)
     {
-        return $process->dockerRun(
-            env('FWD_IMAGE_NODE'),
-            'yarn',
-            $this->getArgs()
-        );
+        return $executor->run(new YarnBuilder($this->getArgs()));
     }
 }

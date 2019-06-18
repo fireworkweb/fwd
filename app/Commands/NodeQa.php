@@ -2,8 +2,9 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\CommandExecutor;
 use App\Commands\Traits\HasDynamicArgs;
+use App\Builder\NodeQa as NodeQaBuilder;
 use LaravelZero\Framework\Commands\Command;
 
 class NodeQa extends Command
@@ -29,12 +30,9 @@ class NodeQa extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle(CommandExecutor $executor)
     {
-        return $process->dockerRun(
-            env('FWD_IMAGE_NODE_QA'),
-            $this->getArgs()
-        );
+        return $executor->run(new NodeQaBuilder($this->getArgs()));
     }
 
     /**

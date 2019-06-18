@@ -2,9 +2,10 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\CommandExecutor;
 use App\Commands\Traits\HasDynamicArgs;
 use LaravelZero\Framework\Commands\Command;
+use App\Builder\DockerCompose as DockerComposeBuilder;
 
 class DockerCompose extends Command
 {
@@ -29,9 +30,9 @@ class DockerCompose extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle(CommandExecutor $executor)
     {
-        return $process->dockerCompose($this->getArgs());
+        return $executor->run(DockerComposeBuilder::make($this->getArgs()));
     }
 
     /**

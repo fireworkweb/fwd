@@ -2,8 +2,9 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\CommandExecutor;
 use App\Commands\Traits\HasDynamicArgs;
+use App\Builder\Artisan as ArtisanCommand;
 use LaravelZero\Framework\Commands\Command;
 
 class Artisan extends Command
@@ -29,8 +30,8 @@ class Artisan extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle(CommandExecutor $executor)
     {
-        return $process->asFWDUser()->dockerComposeExec('app php artisan', $this->getArgs());
+        return $executor->run(ArtisanCommand::make($this->getArgs()));
     }
 }

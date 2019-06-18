@@ -10,7 +10,7 @@ trait HasDynamicArgs
         $this->ignoreValidationErrors();
     }
 
-    public function getArgs()
+    public function getArgs() : string
     {
         $args = (string) $this->input;
 

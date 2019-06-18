@@ -33,9 +33,10 @@ class ResetTest extends TestCase
 
         $this->assertReset();
 
-        $this->asFWDUser()->assertDockerComposeExec(
+        $this->setAsUser(null);
+        $this->assertDockerComposeExec(
             'app rm -f',
-            base_path('storage/logs/*.log')
+            '\'' . base_path('storage/logs/*.log') . '\''
         );
     }
 
@@ -57,15 +58,15 @@ class ResetTest extends TestCase
 
         $this->artisan('reset .env.dusk.local')->assertExitCode(0);
 
-        $this->assertCommandCalled('composer', ['install']);
+        $this->asFWDUser()->assertDockerComposeExec('app composer install');
         $this->assertCommandCalled('mysql-raw', ['-e', 'drop database if exists dusk']);
         $this->assertCommandCalled('mysql-raw', ['-e', 'create database dusk']);
         $this->assertCommandCalled('mysql-raw', ['-e', 'grant all on dusk.* to docker@"%"']);
 
         $this->asFWDUser()->assertDockerComposeExec(
-            '-e DB_DATABASE=dusk',
-            '-e DB_USERNAME=docker',
-            '-e DB_PASSWORD=secret',
+            '-e DB_PASSWORD=\'secret\'',
+            '-e DB_USERNAME=\'docker\'',
+            '-e DB_DATABASE=\'dusk\'',
             'app php artisan migrate:fresh --seed'
         );
 
@@ -75,16 +76,16 @@ class ResetTest extends TestCase
 
     protected function assertReset($noSeed = false)
     {
-        $this->asFWDUser()->assertCommandCalled('composer', ['install']);
+        $this->asFWDUser()->assertDockerComposeExec('app composer install');
         $this->setAsUser(null);
         $this->assertCommandCalled('mysql-raw', ['-e', 'drop database if exists docker']);
         $this->assertCommandCalled('mysql-raw', ['-e', 'create database docker']);
         $this->assertCommandCalled('mysql-raw', ['-e', 'grant all on docker.* to docker@"%"']);
 
         $this->asFWDUser()->assertDockerComposeExec(
-            '-e DB_DATABASE=docker',
-            '-e DB_USERNAME=docker',
-            '-e DB_PASSWORD=secret',
+            '-e DB_PASSWORD=\'secret\'',
+            '-e DB_USERNAME=\'docker\'',
+            '-e DB_DATABASE=\'docker\'',
             'app php artisan migrate:fresh ' . (! $noSeed ? '--seed' : '')
         );
 

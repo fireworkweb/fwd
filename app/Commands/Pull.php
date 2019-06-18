@@ -2,7 +2,8 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\Builder\Docker;
+use App\CommandExecutor;
 use App\Commands\Traits\RunTask;
 use App\Commands\Traits\ArtisanCall;
 use App\Commands\Traits\HasDynamicArgs;
@@ -27,12 +28,14 @@ class Pull extends Command
     protected $description = 'Pull all containers used by fwd.';
 
     /**
-     * Execute the console command.
-     *
-     * @return mixed
+     * @var CommandExecutor
      */
-    public function handle(Process $process)
+    protected $executor;
+
+    public function handle(CommandExecutor $executor)
     {
+        $this->executor = $executor->disableOutput();
+
         $images = [
             'app' => env('FWD_IMAGE_APP'),
             'php-qa' => env('FWD_IMAGE_PHP_QA'),
@@ -43,20 +46,18 @@ class Pull extends Command
         ];
 
         foreach ($images as $name => $image) {
-            if ($exitCode = $this->pullDockerImage($process, $name, $image)) {
+            if ($exitCode = $this->pullDockerImage($name, $image)) {
                 return $exitCode;
             }
         }
     }
 
-    protected function pullDockerImage(Process $process, $name, $image)
+    protected function pullDockerImage($name, $image)
     {
-        return $this->runTask("Pulling image for {$name}", function () use ($process, $image) {
-            return $process->dockerNoOutput(...[
-                'pull',
-                $image,
-                $this->getArgs(),
-            ]);
+        return $this->runTask("Pulling image for {$name}", function () use ($image) {
+            return $this->executor->run(
+                new Docker('pull', $image, $this->getArgs())
+            );
         });
     }
 }
