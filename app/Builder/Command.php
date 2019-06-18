@@ -129,9 +129,11 @@ class Command
     {
         $built = $this->build();
 
-        return get_class($built) === get_class($this)
-            ? $built->parseToString()
-            : (string) $built;
+        if ($this->getWrapper()) {
+            return (string) $built;
+        }
+
+        return $built->parseToString();
     }
 
     protected function parseToString() : string
