@@ -45,7 +45,7 @@ class EnvVarTest extends TestCase
         $dockerBinary = env('FWD_DOCKER_BIN');
         $this->assertEquals("docker binary is: $dockerBinary", env('FWD_CUSTOM_DOCKER_BINARY'));
 
-        $this->assertEquals("--custom-var=custom-var", env('FWD_CUSTOM_VAR_NESTED'));
+        $this->assertEquals('--custom-var=custom-var', env('FWD_CUSTOM_VAR_NESTED'));
     }
 
     public function testNestingVariablesFromFileOntoCommand()
