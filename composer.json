@@ -1,9 +1,9 @@
 {
     "name": "fireworkweb/fwd",
-    "description": "The FWD tool for simple laravel docker environment.",
+    "description": "Tool for simple docker based environments for Laravel applications.",
     "keywords": ["framework", "laravel", "laravel zero", "console", "cli", "docker", "docker-compose", "fwd"],
     "homepage": "https://github.com/fireworkweb/fwd",
-    "type": "project",
+    "type": "application",
     "license": "MIT",
     "support": {
         "issues": "https://github.com/fireworkweb/fwd/issues",

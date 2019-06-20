@@ -21,3 +21,7 @@ fwd yarn install
 fwd yarn dev
 fwd down
 ```
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
