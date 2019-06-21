@@ -24,7 +24,4 @@
             <directory suffix=".php">./app</directory>
         </whitelist>
     </filter>
-    <php>
-        <server name="FWD_CUSTOM_PATH" value="$PWD/tests/fixtures"/>
-    </php>
 </phpunit>

@@ -29,8 +29,8 @@ abstract class TestCase extends BaseTestCase
         $this->setAsUser(null);
         // resets some env
         $env = app(Environment::class);
-        $env->set('FWD_DOCKER_COMPOSE_BIN', 'docker-compose');
-        $env->set('FWD_DOCKER_BIN', 'docker');
+        $env->overloadEnv('.fwd');
+        $env->overloadEnv('.fwd.testing');
     }
 
     protected function setAsUser($user)
