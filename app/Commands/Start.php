@@ -52,6 +52,16 @@ class Start extends Command
     protected function dockerComposePs()
     {
         return $this->runTask('Checking Docker', function () {
+            if ($this->artisanCallNoOutput('check-docker-version')) {
+                $this->error('Incompatible docker version.');
+                return 1;
+            }
+
+            if ($this->artisanCallNoOutput('check-docker-compose-version')) {
+                $this->error('Incompatible docker-compose version.');
+                return 1;
+            }
+
             return $this->runCommand(function () {
                 return $this->artisanCallNoOutput('ps');
             });

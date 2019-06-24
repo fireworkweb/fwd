@@ -13,6 +13,22 @@ class CommandExecutor
     /** @var array $commands */
     protected $commands = [];
 
+    /** @var string $outputFileName */
+    protected $outputFileName = '';
+
+    /** @var string $errorFileName */
+    protected $errorFileName = '';
+
+    public function __destruct() {
+        if ($this->outputFileName) {
+            unlink($this->outputFileName);
+        }
+
+        if ($this->errorFileName) {
+            unlink($this->errorFileName);
+        }
+    }
+
     public function enableOutput() : self
     {
         $this->output = true;
@@ -34,6 +50,11 @@ class CommandExecutor
         $exitCode = $this->run($command);
 
         $this->enableOutput();
+
+        if ($exitCode) {
+            $this->print($this->getOutputBuffer());
+            $this->print($this->getErrorBuffer());
+        }
 
         return $exitCode;
     }
@@ -83,19 +104,62 @@ class CommandExecutor
         return proc_close($proc);
     }
 
+    public function getOutputBuffer(): string
+    {
+        return $this->getFileContents($this->outputFileName);
+    }
+
+    public function getErrorBuffer(): string
+    {
+        return $this->getFileContents($this->errorFileName);
+    }
+
+    private function getFileContents(string $filename): string
+    {
+        $output = '';
+        $handle = @fopen($filename, "r");
+
+        while (($buffer = fgets($handle)) !== false) {
+            $output .= trim($buffer) . PHP_EOL;
+        }
+
+        if (!feof($handle)) {
+            $output = "Erro: falha inexperada na leitura do arquivo!";
+        }
+
+        return $output;
+    }
+
     protected function getDescriptors() : array
     {
         if ($this->output || env('FWD_VERBOSE')) {
             return [STDIN, STDOUT, STDERR];
         }
 
-        $devNull = fopen('/dev/null', 'w');
+        $this->outputFileName = @tempnam(sys_get_temp_dir(), 'fwd_output_');
+        $this->errorFileName = @tempnam(sys_get_temp_dir(), 'fwd_error_');
 
-        return [STDIN, $devNull, $devNull];
+        return [
+            STDIN,
+            [
+                'file',
+                $this->outputFileName,
+                'w',
+            ],
+            [
+                'file',
+                $this->errorFileName,
+                'a',
+            ],
+        ];
     }
 
     protected function print($line) : void
     {
+        if (empty($line)) {
+            return;
+        }
+
         echo $line . PHP_EOL;
     }
 }
