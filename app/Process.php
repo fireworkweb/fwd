@@ -208,7 +208,7 @@ class Process
             $output .= trim($buffer) . "\n";
         }
 
-        if (!feof($handle)) {
+        if (! feof($handle)) {
             $output = 'Erro: falha inexperada na leitura do arquivo!';
         }
 

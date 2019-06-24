@@ -124,7 +124,7 @@ class CommandExecutor
             $output .= trim($buffer) . PHP_EOL;
         }
 
-        if (!feof($handle)) {
+        if (! feof($handle)) {
             $output = 'Erro: falha inexperada na leitura do arquivo!';
         }
 
