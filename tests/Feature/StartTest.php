@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\CommandExecutor;
-use App\Environment;
 
 class StartTest extends TestCase
 {

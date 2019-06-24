@@ -2,10 +2,10 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
-use App\Builder\DockerCompose;
 use App\CommandExecutor;
+use App\Builder\DockerCompose;
 use App\Commands\Traits\RunTask;
+use LaravelZero\Framework\Commands\Command;
 
 class CheckDockerComposeVersion extends Command
 {
@@ -14,10 +14,10 @@ class CheckDockerComposeVersion extends Command
     use RunTask;
 
     /**
-    * The signature of the command.
-    *
-    * @var string
-    */
+     * The signature of the command.
+     *
+     * @var string
+     */
     protected $signature = 'check-docker-compose-version';
 
     /**
@@ -50,6 +50,7 @@ class CheckDockerComposeVersion extends Command
 
         if (! preg_match('/(?:(\d+)\.)(?:(\d+)\.)?(\*|\d+)/', $output, $matches)) {
             $this->error('Docker-compose version could not be parsed.');
+
             return 1;
         }
 

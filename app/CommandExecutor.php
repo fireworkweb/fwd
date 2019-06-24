@@ -19,7 +19,8 @@ class CommandExecutor
     /** @var string $errorFileName */
     protected $errorFileName = '';
 
-    public function __destruct() {
+    public function __destruct()
+    {
         if ($this->outputFileName) {
             unlink($this->outputFileName);
         }
@@ -117,14 +118,14 @@ class CommandExecutor
     private function getFileContents(string $filename): string
     {
         $output = '';
-        $handle = @fopen($filename, "r");
+        $handle = @fopen($filename, 'r');
 
         while (($buffer = fgets($handle)) !== false) {
             $output .= trim($buffer) . PHP_EOL;
         }
 
         if (!feof($handle)) {
-            $output = "Erro: falha inexperada na leitura do arquivo!";
+            $output = 'Erro: falha inexperada na leitura do arquivo!';
         }
 
         return $output;

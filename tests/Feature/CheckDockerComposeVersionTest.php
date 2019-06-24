@@ -7,7 +7,6 @@ use App\CommandExecutor;
 
 class CheckDockerComposeVersionTest extends TestCase
 {
-
     public function testDockerComposeVersionEqualsMin()
     {
         $this->setDockerVersionMessage('1.24');

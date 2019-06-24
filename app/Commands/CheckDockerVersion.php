@@ -2,10 +2,10 @@
 
 namespace App\Commands;
 
-use App\CommandExecutor;
-use LaravelZero\Framework\Commands\Command;
 use App\Builder\Docker;
+use App\CommandExecutor;
 use App\Commands\Traits\RunTask;
+use LaravelZero\Framework\Commands\Command;
 
 class CheckDockerVersion extends Command
 {
@@ -50,6 +50,7 @@ class CheckDockerVersion extends Command
 
         if (! preg_match('/(?:(\d+)\.)(?:(\d+)\.)?(\*|\d+)/', $output, $matches)) {
             $this->error('Docker version could not be parsed.');
+
             return 1;
         }
 
