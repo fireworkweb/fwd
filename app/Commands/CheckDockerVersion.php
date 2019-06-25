@@ -41,21 +41,13 @@ class CheckDockerVersion extends Command
 
     protected function checkDockerVersion(CommandExecutor $executor): int
     {
-        if ($executor->runQuietly(new Docker('-v'))) {
+        if ($executor->runQuietly(new Docker("version --format '{{.Server.Version}}'"))) {
             return 1;
         }
 
         $output = $executor->getOutputBuffer();
-        $matches = [];
 
-        if (! preg_match('/(?:(\d+)\.)(?:(\d+)\.)?(\*|\d+)/', $output, $matches)) {
-            $this->error('Docker version could not be parsed.');
-
-            return 1;
-        }
-
-        // $matches[0] = current version
-        $isValidVersion = version_compare($matches[0], self::DOCKER_MIN_VERSION, '>=');
+        $isValidVersion = $output && version_compare($output, self::DOCKER_MIN_VERSION, '>=');
 
         if (! $isValidVersion) {
             $this->error('Docker version must be >= ' . self::DOCKER_MIN_VERSION);

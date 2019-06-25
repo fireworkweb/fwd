@@ -12,17 +12,15 @@ class Process
     /** @var string $outputFileName */
     protected $outputFileName = '';
 
-    /** @var string $errorFileName */
-    protected $errorFileName = '';
+    public function __construct()
+    {
+        $this->outputFileName = @tempnam(sys_get_temp_dir(), 'fwd_output_');
+    }
 
     public function __destruct()
     {
         if ($this->outputFileName) {
             unlink($this->outputFileName);
-        }
-
-        if ($this->errorFileName) {
-            unlink($this->errorFileName);
         }
     }
 
@@ -90,7 +88,6 @@ class Process
 
         if ($exitCode) {
             $this->print($this->getOutputBuffer());
-            $this->print($this->getErrorBuffer());
         }
 
         return $exitCode;
@@ -113,7 +110,6 @@ class Process
 
         if ($exitCode) {
             $this->print($this->getOutputBuffer());
-            $this->print($this->getErrorBuffer());
         }
 
         return $exitCode;
@@ -191,28 +187,17 @@ class Process
 
     public function getOutputBuffer(): string
     {
-        return $this->getFileContents($this->outputFileName);
-    }
-
-    public function getErrorBuffer(): string
-    {
-        return $this->getFileContents($this->errorFileName);
-    }
-
-    private function getFileContents(string $filename): string
-    {
-        $output = '';
-        $handle = @fopen($filename, 'r');
-
-        while (($buffer = fgets($handle)) !== false) {
-            $output .= trim($buffer) . "\n";
+        if (! $this->outputFileName) {
+            return '';
         }
 
-        if (! feof($handle)) {
-            $output = 'Erro: falha inexperada na leitura do arquivo!';
+        $output = file_get_contents($this->outputFileName);
+
+        if ($output === false) {
+            return 'Error: Unexpected failure trying to read the output file!';
         }
 
-        return $output;
+        return trim($output);
     }
 
     protected function getDescriptors() : array
@@ -221,19 +206,18 @@ class Process
             return [STDIN, STDOUT, STDERR];
         }
 
-        $this->outputFileName = @tempnam(sys_get_temp_dir(), 'fwd_output_');
-        $this->errorFileName = @tempnam(sys_get_temp_dir(), 'fwd_error_');
+        $outputfile = $this->outputFileName ?: '/dev/null';
 
         return [
             STDIN,
             [
                 'file',
-                $this->outputFileName,
+                $outputfile,
                 'w',
             ],
             [
                 'file',
-                $this->errorFileName,
+                $outputfile,
                 'a',
             ],
         ];

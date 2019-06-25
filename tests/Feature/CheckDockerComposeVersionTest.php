@@ -29,6 +29,6 @@ class CheckDockerComposeVersionTest extends TestCase
     {
         resolve(CommandExecutor::class)
             ->shouldReceive('getOutputBuffer')
-            ->andReturn("Docker-compose version $version.");
+            ->andReturn($version);
     }
 }

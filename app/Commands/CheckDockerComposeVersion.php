@@ -9,7 +9,7 @@ use LaravelZero\Framework\Commands\Command;
 
 class CheckDockerComposeVersion extends Command
 {
-    const COMPOSE_MIN_VERSION = '1.24';
+    const DOCKER_COMPOSE_MIN_VERSION = '1.24';
 
     use RunTask;
 
@@ -41,24 +41,16 @@ class CheckDockerComposeVersion extends Command
 
     protected function checkDockerComposeVersion(CommandExecutor $executor): int
     {
-        if ($executor->runQuietly(new DockerCompose('-v'))) {
+        if ($executor->runQuietly(new DockerCompose('version --short'))) {
             return 1;
         }
 
         $output = $executor->getOutputBuffer();
-        $matches = [];
 
-        if (! preg_match('/(?:(\d+)\.)(?:(\d+)\.)?(\*|\d+)/', $output, $matches)) {
-            $this->error('Docker-compose version could not be parsed.');
-
-            return 1;
-        }
-
-        // $matches[0] = full version
-        $isValidVersion = version_compare($matches[0], self::COMPOSE_MIN_VERSION, '>=');
+        $isValidVersion = $output && version_compare($output, self::DOCKER_COMPOSE_MIN_VERSION, '>=');
 
         if (! $isValidVersion) {
-            $this->error('Docker-compose version must be >= ' . self::COMPOSE_MIN_VERSION);
+            $this->error('Docker-compose version must be >= ' . self::DOCKER_COMPOSE_MIN_VERSION);
         }
 
         return $isValidVersion ? 0 : 1;

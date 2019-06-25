@@ -29,6 +29,6 @@ class CheckDockerVersionTest extends TestCase
     {
         resolve(CommandExecutor::class)
             ->shouldReceive('getOutputBuffer')
-            ->andReturn("Docker version $version.");
+            ->andReturn($version);
     }
 }
