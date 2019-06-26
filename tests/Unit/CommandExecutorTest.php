@@ -32,7 +32,7 @@ class CommandExecutorTest extends TestCase
 
         $commExec->runQuietly(new Command('foo'));
 
-        $this->assertNotEmpty($commExec->getOutputBuffer());;
+        $this->assertNotEmpty($commExec->getOutputBuffer());
     }
 
     public function testCommandExecutorOutputEmpty()

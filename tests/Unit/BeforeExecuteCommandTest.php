@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Events\BeforeExecuteCommand;
 use App\Builder\Command;
+use App\Events\BeforeExecuteCommand;
 
 class BeforeExecuteCommandTest extends TestCase
 {
