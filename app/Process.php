@@ -9,18 +9,24 @@ class Process
     protected $asUser = null;
     protected $output = true;
 
-    /** @var string $outputFileName */
-    protected $outputFileName = '';
+    /** @var resource $outputFile */
+    protected $outputFile;
 
     public function __construct()
     {
-        $this->outputFileName = @tempnam(sys_get_temp_dir(), 'fwd_output_');
+        $filename = rtrim(sys_get_temp_dir() .'/fwd_output_'.Carbon::now()->format('Ymdhis'));
+        $this->outputFile = fopen($filename, 'w+') ?: fopen('/dev/null', 'w+');
     }
 
     public function __destruct()
     {
-        if ($this->outputFileName) {
-            unlink($this->outputFileName);
+        if (is_resource($this->outputFile)) {
+            fclose($this->outputFile);
+        }
+
+        $filename = $this->getOutputFileName();
+        if (file_exists($filename)) {
+            unlink($filename);
         }
     }
 
@@ -187,14 +193,16 @@ class Process
 
     public function getOutputBuffer(): string
     {
-        if (! $this->outputFileName) {
+        $filename = $this->getOutputFileName();
+
+        if (! file_exists($filename)) {
             return '';
         }
 
-        $output = file_get_contents($this->outputFileName);
+        $output = file_get_contents($filename);
 
         if ($output === false) {
-            return 'Error: Unexpected failure trying to read the output file!';
+            return "Error: Unexpected failure trying to read the output file $filename.";
         }
 
         return trim($output);
@@ -206,21 +214,7 @@ class Process
             return [STDIN, STDOUT, STDERR];
         }
 
-        $outputfile = $this->outputFileName ?: '/dev/null';
-
-        return [
-            STDIN,
-            [
-                'file',
-                $outputfile,
-                'w',
-            ],
-            [
-                'file',
-                $outputfile,
-                'a',
-            ],
-        ];
+        return [STDIN, $this->outputFile, $this->outputFile];
     }
 
     protected function print($line)
@@ -230,5 +224,16 @@ class Process
         }
 
         echo $line . PHP_EOL;
+    }
+
+    protected function getOutputFileName(): string
+    {
+        if (! is_resource($this->outputFile)) {
+            return '';
+        }
+
+        $meta = stream_get_meta_data($this->outputFile);
+
+        return $meta['uri'] ?? '';
     }
 }
