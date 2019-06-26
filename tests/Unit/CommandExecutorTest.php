@@ -25,4 +25,22 @@ class CommandExecutorTest extends TestCase
 
         $this->assertProcessRun(['foo']);
     }
+
+    public function testCommandExecutorOutputNotEmpty()
+    {
+        $commExec = new CommandExecutor();
+
+        $commExec->runQuietly(new Command('foo'));
+
+        $this->assertNotEmpty($commExec->getOutputBuffer());;
+    }
+
+    public function testCommandExecutorOutputEmpty()
+    {
+        $commExec = new CommandExecutor();
+
+        $commExec->run(new Command('foo'));
+
+        $this->assertEmpty($commExec->getOutputBuffer());
+    }
 }

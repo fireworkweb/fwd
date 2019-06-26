@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Support\Carbon;
+
 class Process
 {
     protected $commands = [];
