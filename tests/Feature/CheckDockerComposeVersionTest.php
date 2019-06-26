@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Environment;
 use App\CommandExecutor;
 use App\Commands\CheckDockerComposeVersion;
-use App\Environment;
 
 class CheckDockerComposeVersionTest extends TestCase
 {

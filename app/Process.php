@@ -14,7 +14,7 @@ class Process
 
     public function __construct()
     {
-        $filename = rtrim(sys_get_temp_dir() .'/fwd_output_'.Carbon::now()->format('Ymdhis'));
+        $filename = rtrim(sys_get_temp_dir() . '/fwd_output_' . Carbon::now()->format('Ymdhis'));
         $this->outputFile = fopen($filename, 'w+') ?: fopen('/dev/null', 'w+');
     }
 

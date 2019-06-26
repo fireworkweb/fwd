@@ -3,10 +3,10 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Support\Facades\File;
 use App\Environment;
+use Illuminate\Support\Facades\File;
 
-class Install extends TestCase
+class InstallTest extends TestCase
 {
     public function testInstall()
     {

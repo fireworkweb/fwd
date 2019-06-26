@@ -5,8 +5,6 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\Builder\Command;
 use App\CommandExecutor;
-use Illuminate\Support\Facades\Event;
-use App\Events\BeforeExecuteCommand;
 
 class CommandExecutorTest extends TestCase
 {
