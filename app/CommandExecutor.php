@@ -122,7 +122,7 @@ class CommandExecutor
 
     protected function print($line) : void
     {
-        if ( !empty($line)) {
+        if (! empty($line)) {
            echo $line . PHP_EOL;
         }
     }
