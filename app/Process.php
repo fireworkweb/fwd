@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Illuminate\Support\Carbon;
-
 class Process
 {
     protected $commands = [];
@@ -14,23 +12,8 @@ class Process
     /** @var resource $outputFile */
     protected $outputFile;
 
-    public function __construct()
-    {
-        $filename = rtrim(sys_get_temp_dir() . '/fwd_output_' . Carbon::now()->format('Ymdhis'));
-        $this->outputFile = fopen($filename, 'w+') ?: fopen('/dev/null', 'w+');
-    }
-
-    public function __destruct()
-    {
-        if (is_resource($this->outputFile)) {
-            fclose($this->outputFile);
-        }
-
-        $filename = $this->getOutputFileName();
-        if (file_exists($filename)) {
-            unlink($filename);
-        }
-    }
+    /** @var string $outputBuffer */
+    protected $outputBuffer = '';
 
     public function setAsUser($user)
     {
@@ -90,15 +73,9 @@ class Process
 
     public function dockerComposeExecNoOutput(...$command) : int
     {
-        $this->disableOutput();
-        $exitCode = $this->dockerComposeExec(...$command);
-        $this->enableOutput();
-
-        if ($exitCode) {
-            $this->print($this->getOutputBuffer());
-        }
-
-        return $exitCode;
+        return $this->execNoOutput(function () use ($command) {
+            return $this->dockerComposeExec(...$command);
+        });
     }
 
     public function docker(...$command) : int
@@ -112,15 +89,9 @@ class Process
 
     public function dockerNoOutput(...$command) : int
     {
-        $this->disableOutput();
-        $exitCode = $this->docker(...$command);
-        $this->enableOutput();
-
-        if ($exitCode) {
-            $this->print($this->getOutputBuffer());
-        }
-
-        return $exitCode;
+        return $this->execNoOutput(function () use ($command) {
+            return $this->docker(...$command);
+        });
     }
 
     public function dockerCompose(...$command) : int
@@ -141,6 +112,8 @@ class Process
 
     public function process(array $command, string $cwd = null) : int
     {
+        $this->setOutputBuffer('');
+
         $command = $this->buildCommand($command);
 
         $this->commands[] = $command;
@@ -173,6 +146,37 @@ class Process
         return array_search($command, $this->commands) !== false;
     }
 
+    public function setOutputBuffer(string $outputBuffer): void
+    {
+        $this->outputBuffer = $outputBuffer;
+    }
+
+    public function getOutputBuffer(): string
+    {
+        return $this->outputBuffer;
+    }
+
+    protected function execNoOutput(\Closure $closure): int
+    {
+        $this->disableOutput();
+
+        $this->prepareOutputFile();
+
+        $exitCode = $closure();
+
+        $this->setOutputBuffer($this->getOutputFileContents());
+
+        $this->unsetOutputFile();
+
+        $this->enableOutput();
+
+        if ($exitCode) {
+            $this->print($this->getOutputBuffer());
+        }
+
+        return $exitCode;
+    }
+
     protected function buildCommand(array $command)
     {
         return trim(implode(' ', array_filter($command)));
@@ -193,23 +197,6 @@ class Process
         return proc_close($proc);
     }
 
-    public function getOutputBuffer(): string
-    {
-        $filename = $this->getOutputFileName();
-
-        if (! file_exists($filename)) {
-            return '';
-        }
-
-        $output = file_get_contents($filename);
-
-        if ($output === false) {
-            return "Error: Unexpected failure trying to read the output file $filename.";
-        }
-
-        return trim($output);
-    }
-
     protected function getDescriptors() : array
     {
         if ($this->output || env('FWD_VERBOSE')) {
@@ -221,19 +208,47 @@ class Process
 
     protected function print($line)
     {
-        if (empty($line)) {
-            return;
+        if (! empty($line)) {
+            echo $line . PHP_EOL;
+        }
+    }
+
+    protected function prepareOutputFile(): void
+    {
+        $filename = sprintf('%s/fwd_output_%s', sys_get_temp_dir(), uniqid());
+        $this->outputFile = fopen($filename, 'w+') ?: fopen('/dev/null', 'w+');
+    }
+
+    protected function unsetOutputFile(): void
+    {
+        $filename = $this->getOutputFileName();
+
+        fclose($this->outputFile);
+
+        if (file_exists($filename)) {
+            unlink($filename);
+        }
+    }
+
+    protected function getOutputFileContents()
+    {
+        $filename = $this->getOutputFileName();
+
+        if (! file_exists($filename)) {
+            return '';
         }
 
-        echo $line . PHP_EOL;
+        $output = file_get_contents($filename);
+
+        if ($output === false) {
+            return "FWD Error: Unexpected failure trying to read the output file $filename.";
+        }
+
+        return trim($output);
     }
 
     protected function getOutputFileName(): string
     {
-        if (! is_resource($this->outputFile)) {
-            return '';
-        }
-
         $meta = stream_get_meta_data($this->outputFile);
 
         return $meta['uri'] ?? '';

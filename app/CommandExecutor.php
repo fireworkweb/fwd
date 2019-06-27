@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Builder\Command;
-use Illuminate\Support\Carbon;
 use App\Events\BeforeExecuteCommand;
 
 class CommandExecutor
@@ -17,23 +16,8 @@ class CommandExecutor
     /** @var resource $outputFile */
     protected $outputFile;
 
-    public function __construct()
-    {
-        $filename = rtrim(sys_get_temp_dir() . '/fwd_output_' . Carbon::now()->format('Ymdhis'));
-        $this->outputFile = fopen($filename, 'w+') ?: fopen('/dev/null', 'w+');
-    }
-
-    public function __destruct()
-    {
-        if (is_resource($this->outputFile)) {
-            fclose($this->outputFile);
-        }
-
-        $filename = $this->getOutputFileName();
-        if (file_exists($filename)) {
-            unlink($filename);
-        }
-    }
+    /** @var string $outputBuffer */
+    protected $outputBuffer = '';
 
     public function enableOutput() : self
     {
@@ -53,7 +37,13 @@ class CommandExecutor
     {
         $this->disableOutput();
 
+        $this->prepareOutputFile();
+
         $exitCode = $this->run($command);
+
+        $this->setOutputBuffer($this->getOutputFileContents());
+
+        $this->unsetOutputFile();
 
         $this->enableOutput();
 
@@ -66,6 +56,8 @@ class CommandExecutor
 
     public function run(Command $command) : int
     {
+        $this->setOutputBuffer('');
+
         event(new BeforeExecuteCommand($command));
 
         $shellCommand = (string) $command;
@@ -109,21 +101,14 @@ class CommandExecutor
         return proc_close($proc);
     }
 
+    public function setOutputBuffer(string $outputBuffer): void
+    {
+        $this->outputBuffer = $outputBuffer;
+    }
+
     public function getOutputBuffer(): string
     {
-        $filename = $this->getOutputFileName();
-
-        if (! file_exists($filename)) {
-            return '';
-        }
-
-        $output = file_get_contents($filename);
-
-        if ($output === false) {
-            return "Error: Unexpected failure trying to read the output file $filename.";
-        }
-
-        return trim($output);
+        return $this->outputBuffer;
     }
 
     protected function getDescriptors() : array
@@ -137,19 +122,47 @@ class CommandExecutor
 
     protected function print($line) : void
     {
-        if (empty($line)) {
-            return;
+        if ( !empty($line)) {
+           echo $line . PHP_EOL;
+        }
+    }
+
+    protected function prepareOutputFile(): void
+    {
+        $filename = sprintf('%s/fwd_output_%s', sys_get_temp_dir(), uniqid());
+        $this->outputFile = fopen($filename, 'w+') ?: fopen('/dev/null', 'w+');
+    }
+
+    protected function unsetOutputFile(): void
+    {
+        $filename = $this->getOutputFileName();
+
+        fclose($this->outputFile);
+
+        if (file_exists($filename)) {
+            unlink($filename);
+        }
+    }
+
+    protected function getOutputFileContents()
+    {
+        $filename = $this->getOutputFileName();
+
+        if (! file_exists($filename)) {
+            return '';
         }
 
-        echo $line . PHP_EOL;
+        $output = file_get_contents($filename);
+
+        if ($output === false) {
+            return "FWD Error: Unexpected failure trying to read the output file $filename.";
+        }
+
+        return trim($output);
     }
 
     protected function getOutputFileName(): string
     {
-        if (! is_resource($this->outputFile)) {
-            return '';
-        }
-
         $meta = stream_get_meta_data($this->outputFile);
 
         return $meta['uri'] ?? '';

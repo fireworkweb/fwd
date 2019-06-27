@@ -41,13 +41,11 @@ class CheckDockerComposeVersion extends Command
 
     protected function checkDockerComposeVersion(CommandExecutor $executor): int
     {
-        if ($executor->runQuietly(new DockerCompose('version --short'))) {
-            return 1;
-        }
+        $exitCode = $executor->runQuietly(new DockerCompose('version --short'));
 
         $output = $executor->getOutputBuffer();
 
-        $isValidVersion = $output && version_compare($output, self::DOCKER_COMPOSE_MIN_VERSION, '>=');
+        $isValidVersion = $exitCode === 0 && $output && version_compare($output, self::DOCKER_COMPOSE_MIN_VERSION, '>=');
 
         if (! $isValidVersion) {
             $this->error('Docker-compose version must be >= ' . self::DOCKER_COMPOSE_MIN_VERSION);
