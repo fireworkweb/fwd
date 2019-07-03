@@ -9,6 +9,12 @@ class Process
     protected $asUser = null;
     protected $output = true;
 
+    /** @var resource $outputFile */
+    protected $outputFile;
+
+    /** @var string $outputBuffer */
+    protected $outputBuffer = '';
+
     public function setAsUser($user)
     {
         $this->asUser = $user;
@@ -67,11 +73,9 @@ class Process
 
     public function dockerComposeExecNoOutput(...$command) : int
     {
-        $this->disableOutput();
-        $exitCode = $this->dockerComposeExec(...$command);
-        $this->enableOutput();
-
-        return $exitCode;
+        return $this->execNoOutput(function () use ($command) {
+            return $this->dockerComposeExec(...$command);
+        });
     }
 
     public function docker(...$command) : int
@@ -85,11 +89,9 @@ class Process
 
     public function dockerNoOutput(...$command) : int
     {
-        $this->disableOutput();
-        $exitCode = $this->docker(...$command);
-        $this->enableOutput();
-
-        return $exitCode;
+        return $this->execNoOutput(function () use ($command) {
+            return $this->docker(...$command);
+        });
     }
 
     public function dockerCompose(...$command) : int
@@ -110,6 +112,8 @@ class Process
 
     public function process(array $command, string $cwd = null) : int
     {
+        $this->setOutputBuffer('');
+
         $command = $this->buildCommand($command);
 
         $this->commands[] = $command;
@@ -142,6 +146,37 @@ class Process
         return array_search($command, $this->commands) !== false;
     }
 
+    public function setOutputBuffer(string $outputBuffer): void
+    {
+        $this->outputBuffer = $outputBuffer;
+    }
+
+    public function getOutputBuffer(): string
+    {
+        return $this->outputBuffer;
+    }
+
+    protected function execNoOutput(\Closure $closure): int
+    {
+        $this->disableOutput();
+
+        $this->prepareOutputFile();
+
+        $exitCode = $closure();
+
+        $this->setOutputBuffer($this->getOutputFileContents());
+
+        $this->unsetOutputFile();
+
+        $this->enableOutput();
+
+        if ($exitCode) {
+            $this->print($this->getOutputBuffer());
+        }
+
+        return $exitCode;
+    }
+
     protected function buildCommand(array $command)
     {
         return trim(implode(' ', array_filter($command)));
@@ -168,13 +203,54 @@ class Process
             return [STDIN, STDOUT, STDERR];
         }
 
-        $devNull = fopen('/dev/null', 'w');
-
-        return [STDIN, $devNull, $devNull];
+        return [STDIN, $this->outputFile, $this->outputFile];
     }
 
     protected function print($line)
     {
-        echo $line . PHP_EOL;
+        if (! empty($line)) {
+            echo $line . PHP_EOL;
+        }
+    }
+
+    protected function prepareOutputFile(): void
+    {
+        $filename = sprintf('%s/fwd_output_%s', sys_get_temp_dir(), uniqid());
+        $this->outputFile = fopen($filename, 'w+') ?: fopen('/dev/null', 'w+');
+    }
+
+    protected function unsetOutputFile(): void
+    {
+        $filename = $this->getOutputFileName();
+
+        fclose($this->outputFile);
+
+        if (file_exists($filename)) {
+            unlink($filename);
+        }
+    }
+
+    protected function getOutputFileContents()
+    {
+        $filename = $this->getOutputFileName();
+
+        if (! file_exists($filename)) {
+            return '';
+        }
+
+        $output = file_get_contents($filename);
+
+        if ($output === false) {
+            return "FWD Error: Unexpected failure trying to read the output file $filename.";
+        }
+
+        return trim($output);
+    }
+
+    protected function getOutputFileName(): string
+    {
+        $meta = stream_get_meta_data($this->outputFile);
+
+        return $meta['uri'] ?? '';
     }
 }
