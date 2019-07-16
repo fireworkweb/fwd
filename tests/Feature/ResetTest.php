@@ -77,6 +77,7 @@ class ResetTest extends TestCase
     protected function assertReset($noSeed = false)
     {
         $this->asFWDUser()->assertDockerComposeExec('app composer install');
+        $this->assertDockerComposeExec('redis redis-cli flushall');
         $this->setAsUser(null);
         $this->assertCommandCalled('mysql-raw', ['-e', 'drop database if exists docker']);
         $this->assertCommandCalled('mysql-raw', ['-e', 'create database docker']);

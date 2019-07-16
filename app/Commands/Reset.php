@@ -11,6 +11,7 @@ use App\Commands\Traits\RunTask;
 use App\Builder\DockerComposeExec;
 use App\Commands\Traits\ArtisanCall;
 use LaravelZero\Framework\Commands\Command;
+use App\Builder\RedisCli;
 
 class Reset extends Command
 {
@@ -47,6 +48,7 @@ class Reset extends Command
 
         $commands = [
             [$this, 'composerInstall'],
+            [$this, 'redisFlushDb'],
             [$this, 'mysqlDropDatabase'],
             [$this, 'mysqlCreateDatabase'],
             [$this, 'mysqlGrantDatabase'],
@@ -81,6 +83,13 @@ class Reset extends Command
     {
         return $this->runTask('Composer Install', function () {
             return app(CommandExecutor::class)->runQuietly(new Composer('install'));
+        });
+    }
+
+    protected function redisFlushDb()
+    {
+        return $this->runTask('Redis Flushing DB', function () {
+            return app(CommandExecutor::class)->runQuietly(new RedisCli('flushall'));
         });
     }
 
