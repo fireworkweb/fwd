@@ -7,6 +7,7 @@ use App\Environment;
 use App\Builder\Artisan;
 use App\CommandExecutor;
 use App\Builder\Composer;
+use App\Builder\RedisCli;
 use App\Commands\Traits\RunTask;
 use App\Builder\DockerComposeExec;
 use App\Commands\Traits\ArtisanCall;
@@ -47,6 +48,7 @@ class Reset extends Command
 
         $commands = [
             [$this, 'composerInstall'],
+            [$this, 'redisFlushAll'],
             [$this, 'mysqlDropDatabase'],
             [$this, 'mysqlCreateDatabase'],
             [$this, 'mysqlGrantDatabase'],
@@ -81,6 +83,13 @@ class Reset extends Command
     {
         return $this->runTask('Composer Install', function () {
             return app(CommandExecutor::class)->runQuietly(new Composer('install'));
+        });
+    }
+
+    protected function redisFlushAll()
+    {
+        return $this->runTask('Redis Flush All', function () {
+            return app(CommandExecutor::class)->runQuietly(new RedisCli('flushall'));
         });
     }
 
