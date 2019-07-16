@@ -48,7 +48,7 @@ class Reset extends Command
 
         $commands = [
             [$this, 'composerInstall'],
-            [$this, 'redisFlushDb'],
+            [$this, 'redisFlushAll'],
             [$this, 'mysqlDropDatabase'],
             [$this, 'mysqlCreateDatabase'],
             [$this, 'mysqlGrantDatabase'],
@@ -86,9 +86,9 @@ class Reset extends Command
         });
     }
 
-    protected function redisFlushDb()
+    protected function redisFlushAll()
     {
-        return $this->runTask('Redis Flushing DB', function () {
+        return $this->runTask('Redis Flush All', function () {
             return app(CommandExecutor::class)->runQuietly(new RedisCli('flushall'));
         });
     }
