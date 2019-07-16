@@ -7,11 +7,11 @@ use App\Environment;
 use App\Builder\Artisan;
 use App\CommandExecutor;
 use App\Builder\Composer;
+use App\Builder\RedisCli;
 use App\Commands\Traits\RunTask;
 use App\Builder\DockerComposeExec;
 use App\Commands\Traits\ArtisanCall;
 use LaravelZero\Framework\Commands\Command;
-use App\Builder\RedisCli;
 
 class Reset extends Command
 {
