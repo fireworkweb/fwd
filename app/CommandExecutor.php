@@ -120,7 +120,7 @@ class CommandExecutor
         return [STDIN, $this->outputFile, $this->outputFile];
     }
 
-    protected function print($line) : void
+    public function print($line) : void
     {
         if (! empty($line)) {
             echo $line . PHP_EOL;

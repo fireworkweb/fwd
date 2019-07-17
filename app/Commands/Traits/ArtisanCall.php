@@ -33,7 +33,7 @@ trait ArtisanCall
                 $process->print($output);
             }
 
-            if ($output = $process->getOutputBuffer()) {
+            if ($output = $commandExecutor->getOutputBuffer()) {
                 $commandExecutor->print($output);
             }
         }
