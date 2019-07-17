@@ -23,12 +23,18 @@ class CommandExecutor
     {
         $this->output = true;
 
+        $this->setOutputBuffer($this->getOutputFileContents());
+
+        $this->unsetOutputFile();
+
         return $this;
     }
 
     public function disableOutput() : self
     {
         $this->output = false;
+
+        $this->prepareOutputFile();
 
         return $this;
     }
@@ -37,13 +43,7 @@ class CommandExecutor
     {
         $this->disableOutput();
 
-        $this->prepareOutputFile();
-
         $exitCode = $this->run($command);
-
-        $this->setOutputBuffer($this->getOutputFileContents());
-
-        $this->unsetOutputFile();
 
         $this->enableOutput();
 

@@ -9,7 +9,7 @@ use LaravelZero\Framework\Commands\Command;
 
 class CheckDockerComposeVersion extends Command
 {
-    const DOCKER_COMPOSE_MIN_VERSION = '1.24';
+    const DOCKER_COMPOSE_MIN_VERSION = '1.23';
 
     use RunTask;
 

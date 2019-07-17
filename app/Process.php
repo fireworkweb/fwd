@@ -31,12 +31,18 @@ class Process
     {
         $this->output = true;
 
+        $this->setOutputBuffer($this->getOutputFileContents());
+
+        $this->unsetOutputFile();
+
         return $this;
     }
 
     public function disableOutput()
     {
         $this->output = false;
+
+        $this->prepareOutputFile();
 
         return $this;
     }
@@ -160,13 +166,7 @@ class Process
     {
         $this->disableOutput();
 
-        $this->prepareOutputFile();
-
         $exitCode = $closure();
-
-        $this->setOutputBuffer($this->getOutputFileContents());
-
-        $this->unsetOutputFile();
 
         $this->enableOutput();
 
@@ -216,6 +216,7 @@ class Process
     protected function prepareOutputFile(): void
     {
         $filename = sprintf('%s/fwd_output_%s', sys_get_temp_dir(), uniqid());
+
         $this->outputFile = fopen($filename, 'w+') ?: fopen('/dev/null', 'w+');
     }
 
