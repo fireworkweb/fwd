@@ -1,6 +1,6 @@
 <?php
 
-use App\Builder\Docker;
+use App\Builder\Command as Builder;
 use App\Commands\Command;
 
 class Custom extends Command
@@ -27,7 +27,7 @@ class Custom extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            Docker::make('ps')
+            Builder::make('echo custom')
         );
     }
 }
