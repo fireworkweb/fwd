@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Checker;
-use App\Process;
 use App\Environment;
 use App\CommandExecutor;
 use Illuminate\Console\Command;
@@ -31,7 +30,6 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(Checker::class);
-        $this->app->singleton(Process::class);
         $this->app->singleton(Environment::class);
         $this->app->singleton(CommandExecutor::class);
 

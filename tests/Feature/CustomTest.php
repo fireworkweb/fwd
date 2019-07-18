@@ -10,6 +10,6 @@ class CustomTest extends TestCase
     {
         $this->artisan('custom')->assertExitCode(0);
 
-        $this->assertProcessRun(['echo', 'custom']);
+        $this->assertDocker('ps');
     }
 }

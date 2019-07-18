@@ -14,7 +14,7 @@ class CommandExecutorTest extends TestCase
 
         $this->assertEquals(0, $commExec->run(new Command('foo')));
 
-        $this->assertProcessRun(['foo']);
+        $this->assertCommandRun(['foo']);
     }
 
     public function testCommandExecutorRunQuietly()
@@ -23,14 +23,13 @@ class CommandExecutorTest extends TestCase
 
         $this->assertEquals(0, $commExec->runQuietly(new Command('foo')));
 
-        $this->assertProcessRun(['foo']);
+        $this->assertCommandRun(['foo']);
     }
 
     public function testCommandExecutorOutputNotEmpty()
     {
         $commExec = new CommandExecutor();
-
-        $commExec->runQuietly(new Command('foo'));
+        $commExec->runQuietly(new Command('echo 1'));
 
         $this->assertNotEmpty($commExec->getOutputBuffer());
     }
@@ -38,8 +37,7 @@ class CommandExecutorTest extends TestCase
     public function testCommandExecutorOutputEmpty()
     {
         $commExec = new CommandExecutor();
-
-        $commExec->run(new Command('foo'));
+        $commExec->runQuietly(new Command('echo'));
 
         $this->assertEmpty($commExec->getOutputBuffer());
     }
