@@ -2,9 +2,8 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\Builder\DockerCompose;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class Ps extends Command
 {
@@ -29,8 +28,10 @@ class Ps extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle()
     {
-        return $process->dockerCompose('ps', $this->getArgs());
+        return $this->commandExecutor->run(
+            DockerCompose::make('ps', $this->getArgs())
+        );
     }
 }

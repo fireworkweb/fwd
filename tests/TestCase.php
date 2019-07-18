@@ -40,7 +40,7 @@ abstract class TestCase extends BaseTestCase
         return $this;
     }
 
-    protected function asFWDUser()
+    protected function asFwdUser()
     {
         return $this->setAsUser(env('FWD_ASUSER'));
     }
@@ -67,7 +67,7 @@ abstract class TestCase extends BaseTestCase
         $params = [
             env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose'),
             sprintf('-p %s exec', basename(getcwd())),
-
+            env('FWD_COMPOSE_EXEC_FLAGS')
         ];
 
         if (! empty($this->asUser)) {
@@ -100,7 +100,7 @@ abstract class TestCase extends BaseTestCase
         $hasCommand = app(Process::class)->hasCommand($command) || app(CommandExecutor::class)->hasCommand($command);
 
         if (! $hasCommand) {
-            dump(app(CommandExecutor::class)->commands(), $command);
+            dd(app(CommandExecutor::class)->commands(), $command);
         }
 
         static::assertTrue($hasCommand, 'Failed asserting that this command was called: ' . $command);

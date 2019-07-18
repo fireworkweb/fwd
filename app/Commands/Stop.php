@@ -2,9 +2,8 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\Builder\DockerCompose;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class Stop extends Command
 {
@@ -29,8 +28,10 @@ class Stop extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle()
     {
-        return $process->dockerCompose('stop', $this->getArgs());
+        return $this->commandExecutor->run(
+            DockerCompose::make('stop', $this->getArgs())
+        );
     }
 }

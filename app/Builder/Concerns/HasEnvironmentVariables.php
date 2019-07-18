@@ -21,6 +21,15 @@ trait HasEnvironmentVariables
         return $this;
     }
 
+    public function addEnvs(array $envs)
+    {
+        foreach ($envs as $var => $env) {
+            $this->addEnv($var, $env);
+        }
+
+        return $this;
+    }
+
     public function addEnv($var, $value = null)
     {
         $this->appendEnv(new Argument($var, $value));

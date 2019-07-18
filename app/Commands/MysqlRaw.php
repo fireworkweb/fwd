@@ -2,9 +2,8 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\Builder\Mysql;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class MysqlRaw extends Command
 {
@@ -29,11 +28,10 @@ class MysqlRaw extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle()
     {
-        return $process->dockerComposeExec(
-            '-e MYSQL_PWD=' . env('DB_PASSWORD') . ' mysql mysql -u root',
-            $this->getArgs()
+        return $this->commandExecutor->run(
+            Mysql::make($this->getArgs())
         );
     }
 }

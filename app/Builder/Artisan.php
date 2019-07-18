@@ -6,15 +6,15 @@ class Artisan extends Command
 {
     public function getProgramName()
     {
-        return 'app php artisan';
+        return 'artisan';
     }
 
     public function makeWrapper() : ?Command
     {
-        return (new DockerComposeExec())->setUser(env('FWD_ASUSER'));
+        return Php::make();
     }
 
-    public function getDockerComposeExec() : DockerComposeExec
+    public function getPhp() : Php
     {
         return $this->wrapper;
     }

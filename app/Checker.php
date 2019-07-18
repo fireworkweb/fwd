@@ -1,0 +1,95 @@
+<?php
+
+namespace App;
+
+use App\Builder\Docker;
+use App\Builder\Command;
+use App\Builder\DockerCompose;
+
+class Checker
+{
+    const DOCKER_MIN_VERSION = '18.09';
+    const DOCKER_API_MIN_VERSION = '1.25';
+    const DOCKER_COMPOSE_MIN_VERSION = '1.23';
+
+    protected $commandExecutor;
+    protected $dockerVersion;
+    protected $dockerApiVersion;
+    protected $dockerComposeVersion;
+
+    public function __construct(CommandExecutor $commandExecutor)
+    {
+        $this->commandExecutor = $commandExecutor;
+    }
+
+    public function dockerVersion()
+    {
+        if (is_null($this->dockerVersion)) {
+            $this->dockerVersion = $this->version(
+                Docker::make("version --format '{{.Server.APIVersion}}'")
+            );
+        }
+
+        return $this->dockerVersion;
+    }
+
+    public function dockerApiVersion()
+    {
+        if (is_null($this->dockerApiVersion)) {
+            $this->dockerApiVersion = $this->version(
+                Docker::make("version --format '{{.Server.APIVersion}}'")
+            );
+        }
+
+        return $this->dockerApiVersion;
+    }
+
+    public function dockerComposeVersion()
+    {
+        if (is_null($this->dockerComposeVersion)) {
+            $this->dockerComposeVersion = $this->version(
+                DockerCompose::make('version --short')
+            );
+        }
+
+        return $this->dockerComposeVersion;
+    }
+
+    public function checkDocker(): bool
+    {
+        return version_compare(
+            $this->dockerVersion(),
+            self::DOCKER_MIN_VERSION,
+            '>='
+        );
+    }
+
+    public function checkDockerApi(): bool
+    {
+        return version_compare(
+            $this->dockerApiVersion(),
+            self::DOCKER_API_MIN_VERSION,
+            '>='
+        );
+    }
+
+    public function checkDockerCompose(): bool
+    {
+        return version_compare(
+            $this->dockerComposeVersion(),
+            self::DOCKER_COMPOSE_MIN_VERSION,
+            '>='
+        );
+    }
+
+    protected function version(Command $command)
+    {
+        $exitCode = $this->commandExecutor->runQuietly($command);
+
+        if ($exitCode) {
+            return false;
+        }
+
+        return $this->commandExecutor->getOutputBuffer() ?: false;
+    }
+}

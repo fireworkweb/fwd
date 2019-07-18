@@ -2,19 +2,19 @@
 
 namespace Tests\Feature;
 
-use App\Process;
+use App\Checker;
 use Tests\TestCase;
 use App\CommandExecutor;
-use App\Commands\CheckDockerVersion;
-use App\Commands\CheckDockerComposeVersion;
 
 class StartTest extends TestCase
 {
     public function testStart()
     {
-        resolve(CommandExecutor::class)
-            ->shouldReceive('getOutputBuffer')
-            ->andReturn(CheckDockerVersion::DOCKER_MIN_VERSION, CheckDockerComposeVersion::DOCKER_COMPOSE_MIN_VERSION);
+        $this->mockChecker(
+            Checker::DOCKER_MIN_VERSION,
+            Checker::DOCKER_API_MIN_VERSION,
+            Checker::DOCKER_COMPOSE_MIN_VERSION
+        );
 
         $this->artisan('start')->assertExitCode(0);
 
@@ -23,46 +23,80 @@ class StartTest extends TestCase
 
     public function testStartOldVersionAllDependencies()
     {
-        resolve(CommandExecutor::class)
-            ->shouldReceive('getOutputBuffer')
-            ->andReturn('0.0.0');
+        $this->mockChecker(
+            '0.0.0',
+            '0.0.0',
+            '0.0.0'
+        );
 
         $this->artisan('start')->assertExitCode(1);
     }
 
     public function testStartOldVersionDockerDependency()
     {
-        resolve(CommandExecutor::class)
-            ->shouldReceive('getOutputBuffer')
-            ->andReturn('0.0.0', CheckDockerComposeVersion::DOCKER_COMPOSE_MIN_VERSION);
+        $this->mockChecker(
+            '0.0.0',
+            Checker::DOCKER_API_MIN_VERSION,
+            Checker::DOCKER_COMPOSE_MIN_VERSION
+        );
+
+        $this->artisan('start')->assertExitCode(1);
+    }
+
+    public function testStartOldVersionDockerAPIDependency()
+    {
+        $this->mockChecker(
+            Checker::DOCKER_MIN_VERSION,
+            '0.0.0',
+            Checker::DOCKER_COMPOSE_MIN_VERSION
+        );
 
         $this->artisan('start')->assertExitCode(1);
     }
 
     public function testStartOldVersionDockerComposeDependency()
     {
-        resolve(CommandExecutor::class)
-            ->shouldReceive('getOutputBuffer')
-            ->andReturn(CheckDockerVersion::DOCKER_MIN_VERSION, '0.0.0');
+        $this->mockChecker(
+            Checker::DOCKER_MIN_VERSION,
+            Checker::DOCKER_API_MIN_VERSION,
+            '0.0.0'
+        );
 
         $this->artisan('start')->assertExitCode(1);
     }
 
-    public function testStartTimeout()
-    {
-        resolve(CommandExecutor::class)
-            ->shouldReceive('getOutputBuffer')
-            ->andReturn(CheckDockerVersion::DOCKER_MIN_VERSION, CheckDockerComposeVersion::DOCKER_COMPOSE_MIN_VERSION);
+    protected function mockChecker(
+        $dockerVersion,
+        $dockerApiVersion,
+        $dockerComposeVersion
+    ) {
+        $this->mock(Checker::class, function ($mock) use (
+            $dockerVersion,
+            $dockerApiVersion,
+            $dockerComposeVersion
+        ) {
+            $mock->shouldReceive('dockerVersion')
+                ->andReturn($dockerVersion);
 
-        resolve(Process::class)
-            ->shouldReceive('dockerCompose')
-            ->withArgs(function ($command) {
-                return $command === 'ps';
-            })
-            ->andReturn(1);
+            $mock->shouldReceive('dockerApiVersion')
+                ->andReturn($dockerApiVersion);
 
-        $this->artisan('start --timeout=1')
-            ->expectsOutput('Timed out waiting the command to finish')
-            ->assertExitCode(1);
+            $mock->shouldReceive('dockerComposeVersion')
+                ->andReturn($dockerComposeVersion);
+        })->makePartial();
     }
+
+    // public function testStartTimeout()
+    // {
+    //     resolve(CommandExecutor::class)
+    //         ->shouldReceive('getOutputBuffer')
+    //         ->andReturn(
+    //             CheckDockerVersion::DOCKER_MIN_VERSION,
+    //             CheckDockerComposeVersion::DOCKER_COMPOSE_MIN_VERSION
+    //         );
+
+    //     $this->artisan('start --timeout=1')
+    //         ->expectsOutput('Timed out waiting the command to finish')
+    //         ->assertExitCode(1);
+    // }
 }

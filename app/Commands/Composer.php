@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\CommandExecutor;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
-use App\Builder\Composer as ComposerCommand;
+use App\Builder\Composer as ComposerBuilder;
 
 class Composer extends Command
 {
@@ -30,8 +28,10 @@ class Composer extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(new ComposerCommand($this->getArgs()));
+        return $this->commandExecutor->run(
+            ComposerBuilder::make($this->getArgs())
+        );
     }
 }

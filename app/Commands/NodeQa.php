@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\CommandExecutor;
 use App\Commands\Traits\HasDynamicArgs;
 use App\Builder\NodeQa as NodeQaBuilder;
-use LaravelZero\Framework\Commands\Command;
 
 class NodeQa extends Command
 {
@@ -30,9 +28,11 @@ class NodeQa extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(new NodeQaBuilder($this->getArgs()));
+        return $this->commandExecutor->run(
+            NodeQaBuilder::make($this->getArgs())
+        );
     }
 
     /**

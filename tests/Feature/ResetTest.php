@@ -20,11 +20,11 @@ class ResetTest extends TestCase
 
         $this->assertReset();
 
-        $this->asFWDUser()->assertCommandCalled('artisan', ['clear-compiled']);
-        $this->asFWDUser()->assertCommandCalled('artisan', ['cache:clear']);
-        $this->asFWDUser()->assertCommandCalled('artisan', ['config:clear']);
-        $this->asFWDUser()->assertCommandCalled('artisan', ['route:clear']);
-        $this->asFWDUser()->assertCommandCalled('artisan', ['view:clear']);
+        $this->asFwdUser()->assertDockerComposeExec("app php artisan clear-compiled");
+        $this->asFwdUser()->assertDockerComposeExec("app php artisan cache:clear");
+        $this->asFwdUser()->assertDockerComposeExec("app php artisan config:clear");
+        $this->asFwdUser()->assertDockerComposeExec("app php artisan route:clear");
+        $this->asFwdUser()->assertDockerComposeExec("app php artisan view:clear");
     }
 
     public function testResetWithClearLogs()
@@ -58,39 +58,40 @@ class ResetTest extends TestCase
 
         $this->artisan('reset .env.dusk.local')->assertExitCode(0);
 
-        $this->asFWDUser()->assertDockerComposeExec('app composer install');
-        $this->assertCommandCalled('mysql-raw', ['-e', 'drop database if exists dusk']);
-        $this->assertCommandCalled('mysql-raw', ['-e', 'create database dusk']);
-        $this->assertCommandCalled('mysql-raw', ['-e', 'grant all on dusk.* to docker@"%"']);
+        $this->asFwdUser()->assertDockerComposeExec('app composer install');
+        $this->setAsUser(null);
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' mysql mysql -u root -e 'drop database if exists dusk'");
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' mysql mysql -u root -e 'create database dusk'");
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' mysql mysql -u root -e 'grant all on dusk.* to docker@\"%\"'");
 
-        $this->asFWDUser()->assertDockerComposeExec(
+        $this->asFwdUser()->assertDockerComposeExec(
             '-e DB_PASSWORD=\'secret\'',
             '-e DB_USERNAME=\'docker\'',
             '-e DB_DATABASE=\'dusk\'',
             'app php artisan migrate:fresh --seed'
         );
 
-        $this->assertCommandCalled('yarn', ['install']);
-        $this->assertCommandCalled('yarn', ['dev']);
+        $this->assertDockerRun('fireworkweb/node:alpine yarn install');
+        $this->assertDockerRun('fireworkweb/node:alpine yarn dev');
     }
 
     protected function assertReset($noSeed = false)
     {
-        $this->asFWDUser()->assertDockerComposeExec('app composer install');
+        $this->asFwdUser()->assertDockerComposeExec('app composer install');
         $this->assertDockerComposeExec('redis redis-cli flushall');
         $this->setAsUser(null);
-        $this->assertCommandCalled('mysql-raw', ['-e', 'drop database if exists docker']);
-        $this->assertCommandCalled('mysql-raw', ['-e', 'create database docker']);
-        $this->assertCommandCalled('mysql-raw', ['-e', 'grant all on docker.* to docker@"%"']);
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' mysql mysql -u root -e 'drop database if exists docker'");
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' mysql mysql -u root -e 'create database docker'");
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' mysql mysql -u root -e 'grant all on docker.* to docker@\"%\"'");
 
-        $this->asFWDUser()->assertDockerComposeExec(
+        $this->asFwdUser()->assertDockerComposeExec(
             '-e DB_PASSWORD=\'secret\'',
             '-e DB_USERNAME=\'docker\'',
             '-e DB_DATABASE=\'docker\'',
             'app php artisan migrate:fresh ' . (! $noSeed ? '--seed' : '')
         );
 
-        $this->assertCommandCalled('yarn', ['install']);
-        $this->assertCommandCalled('yarn', ['dev']);
+        $this->assertDockerRun('fireworkweb/node:alpine yarn install');
+        $this->assertDockerRun('fireworkweb/node:alpine yarn dev');
     }
 }

@@ -2,9 +2,6 @@
 
 namespace App\Commands;
 
-use App\Environment;
-use LaravelZero\Framework\Commands\Command;
-
 class Dump extends Command
 {
     /**
@@ -26,9 +23,9 @@ class Dump extends Command
      *
      * @return mixed
      */
-    public function handle(Environment $environment): void
+    public function handle(): void
     {
-        $this->table(['Variable', 'Value'], $this->getTableValues($environment));
+        $this->table(['Variable', 'Value'], $this->getTableValues());
     }
 
     /**
@@ -36,9 +33,9 @@ class Dump extends Command
      *
      * @return array
      */
-    protected function getTableValues(Environment $environment): array
+    protected function getTableValues(): array
     {
-        return collect($environment->getValues())
+        return collect($this->environment->getValues())
             ->sortKeys()
             ->map(function ($value, $key) {
                 return [$key, $value];

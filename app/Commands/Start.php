@@ -2,14 +2,12 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\RunTask;
-use App\Commands\Traits\ArtisanCall;
-use LaravelZero\Framework\Commands\Command;
+use App\Checker;
+use App\Builder\Mysql;
+use App\Builder\DockerCompose;
 
 class Start extends Command
 {
-    use ArtisanCall, RunTask;
-
     /**
      * The signature of the command.
      *
@@ -28,44 +26,61 @@ class Start extends Command
 
     protected $seconds = 0;
 
+    protected $checker;
+
     /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(Checker $checker)
     {
-        $commands = [
-            [$this, 'dockerComposePs'],
+        $this->checker = $checker;
+
+        return $this->runCommands([
+            [$this, 'checkDependencies'],
             [$this, 'dockerComposeUpD'],
             [$this, 'mysql'],
-        ];
-
-        // Run commands, first that isn't success (0) stops and return that exitCode
-        foreach ($commands as $command) {
-            if ($exitCode = call_user_func($command)) {
-                return $exitCode;
-            }
-        }
+        ]);
     }
 
-    protected function dockerComposePs()
+    protected function checkDependencies()
     {
         return $this->runTask('Checking dependencies', function () {
-            if ($this->artisanCall('check-docker-version')) {
-                $this->error('Incompatible docker version.');
+            if (! $this->checker->checkDocker()) {
+                $this->error(sprintf(
+                    'Incompatible docker version (Current: %s Required: %s).',
+                    $this->checker->dockerVersion(),
+                    Checker::DOCKER_MIN_VERSION
+                ));
 
                 return 1;
             }
 
-            if ($this->artisanCall('check-docker-compose-version')) {
-                $this->error('Incompatible docker-compose version.');
+            if (! $this->checker->checkDockerApi()) {
+                $this->error(sprintf(
+                    'Incompatible docker api version (Current: %s Required: %s).',
+                    $this->checker->dockerApiVersion(),
+                    Checker::DOCKER_API_MIN_VERSION
+                ));
+
+                return 1;
+            }
+
+            if (! $this->checker->checkDockerCompose()) {
+                $this->error(sprintf(
+                    'Incompatible docker-compose version (Current: %s Required: %s).',
+                    $this->checker->dockerComposeVersion(),
+                    Checker::DOCKER_COMPOSE_MIN_VERSION
+                ));
 
                 return 1;
             }
 
             return $this->runCommand(function () {
-                return $this->artisanCallNoOutput('ps');
+                return $this->commandExecutor->runQuietly(
+                    DockerCompose::make('ps')
+                );
             });
         });
     }
@@ -73,16 +88,18 @@ class Start extends Command
     protected function dockerComposeUpD()
     {
         return $this->runTask('Starting fwd', function () {
-            return $this->artisanCallNoOutput('up', ['-d']);
+            return $this->commandExecutor->runQuietly(
+                DockerCompose::make('up', '-d')
+            );
         });
     }
 
     protected function mysql()
     {
         return $this->runTask('Checking MySQL', function () {
-            return $this->runCommand(function () {
-                return $this->artisanCallNoOutput('mysql-raw', ['-e', 'SELECT 1']);
-            });
+            return $this->commandExecutor->runQuietly(
+                Mysql::make('-e', 'SELECT 1')
+            );
         });
     }
 

@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\CommandExecutor;
 use App\Builder\PhpQa as PhpQaBuilder;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class PhpCsFixer extends Command
 {
@@ -30,9 +28,11 @@ class PhpCsFixer extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(new PhpQaBuilder('php-cs-fixer', $this->getArgs()));
+        return $this->commandExecutor->run(
+            PhpQaBuilder::make('php-cs-fixer', $this->getArgs())
+        );
     }
 
     /**

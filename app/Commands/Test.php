@@ -2,9 +2,8 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\Builder\Php;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class Test extends Command
 {
@@ -29,11 +28,10 @@ class Test extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle()
     {
-        return $process->asFWDUser()->dockerComposeExec(
-            'app ./vendor/bin/phpunit',
-            $this->getArgs()
+        return $this->commandExecutor->run(
+            Php::make('vendor/bin/phpunit', $this->getArgs())
         );
     }
 }

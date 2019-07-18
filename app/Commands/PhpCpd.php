@@ -3,9 +3,7 @@
 namespace App\Commands;
 
 use App\Builder\PhpQa;
-use App\CommandExecutor;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class PhpCpd extends Command
 {
@@ -30,9 +28,11 @@ class PhpCpd extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(new PhpQa('phpcpd', $this->getArgs()));
+        return $this->commandExecutor->run(
+            PhpQa::make('phpcpd', $this->getArgs())
+        );
     }
 
     /**

@@ -2,11 +2,11 @@
 
 namespace App\Builder;
 
-class Composer extends Php
+class Php extends Command
 {
     public function getProgramName()
     {
-        return 'app composer';
+        return 'app php';
     }
 
     public function makeWrapper() : ?Command
