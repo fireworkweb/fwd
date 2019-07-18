@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Builder\Artisan;
+use App\Commands\Traits\HasDynamicArgs;
 
 class Dusk extends Command
 {

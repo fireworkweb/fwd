@@ -1,7 +1,7 @@
 <?php
 
-use App\Builder\Command as Builder;
 use App\Commands\Command;
+use App\Builder\Command as Builder;
 
 class Custom extends Command
 {

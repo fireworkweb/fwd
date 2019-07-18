@@ -66,7 +66,7 @@ abstract class TestCase extends BaseTestCase
         $params = [
             env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose'),
             sprintf('-p %s exec', basename(getcwd())),
-            env('FWD_COMPOSE_EXEC_FLAGS')
+            env('FWD_COMPOSE_EXEC_FLAGS'),
         ];
 
         if (! empty($this->asUser)) {

@@ -46,7 +46,6 @@ class Install extends Command
             $this->environment->getContextDockerCompose()
         );
 
-
         File::copy(
             $this->environment->getDefaultFwd(),
             $this->environment->getContextEnv('.fwd')

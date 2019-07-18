@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Builder\Mysql as MysqlBuilder;
+use App\Commands\Traits\HasDynamicArgs;
 
 class Mysql extends Command
 {

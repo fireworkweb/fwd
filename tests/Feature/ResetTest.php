@@ -20,11 +20,11 @@ class ResetTest extends TestCase
 
         $this->assertReset();
 
-        $this->asFwdUser()->assertDockerComposeExec("app php artisan clear-compiled");
-        $this->asFwdUser()->assertDockerComposeExec("app php artisan cache:clear");
-        $this->asFwdUser()->assertDockerComposeExec("app php artisan config:clear");
-        $this->asFwdUser()->assertDockerComposeExec("app php artisan route:clear");
-        $this->asFwdUser()->assertDockerComposeExec("app php artisan view:clear");
+        $this->asFwdUser()->assertDockerComposeExec('app php artisan clear-compiled');
+        $this->asFwdUser()->assertDockerComposeExec('app php artisan cache:clear');
+        $this->asFwdUser()->assertDockerComposeExec('app php artisan config:clear');
+        $this->asFwdUser()->assertDockerComposeExec('app php artisan route:clear');
+        $this->asFwdUser()->assertDockerComposeExec('app php artisan view:clear');
     }
 
     public function testResetWithClearLogs()
