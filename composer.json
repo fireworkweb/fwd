@@ -21,6 +21,7 @@
     ],
     "require": {
         "php": "^7.1.3",
+        "brick/reflection": "^0.2.2",
         "laravel-zero/framework": "5.8.*",
         "padraic/phar-updater": "^1.0.6",
         "vlucas/phpdotenv": "^3.3",
