@@ -16,13 +16,6 @@ class Dusk extends Command
     use ArtisanCall, HasDynamicArgs;
 
     /**
-     * The name of the command.
-     *
-     * @var string
-     */
-    protected $name = 'dusk';
-
-    /**
      * The signature of the command.
      *
      * @var string
@@ -46,13 +39,12 @@ class Dusk extends Command
     public function handle(Process $process)
     {
         $changedFiles = collect(explode(' ', $this->option('files')))
+            ->filter()
             ->map(function ($file) {
-                include($file);
-
-                return end(get_declared_classes());
+                return $this->get_class_from_file($file);
             });
 
-        if (! $changedFiles) {
+        if ($changedFiles->isEmpty()) {
             return $process->asFWDUser()->dockerComposeExec('app php artisan dusk', $this->getArgs());
         }
 
@@ -64,9 +56,7 @@ class Dusk extends Command
 
         $filter = collect($files)
             ->map(function ($file) {
-                include($file);
-
-                return end(get_declared_classes());
+                return $this->get_class_from_file($file);
             })
             ->filter(function ($class) use ($changedFiles) {
 
@@ -75,13 +65,11 @@ class Dusk extends Command
                         return $carry || $changedFiles->contains($item);
                     });
             })
-            ->join(' ');
+            ->join('|');
 
         return $process->asFWDUser()->dockerComposeExec('app php artisan dusk',
-            array_merge(
-                $this->getArgs(),
-                ['--filter' => $filter]
-            )
+            preg_replace('/(?:--files=\'[\w\/.]+\'\s+?)|(?:--dir=\'[\w\/.]+\'(\s+)?)/i', '', $this->getArgs()),
+            "--filter='$filter'"
         );
     }
 
@@ -97,5 +85,39 @@ class Dusk extends Command
             ->map(function ($class) use ($resolver) {
                 return $resolver->resolve($class);
             });
+    }
+
+    function get_class_from_file($path_to_file)
+    {
+        $contents = file_get_contents($path_to_file);
+        $namespace = $class = "";
+        $getting_namespace = $getting_class = false;
+
+        foreach (token_get_all($contents) as $token) {
+            if (is_array($token) && $token[0] == T_NAMESPACE) {
+                $getting_namespace = true;
+            }
+
+            if (is_array($token) && $token[0] == T_CLASS) {
+                $getting_class = true;
+            }
+
+            if ($getting_namespace === true) {
+                if (is_array($token) && in_array($token[0], [T_STRING, T_NS_SEPARATOR])) {
+                    $namespace .= $token[1];
+                } else if ($token === ';') {
+                    $getting_namespace = false;
+                }
+            }
+
+            if ($getting_class === true) {
+                if (is_array($token) && $token[0] == T_STRING) {
+                    $class = $token[1];
+                    break;
+                }
+            }
+        }
+
+        return $namespace ? $namespace . '\\' . $class : $class;
     }
 }
