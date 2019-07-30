@@ -86,7 +86,7 @@ class Dusk extends Command
             });
     }
 
-    function get_class_from_file($path_to_file)
+    protected function get_class_from_file($path_to_file)
     {
         $contents = file_get_contents($path_to_file);
         $namespace = $class = '';
