@@ -2,14 +2,14 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\ArtisanCall;
-use App\Commands\Traits\HasDynamicArgs;
 use App\Process;
-use Brick\Reflection\ImportResolver;
-use Illuminate\Support\Collection;
-use LaravelZero\Framework\Commands\Command;
 use ReflectionClass;
+use Illuminate\Support\Collection;
+use App\Commands\Traits\ArtisanCall;
+use Brick\Reflection\ImportResolver;
 use Symfony\Component\Finder\Finder;
+use App\Commands\Traits\HasDynamicArgs;
+use LaravelZero\Framework\Commands\Command;
 
 class Dusk extends Command
 {
@@ -59,7 +59,6 @@ class Dusk extends Command
                 return $this->get_class_from_file($file);
             })
             ->filter(function ($class) use ($changedFiles) {
-
                 return $this->getClassAnnotations($class)
                     ->reduce(function ($carry, $item) use ($changedFiles) {
                         return $carry || $changedFiles->contains($item);
@@ -90,7 +89,7 @@ class Dusk extends Command
     function get_class_from_file($path_to_file)
     {
         $contents = file_get_contents($path_to_file);
-        $namespace = $class = "";
+        $namespace = $class = '';
         $getting_namespace = $getting_class = false;
 
         foreach (token_get_all($contents) as $token) {
@@ -105,7 +104,7 @@ class Dusk extends Command
             if ($getting_namespace === true) {
                 if (is_array($token) && in_array($token[0], [T_STRING, T_NS_SEPARATOR])) {
                     $namespace .= $token[1];
-                } else if ($token === ';') {
+                } elseif ($token === ';') {
                     $getting_namespace = false;
                 }
             }

@@ -2,18 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\Commands\Dusk;
 use Tests\TestCase;
+use App\Commands\Dusk;
 
 /**
  * @see Dusk
  */
 class DuskFilterTestOne extends TestCase
 {
-
     public function dusk()
     {
         Dusk::class;
     }
-
 }
