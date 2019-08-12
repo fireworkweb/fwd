@@ -47,7 +47,7 @@ class CommandExecutor
 
         $this->enableOutput();
 
-        if ($exitCode) {
+        if ($exitCode || env('FWD_VERBOSE')) {
             $this->print($this->getOutputBuffer());
         }
 
@@ -113,7 +113,7 @@ class CommandExecutor
 
     protected function getDescriptors() : array
     {
-        if ($this->output || env('FWD_VERBOSE')) {
+        if ($this->output) {
             return [STDIN, STDOUT, STDERR];
         }
 

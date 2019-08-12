@@ -29,9 +29,9 @@ abstract class Command extends BaseCommand
         return 0;
     }
 
-    public function runTask(string $title, \Closure $task)
+    public function runTask(string $title, \Closure $task): int
     {
-        $exitCode = null;
+        $exitCode = 0;
 
         $this->task($title, function () use (&$exitCode, $task) {
             return ! ($exitCode = $task());
@@ -53,5 +53,10 @@ abstract class Command extends BaseCommand
         $this->environment = app(Environment::class);
 
         return parent::execute($input, $output);
+    }
+
+    public function getCommandExecutor()
+    {
+        return $this->commandExecutor;
     }
 }

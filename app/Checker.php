@@ -26,7 +26,7 @@ class Checker
     {
         if (is_null($this->dockerVersion)) {
             $this->dockerVersion = $this->version(
-                Docker::make("version --format '{{.Server.APIVersion}}'")
+                Docker::make("version --format '{{.Server.Version}}'")
             );
         }
 

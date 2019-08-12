@@ -2,7 +2,7 @@
 
 namespace App\Commands;
 
-use App\Builder\PhpQa as PhpQaBuilder;
+use App\Tasks\PhpMnd as PhpMndTask;
 use App\Commands\Traits\HasDynamicArgs;
 
 class PhpMnd extends Command
@@ -30,24 +30,6 @@ class PhpMnd extends Command
      */
     public function handle()
     {
-        return $this->commandExecutor->run(
-            PhpQaBuilder::make('phpmnd', $this->getArgs())
-        );
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return implode(' ', [
-            'app/',
-            '--ignore-funcs=round,sleep,abort,strpad,number_format',
-            '--exclude=tests',
-            '--progress',
-            '--extensions=default_parameter,-return,argument',
-        ]);
+        return PhpMndTask::make($this)->run($this->getArgs());
     }
 }

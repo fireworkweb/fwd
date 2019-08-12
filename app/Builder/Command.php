@@ -32,7 +32,12 @@ class Command
 
     public function makeArgs(...$args) : array
     {
-        return $args;
+        return array_filter($args) ?: $this->getDefaultArgs();
+    }
+
+    public function getDefaultArgs(): array
+    {
+        return [];
     }
 
     public function setArgs(array $args) : self
