@@ -1,0 +1,21 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@master
+    
+    - name: Composer install
+      uses: docker://jakzal/phpqa:alpine
+      run: |
+        composer self-update
+        composer update --no-interaction --prefer-dist
+    
+    - name: PHPUnit
+      uses: docker://jakzal/phpqa:alpine
+      run: ./vendor/bin/phpunit --coverage-clover=coverage.xml
