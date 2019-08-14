@@ -19,3 +19,9 @@ jobs:
       uses: fireworkweb/fwd@github-actions-test
       with:
         args: fwd test --coverage-clover=coverage.xml
+
+  services:
+    dind:
+      image: docker:dind
+      options:
+        privileged: true

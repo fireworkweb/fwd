@@ -5,8 +5,3 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   entrypoint: 'fwd'
-services:
-  dind:
-    image: docker:dind
-    options:
-      privileged: true
