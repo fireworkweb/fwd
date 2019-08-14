@@ -4,18 +4,18 @@ on: [push, pull_request]
 
 jobs:
   build:
-    
+
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@master
-    
+
     - name: Composer install
-      uses: docker://jakzal/phpqa:alpine
+      uses: docker://fireworkweb/fwd
       with:
         args: composer update --no-interaction --prefer-dist
-    
+
     - name: PHPUnit
-      uses: docker://jakzal/phpqa:alpine
+      uses: docker://fireworkweb/fwd
       with:
         args: ./vendor/bin/phpunit --coverage-clover=coverage.xml
