@@ -11,11 +11,11 @@ jobs:
     - uses: actions/checkout@master
 
     - name: Composer install
-      uses: docker://fireworkweb/fwd
+      uses: fireworkweb/fwd@github-actions-test
       with:
         args: composer update --no-interaction --prefer-dist
 
     - name: PHPUnit
-      uses: docker://fireworkweb/fwd
+      uses: fireworkweb/fwd@github-actions-test
       with:
         args: ./vendor/bin/phpunit --coverage-clover=coverage.xml

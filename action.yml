@@ -1,0 +1,7 @@
+name: 'FWD Action'
+description: 'Run your fwd commands on Github Actions'
+author: 'Firework Web'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  entrypoint: 'fwd'
