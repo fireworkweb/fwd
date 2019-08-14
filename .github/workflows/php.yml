@@ -4,11 +4,16 @@ on: [push, pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@master
+    - name: Checkout code
+      uses: actions/checkout@master
+
+    - name: Wait a few secs
+      uses: maddox/actions/sleep@master
+      with:
+        args: 10
 
     - name: Composer install
       uses: fireworkweb/fwd@github-actions-test
