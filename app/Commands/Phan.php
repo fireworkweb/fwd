@@ -2,7 +2,7 @@
 
 namespace App\Commands;
 
-use App\Builder\PhpQa;
+use App\Builder\Phan as PhanBuilder;
 use App\Commands\Traits\HasDynamicArgs;
 
 class Phan extends Command
@@ -31,17 +31,7 @@ class Phan extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            PhpQa::make('phan', $this->getArgs())
+            PhanBuilder::make($this->getArgs())
         );
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return '--color -p -l app -iy 5';
     }
 }

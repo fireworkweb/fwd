@@ -25,13 +25,17 @@ class Command
         return new static(...$args);
     }
 
-    public function getProgramName()
+    public function getProgramName() : string
     {
         return '';
     }
 
     public function makeArgs(...$args) : array
     {
+        if (empty($args)) {
+            return [];
+        }
+
         return array_filter($args) ?: $this->getDefaultArgs();
     }
 

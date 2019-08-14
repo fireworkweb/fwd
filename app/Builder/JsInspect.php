@@ -2,25 +2,25 @@
 
 namespace App\Builder;
 
-class Php extends Command
+class JsInspect extends Command
 {
     public function getProgramName() : string
     {
-        return 'app php';
+        return 'jsinspect';
     }
 
     public function makeWrapper() : ?Command
     {
-        return DockerComposeExec::make()->setUser(env('FWD_ASUSER'));
+        return NodeQa::make();
     }
 
-    public function getDockerComposeExec() : DockerComposeExec
+    public function getNodeQa() : Node
     {
         return $this->wrapper;
     }
 
     public function getDefaultArgs(): array
     {
-        return ['-v'];
+        return ['src/'];
     }
 }

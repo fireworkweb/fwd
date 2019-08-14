@@ -2,11 +2,11 @@
 
 namespace App\Builder;
 
-class PhpMnd extends Command
+class PhpMd extends Command
 {
     public function getProgramName() : string
     {
-        return 'phpmnd';
+        return 'phpmd';
     }
 
     public function makeWrapper() : ?Command
@@ -22,11 +22,15 @@ class PhpMnd extends Command
     public function getDefaultArgs(): array
     {
         return [
-            'app/',
-            '--ignore-funcs=round,sleep,abort,strpad,number_format',
-            '--exclude=tests',
-            '--progress',
-            '--extensions=default_parameter,-return,argument',
+            'app/ text',
+            implode(',', [
+                'phpmd/codesize.xml',
+                'phpmd/controversial.xml',
+                'phpmd/design.xml',
+                'phpmd/naming.xml',
+                'unusedcode',
+                'phpmd/cleancode.xml',
+            ]),
         ];
     }
 }

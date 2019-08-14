@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Builder\PhpCpd as PhpCpdBuilder;
 use App\Builder\PhpQa;
 use App\Commands\Traits\HasDynamicArgs;
 
@@ -31,17 +32,7 @@ class PhpCpd extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            PhpQa::make('phpcpd', $this->getArgs())
+            PhpCpdBuilder::make($this->getArgs())
         );
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return '--fuzzy app/';
     }
 }

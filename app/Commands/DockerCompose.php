@@ -34,14 +34,4 @@ class DockerCompose extends Command
             DockerComposeBuilder::make($this->getArgs())
         );
     }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return 'ps';
-    }
 }

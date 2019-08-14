@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Builder\PhpQa as PhpQaBuilder;
 use App\Commands\Traits\HasDynamicArgs;
+use App\Builder\PhpCsFixer as PhpCsFixerBuilder;
 
 class PhpCsFixer extends Command
 {
@@ -31,17 +31,7 @@ class PhpCsFixer extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            PhpQaBuilder::make('php-cs-fixer', $this->getArgs())
+            PhpCsFixerBuilder::make($this->getArgs())
         );
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return 'fix app --format=txt --dry-run --diff --verbose';
     }
 }

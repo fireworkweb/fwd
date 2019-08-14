@@ -8,7 +8,7 @@ class DockerRun extends Command
 {
     use HasEnvironmentVariables;
 
-    public function getProgramName()
+    public function getProgramName() : string
     {
         return 'run';
     }

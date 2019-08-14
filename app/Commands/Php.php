@@ -34,14 +34,4 @@ class Php extends Command
             PhpBuilder::make($this->getArgs())
         );
     }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return '-v';
-    }
 }

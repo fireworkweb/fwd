@@ -2,7 +2,7 @@
 
 namespace App\Commands;
 
-use App\Builder\PhpQa as PhpQaBuilder;
+use App\Builder\PhpMd as PhpMdBuilder;
 use App\Commands\Traits\HasDynamicArgs;
 
 class PhpMd extends Command
@@ -31,24 +31,7 @@ class PhpMd extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            PhpQaBuilder::make('phpmd', $this->getArgs())
+            PhpMdBuilder::make($this->getArgs())
         );
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return sprintf('app/ text %s', implode(',', [
-            'phpmd/codesize.xml',
-            'phpmd/controversial.xml',
-            'phpmd/design.xml',
-            'phpmd/naming.xml',
-            'unusedcode',
-            'phpmd/cleancode.xml',
-        ]));
     }
 }

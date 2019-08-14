@@ -2,7 +2,7 @@
 
 namespace App\Commands;
 
-use App\Builder\NodeQa;
+use App\Builder\Buddy as BuddyBuilder;
 use App\Commands\Traits\HasDynamicArgs;
 
 class Buddy extends Command
@@ -31,17 +31,7 @@ class Buddy extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            NodeQa::make('buddy', $this->getArgs())
+            BuddyBuilder::make($this->getArgs())
         );
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return 'src/';
     }
 }

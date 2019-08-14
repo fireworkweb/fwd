@@ -4,7 +4,7 @@ namespace App\Builder;
 
 class DockerCompose extends Command
 {
-    public function getProgramName()
+    public function getProgramName() : string
     {
         return env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose');
     }
@@ -14,6 +14,11 @@ class DockerCompose extends Command
         return array_merge([
             '-p',
             env('FWD_NAME'),
-        ], $args);
+        ], parent::makeArgs(...$args));
+    }
+
+    public function getDefaultArgs(): array
+    {
+        return ['ps'];
     }
 }

@@ -11,7 +11,7 @@ class DockerComposeExec extends Command
     /** @var string $user */
     protected $user = '';
 
-    public function getProgramName()
+    public function getProgramName() : string
     {
         return 'exec';
     }

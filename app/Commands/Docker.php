@@ -34,14 +34,4 @@ class Docker extends Command
             DockerBuilder::make($this->getArgs())
         );
     }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return 'ps';
-    }
 }

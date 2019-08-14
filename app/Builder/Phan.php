@@ -2,25 +2,25 @@
 
 namespace App\Builder;
 
-class Php extends Command
+class Phan extends Command
 {
     public function getProgramName() : string
     {
-        return 'app php';
+        return 'phan';
     }
 
     public function makeWrapper() : ?Command
     {
-        return DockerComposeExec::make()->setUser(env('FWD_ASUSER'));
+        return PhpQa::make();
     }
 
-    public function getDockerComposeExec() : DockerComposeExec
+    public function getPhpQa(): PhpQa
     {
         return $this->wrapper;
     }
 
     public function getDefaultArgs(): array
     {
-        return ['-v'];
+        return ['--color -p -l app -iy 5'];
     }
 }

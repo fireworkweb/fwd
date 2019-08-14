@@ -4,7 +4,7 @@ namespace App\Builder;
 
 class RedisCli extends Command
 {
-    public function getProgramName()
+    public function getProgramName() : string
     {
         return 'redis redis-cli';
     }

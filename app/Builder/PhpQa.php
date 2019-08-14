@@ -8,4 +8,9 @@ class PhpQa extends Command
     {
         return (new DockerRun())->addArgument(env('FWD_IMAGE_PHP_QA'));
     }
+
+    public function getDefaultArgs(): array
+    {
+        return ['php -v'];
+    }
 }

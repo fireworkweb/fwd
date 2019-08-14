@@ -2,25 +2,25 @@
 
 namespace App\Builder;
 
-class Php extends Command
+class PhpCsFixer extends Command
 {
     public function getProgramName() : string
     {
-        return 'app php';
+        return 'php-cs-fixer';
     }
 
     public function makeWrapper() : ?Command
     {
-        return DockerComposeExec::make()->setUser(env('FWD_ASUSER'));
+        return PhpQa::make();
     }
 
-    public function getDockerComposeExec() : DockerComposeExec
+    public function getPhpQa(): PhpQa
     {
         return $this->wrapper;
     }
 
     public function getDefaultArgs(): array
     {
-        return ['-v'];
+        return ['fix app --format=txt --dry-run --diff --verbose'];
     }
 }

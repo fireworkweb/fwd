@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Builder\NodeQa;
 use App\Commands\Traits\HasDynamicArgs;
+use App\Builder\JsInspect as JsInspectBuilder;
 
 class JsInspect extends Command
 {
@@ -31,17 +31,7 @@ class JsInspect extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            NodeQa::make('jsinspect', $this->getArgs())
+            JsInspectBuilder::make($this->getArgs())
         );
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return 'src/';
     }
 }

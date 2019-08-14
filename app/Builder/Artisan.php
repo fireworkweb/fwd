@@ -4,7 +4,7 @@ namespace App\Builder;
 
 class Artisan extends Command
 {
-    public function getProgramName()
+    public function getProgramName() : string
     {
         return 'artisan';
     }

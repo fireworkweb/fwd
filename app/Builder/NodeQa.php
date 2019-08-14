@@ -8,4 +8,9 @@ class NodeQa extends Command
     {
         return (new DockerRun())->addArgument(env('FWD_IMAGE_NODE_QA'));
     }
+
+    public function getDefaultArgs(): array
+    {
+        return ['node -v'];
+    }
 }
