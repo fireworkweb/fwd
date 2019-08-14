@@ -12,6 +12,8 @@ jobs:
 
     - name: Composer install
       uses: fireworkweb/fwd@github-actions-test
+      env:
+        DOCKER_HOST: "${{ jobs.services.dind.ports['2375'] }}"
       with:
         args: fwd composer update --no-interaction --prefer-dist
 
@@ -23,4 +25,6 @@ jobs:
     services:
       dind:
         image: docker:dind
+        ports:
+        - 2375
         options: --privileged
