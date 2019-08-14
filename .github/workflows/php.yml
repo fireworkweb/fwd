@@ -13,9 +13,9 @@ jobs:
     - name: Composer install
       uses: fireworkweb/fwd@github-actions-test
       with:
-        args: composer update --no-interaction --prefer-dist
+        args: fwd composer update --no-interaction --prefer-dist
 
     - name: PHPUnit
       uses: fireworkweb/fwd@github-actions-test
       with:
-        args: ./vendor/bin/phpunit --coverage-clover=coverage.xml
+        args: fwd test --coverage-clover=coverage.xml
