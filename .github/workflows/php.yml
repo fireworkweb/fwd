@@ -24,4 +24,4 @@ jobs:
       dind:
         image: docker:dind
         options:
-          - privileged: true
+          - privileged
