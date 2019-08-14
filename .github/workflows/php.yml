@@ -20,8 +20,8 @@ jobs:
       with:
         args: fwd test --coverage-clover=coverage.xml
 
-  services:
-    dind:
-      image: docker:dind
-      options:
-        privileged: true
+    services:
+      dind:
+        image: docker:dind
+        options:
+          privileged: true
