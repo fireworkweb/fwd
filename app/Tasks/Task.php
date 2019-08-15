@@ -2,8 +2,8 @@
 
 namespace App\Tasks;
 
+use App\Builder\Builder;
 use App\Commands\Command;
-use App\Builder\Command as Builder;
 
 abstract class Task
 {

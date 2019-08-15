@@ -4,7 +4,7 @@ namespace App\Builder;
 
 use App\Builder\Concerns\HasEnvironmentVariables;
 
-class DockerRun extends Command
+class DockerRun extends Builder
 {
     use HasEnvironmentVariables;
 
@@ -24,7 +24,7 @@ class DockerRun extends Command
         ], $args);
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return new Docker();
     }

@@ -4,7 +4,7 @@ namespace App\Builder;
 
 use App\Builder\Concerns\HasEnvironmentVariables;
 
-class DockerComposeExec extends Command
+class DockerComposeExec extends Builder
 {
     use HasEnvironmentVariables;
 
@@ -16,7 +16,7 @@ class DockerComposeExec extends Command
         return 'exec';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return new DockerCompose();
     }
@@ -38,7 +38,7 @@ class DockerComposeExec extends Command
         return $this->user;
     }
 
-    protected function beforeBuild(Command $command) : Command
+    protected function beforeBuild(Builder $command) : Builder
     {
         $command->parseEnvironmentToArgument();
 

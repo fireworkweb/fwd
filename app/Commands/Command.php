@@ -10,10 +10,13 @@ use LaravelZero\Framework\Commands\Command as BaseCommand;
 
 abstract class Command extends BaseCommand
 {
+    /** @var CommandExecutor $commandExecutor */
     protected $commandExecutor;
+
+    /** @var Environment $environment */
     protected $environment;
 
-    public function runCommands(array $commands)
+    public function runCommands(array $commands) : int
     {
         // Run commands, first that isn't success (0) stops and return that exitCode
         foreach ($commands as $command) {
@@ -55,7 +58,7 @@ abstract class Command extends BaseCommand
         return parent::execute($input, $output);
     }
 
-    public function getCommandExecutor()
+    public function getCommandExecutor() : CommandExecutor
     {
         return $this->commandExecutor;
     }

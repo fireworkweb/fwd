@@ -2,14 +2,14 @@
 
 namespace App\Builder;
 
-class Phan extends Command
+class Phan extends Builder
 {
     public function getProgramName() : string
     {
         return 'phan';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return PhpQa::make();
     }

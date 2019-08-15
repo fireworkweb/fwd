@@ -2,7 +2,7 @@
 
 namespace App\Builder;
 
-class Docker extends Command
+class Docker extends Builder
 {
     public function getProgramName() : string
     {

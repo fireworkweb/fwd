@@ -2,9 +2,9 @@
 
 namespace App\Builder;
 
-class PhpQa extends Command
+class PhpQa extends Builder
 {
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return (new DockerRun())->addArgument(env('FWD_IMAGE_PHP_QA'));
     }

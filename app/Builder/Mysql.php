@@ -4,7 +4,7 @@ namespace App\Builder;
 
 use App\Builder\Concerns\HasEnvironmentVariables;
 
-class Mysql extends Command
+class Mysql extends Builder
 {
     use HasEnvironmentVariables;
 
@@ -18,7 +18,7 @@ class Mysql extends Command
         return array_merge(['-u', 'root'], $args);
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return (new DockerComposeExec())
             ->addEnv('MYSQL_PWD', env('DB_PASSWORD'));

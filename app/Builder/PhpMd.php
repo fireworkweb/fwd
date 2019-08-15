@@ -2,14 +2,14 @@
 
 namespace App\Builder;
 
-class PhpMd extends Command
+class PhpMd extends Builder
 {
     public function getProgramName() : string
     {
         return 'phpmd';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return PhpQa::make();
     }

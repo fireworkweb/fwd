@@ -2,14 +2,14 @@
 
 namespace App\Builder;
 
-class RedisCli extends Command
+class RedisCli extends Builder
 {
     public function getProgramName() : string
     {
         return 'redis redis-cli';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return (new DockerComposeExec())->setUser(env('FWD_ASUSER'));
     }

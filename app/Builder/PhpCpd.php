@@ -2,14 +2,14 @@
 
 namespace App\Builder;
 
-class PhpCpd extends Command
+class PhpCpd extends Builder
 {
     public function getProgramName() : string
     {
         return 'phpcpd';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return PhpQa::make();
     }

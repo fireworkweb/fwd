@@ -2,14 +2,14 @@
 
 namespace App\Builder;
 
-class Buddy extends Command
+class Buddy extends Builder
 {
     public function getProgramName() : string
     {
         return 'buddy';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return NodeQa::make();
     }

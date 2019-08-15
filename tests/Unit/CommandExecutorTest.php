@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Builder\Command;
+use App\Builder\Builder;
 use App\CommandExecutor;
 
 class CommandExecutorTest extends TestCase
@@ -12,7 +12,7 @@ class CommandExecutorTest extends TestCase
     {
         $commExec = resolve(CommandExecutor::class);
 
-        $this->assertEquals(0, $commExec->run(new Command('foo')));
+        $this->assertEquals(0, $commExec->run(new Builder('foo')));
 
         $this->assertCommandRun(['foo']);
     }
@@ -21,7 +21,7 @@ class CommandExecutorTest extends TestCase
     {
         $commExec = resolve(CommandExecutor::class);
 
-        $this->assertEquals(0, $commExec->runQuietly(new Command('foo')));
+        $this->assertEquals(0, $commExec->runQuietly(new Builder('foo')));
 
         $this->assertCommandRun(['foo']);
     }
@@ -29,7 +29,7 @@ class CommandExecutorTest extends TestCase
     public function testCommandExecutorOutputNotEmpty()
     {
         $commExec = new CommandExecutor();
-        $commExec->runQuietly(new Command('echo 1'));
+        $commExec->runQuietly(new Builder('echo 1'));
 
         $this->assertNotEmpty($commExec->getOutputBuffer());
     }
@@ -37,7 +37,7 @@ class CommandExecutorTest extends TestCase
     public function testCommandExecutorOutputEmpty()
     {
         $commExec = new CommandExecutor();
-        $commExec->runQuietly(new Command('echo'));
+        $commExec->runQuietly(new Builder('echo'));
 
         $this->assertEmpty($commExec->getOutputBuffer());
     }

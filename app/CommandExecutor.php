@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Builder\Command;
+use App\Builder\Builder;
 use App\Events\BeforeExecuteCommand;
 
 class CommandExecutor
@@ -39,7 +39,7 @@ class CommandExecutor
         return $this;
     }
 
-    public function runQuietly(Command $command) : int
+    public function runQuietly(Builder $command) : int
     {
         $this->disableOutput();
 
@@ -54,25 +54,25 @@ class CommandExecutor
         return $exitCode;
     }
 
-    public function run(Command $command) : int
+    public function run(Builder $builder) : int
     {
         $this->setOutputBuffer('');
 
-        event(new BeforeExecuteCommand($command));
+        event(new BeforeExecuteCommand($builder));
 
-        $shellCommand = (string) $command;
+        $command = (string) $builder;
 
         if (env('FWD_DEBUG') || env('FWD_VERBOSE')) {
-            $this->print($shellCommand);
+            $this->print($command);
         }
 
         if (env('FWD_DEBUG')) {
             return 0;
         }
 
-        $this->commands[] = $shellCommand;
+        $this->commands[] = $command;
 
-        return $this->execute($shellCommand, $command->getCwd());
+        return $this->execute($command, $builder->getCwd());
     }
 
     public function commands() : array

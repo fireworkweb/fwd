@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Builder\Docker;
-use App\Builder\Command;
+use App\Builder\Builder;
 use App\Builder\DockerCompose;
 
 class Checker
@@ -82,9 +82,9 @@ class Checker
         );
     }
 
-    protected function version(Command $command)
+    protected function version(Builder $builder)
     {
-        $exitCode = $this->commandExecutor->runQuietly($command);
+        $exitCode = $this->commandExecutor->runQuietly($builder);
 
         if ($exitCode) {
             return false;

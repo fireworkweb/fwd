@@ -2,14 +2,14 @@
 
 namespace App\Builder;
 
-class JsInspect extends Command
+class JsInspect extends Builder
 {
     public function getProgramName() : string
     {
         return 'jsinspect';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return NodeQa::make();
     }

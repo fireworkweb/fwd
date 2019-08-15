@@ -2,14 +2,14 @@
 
 namespace App\Builder;
 
-class Node extends Command
+class Node extends Builder
 {
     public function getProgramName() : string
     {
         return 'node';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return (new DockerRun())->addArgument(env('FWD_IMAGE_NODE'));
     }

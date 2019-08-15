@@ -2,7 +2,7 @@
 
 namespace App\Builder;
 
-class Command
+class Builder
 {
     /** @var string $cwd */
     protected $cwd;
@@ -10,7 +10,7 @@ class Command
     /** @var Collection $args */
     protected $args;
 
-    /** @var Command $wrapper */
+    /** @var Builder $wrapper */
     protected $wrapper;
 
     public function __construct(...$args)

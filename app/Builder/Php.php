@@ -2,14 +2,14 @@
 
 namespace App\Builder;
 
-class Php extends Command
+class Php extends Builder
 {
     public function getProgramName() : string
     {
         return 'app php';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return DockerComposeExec::make()->setUser(env('FWD_ASUSER'));
     }

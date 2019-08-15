@@ -2,14 +2,14 @@
 
 namespace App\Builder;
 
-class Composer extends Command
+class Composer extends Builder
 {
     public function getProgramName() : string
     {
         return 'app composer';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return DockerComposeExec::make()->setUser(env('FWD_ASUSER'));
     }

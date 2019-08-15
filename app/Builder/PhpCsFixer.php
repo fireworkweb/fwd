@@ -2,14 +2,14 @@
 
 namespace App\Builder;
 
-class PhpCsFixer extends Command
+class PhpCsFixer extends Builder
 {
     public function getProgramName() : string
     {
         return 'php-cs-fixer';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return PhpQa::make();
     }

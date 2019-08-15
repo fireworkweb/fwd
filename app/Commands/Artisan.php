@@ -3,7 +3,7 @@
 namespace App\Commands;
 
 use App\Commands\Traits\HasDynamicArgs;
-use App\Builder\Artisan as ArtisanCommand;
+use App\Builder\Artisan as ArtisanBuilder;
 
 class Artisan extends Command
 {
@@ -31,7 +31,7 @@ class Artisan extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            ArtisanCommand::make($this->getArgs())
+            ArtisanBuilder::make($this->getArgs())
         );
     }
 }

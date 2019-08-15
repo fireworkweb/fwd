@@ -2,9 +2,9 @@
 
 namespace App\Builder;
 
-class NodeQa extends Command
+class NodeQa extends Builder
 {
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return (new DockerRun())->addArgument(env('FWD_IMAGE_NODE_QA'));
     }
