@@ -9,6 +9,7 @@ use App\Builder\DockerCompose;
 
 class Start extends Task
 {
+    /** @var int $timeout */
     protected $timeout = 60; // seconds
 
     public function run(...$args): int
@@ -33,7 +34,6 @@ class Start extends Task
             $checker = app(Checker::class);
 
             if (! $checker->checkDocker()) {
-                // @TODO: dispatch event? Print
                 $this->command->error(sprintf(
                     'Incompatible docker version (Current: %s Required: %s).',
                     $checker->dockerVersion(),
@@ -64,7 +64,7 @@ class Start extends Task
             }
 
             return $this->runCallableWaitFor(function () {
-                return $this->runCommandQuietly(
+                return $this->runCommandWithoutOutput(
                     DockerCompose::make('ps')
                 );
             }, $this->timeout);
@@ -74,7 +74,7 @@ class Start extends Task
     protected function dockerComposeUpD()
     {
         return $this->runTask('Starting fwd', function () {
-            return $this->runCommandQuietly(
+            return $this->runCommandWithoutOutput(
                 DockerCompose::make('up', '-d')
             );
         });
@@ -83,7 +83,7 @@ class Start extends Task
     protected function mysql()
     {
         return $this->runTask('Checking MySQL', function () {
-            return $this->runCommandQuietly(
+            return $this->runCommandWithoutOutput(
                 Mysql::make('-e', Escaped::make('SELECT 1'))
             );
         });

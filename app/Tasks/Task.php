@@ -7,7 +7,10 @@ use App\Builder\Command as Builder;
 
 abstract class Task
 {
+    /** @var Command $command */
     protected $command;
+
+    /** @var bool $quietly */
     protected $quietly = false;
 
     public function __construct(Command $command)
@@ -15,7 +18,7 @@ abstract class Task
         $this->command = $command;
     }
 
-    public static function make(Command $command)
+    public static function make(Command $command) : self
     {
         return new static($command);
     }
@@ -53,7 +56,7 @@ abstract class Task
                 return 1;
             }
 
-            sleep(1);
+            usleep(env('FWD_ATTEMPTS_DELAY'));
         }
 
         return $exitCode;
@@ -73,16 +76,16 @@ abstract class Task
     protected function runCommand(Builder $builder): int
     {
         return $this->quietly
-            ? $this->runCommandQuietly($builder)
-            : $this->runCommandLoudly($builder);
+            ? $this->runCommandWithoutOutput($builder)
+            : $this->runCommandWithOutput($builder);
     }
 
-    protected function runCommandLoudly(Builder $builder): int
+    protected function runCommandWithOutput(Builder $builder): int
     {
         return $this->command->getCommandExecutor()->run($builder);
     }
 
-    protected function runCommandQuietly(Builder $builder): int
+    protected function runCommandWithoutOutput(Builder $builder): int
     {
         return $this->command->getCommandExecutor()->runQuietly($builder);
     }

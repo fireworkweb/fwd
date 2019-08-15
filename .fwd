@@ -2,6 +2,8 @@
 FWD_DEBUG=false
 # Prints commands
 FWD_VERBOSE=false
+# Microseconds
+FWD_ATTEMPTS_DELAY=1000000
 
 # Optional, default is folder name
 # FWD_NAME=custom_name
