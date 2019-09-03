@@ -15,6 +15,7 @@ services:
      - ${FWD_CONTEXT_PATH}:/app:cached
   chromedriver:
     image: "fireworkweb/chromedriver:latest"
+    shm_size: 256M
     links:
       - http:web
   mysql:
