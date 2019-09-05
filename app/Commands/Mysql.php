@@ -31,7 +31,7 @@ class Mysql extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            MysqlBuilder::make(env('DB_DATABASE'), $this->getArgs())
+            MysqlBuilder::makeWithDefaultArgs(env('DB_DATABASE'), $this->getArgs())
         );
     }
 }

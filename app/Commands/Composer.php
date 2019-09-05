@@ -31,7 +31,7 @@ class Composer extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            ComposerBuilder::make($this->getArgs())
+            ComposerBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

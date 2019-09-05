@@ -31,7 +31,7 @@ class Php extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            PhpBuilder::make($this->getArgs())
+            PhpBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

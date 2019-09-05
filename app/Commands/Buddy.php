@@ -31,7 +31,7 @@ class Buddy extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            BuddyBuilder::make($this->getArgs())
+            BuddyBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

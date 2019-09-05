@@ -31,7 +31,7 @@ class Dusk extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            Artisan::make('dusk', $this->getArgs())
+            Artisan::makeWithDefaultArgs('dusk', $this->getArgs())
         );
     }
 }

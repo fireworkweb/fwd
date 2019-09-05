@@ -19,7 +19,7 @@ class Phan extends Builder
         return $this->wrapper;
     }
 
-    public function getDefaultArgs(): array
+    public static function getDefaultArgs(): array
     {
         return ['--color -p -l app -iy 5'];
     }

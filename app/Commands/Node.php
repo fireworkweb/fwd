@@ -31,7 +31,7 @@ class Node extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            NodeBuilder::make($this->getArgs())
+            NodeBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

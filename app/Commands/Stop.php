@@ -31,7 +31,7 @@ class Stop extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            DockerCompose::make('stop', $this->getArgs())
+            DockerCompose::makeWithDefaultArgs('stop', $this->getArgs())
         );
     }
 }

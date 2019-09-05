@@ -17,7 +17,7 @@ class DockerCompose extends Builder
         ], parent::makeArgs(...$args));
     }
 
-    public function getDefaultArgs(): array
+    public static function getDefaultArgs(): array
     {
         return ['ps'];
     }

@@ -9,7 +9,7 @@ class Docker extends Builder
         return env('FWD_DOCKER_BIN', 'docker');
     }
 
-    public function getDefaultArgs(): array
+    public static function getDefaultArgs(): array
     {
         return ['ps'];
     }

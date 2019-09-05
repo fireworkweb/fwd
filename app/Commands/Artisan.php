@@ -31,7 +31,7 @@ class Artisan extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            ArtisanBuilder::make($this->getArgs())
+            ArtisanBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

@@ -19,7 +19,7 @@ class PhpCsFixer extends Builder
         return $this->wrapper;
     }
 
-    public function getDefaultArgs(): array
+    public static function getDefaultArgs(): array
     {
         return ['fix app --format=txt --dry-run --diff --verbose'];
     }

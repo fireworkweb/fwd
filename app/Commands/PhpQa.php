@@ -31,7 +31,7 @@ class PhpQa extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            PhpQaBuilder::make($this->getArgs())
+            PhpQaBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

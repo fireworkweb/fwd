@@ -31,7 +31,7 @@ class Npm extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            NpmBuilder::make($this->getArgs())
+            NpmBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

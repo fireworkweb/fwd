@@ -31,7 +31,7 @@ class Test extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            Php::make('vendor/bin/phpunit', $this->getArgs())
+            Php::makeWithDefaultArgs('vendor/bin/phpunit', $this->getArgs())
         );
     }
 }

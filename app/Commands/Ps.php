@@ -31,7 +31,7 @@ class Ps extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            DockerCompose::make('ps', $this->getArgs())
+            DockerCompose::makeWithDefaultArgs('ps', $this->getArgs())
         );
     }
 }

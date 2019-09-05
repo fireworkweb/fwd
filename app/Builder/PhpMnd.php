@@ -19,7 +19,7 @@ class PhpMnd extends Builder
         return $this->wrapper;
     }
 
-    public function getDefaultArgs(): array
+    public static function getDefaultArgs(): array
     {
         return [
             'app/',

@@ -31,7 +31,7 @@ class MysqlRaw extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            Mysql::make($this->getArgs())
+            Mysql::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

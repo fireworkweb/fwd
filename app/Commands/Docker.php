@@ -31,7 +31,7 @@ class Docker extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            DockerBuilder::make($this->getArgs())
+            DockerBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

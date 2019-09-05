@@ -31,7 +31,7 @@ class Down extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            DockerCompose::make('down', $this->getArgs())
+            DockerCompose::makeWithDefaultArgs('down', $this->getArgs())
         );
     }
 }

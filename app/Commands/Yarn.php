@@ -31,7 +31,7 @@ class Yarn extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            YarnBuilder::make($this->getArgs())
+            YarnBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

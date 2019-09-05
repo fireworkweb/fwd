@@ -31,7 +31,7 @@ class PhpMd extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            PhpMdBuilder::make($this->getArgs())
+            PhpMdBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

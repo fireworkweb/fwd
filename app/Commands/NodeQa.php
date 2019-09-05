@@ -31,7 +31,7 @@ class NodeQa extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            NodeQaBuilder::make($this->getArgs())
+            NodeQaBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

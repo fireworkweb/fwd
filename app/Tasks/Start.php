@@ -83,9 +83,11 @@ class Start extends Task
     protected function mysql()
     {
         return $this->runTask('Checking MySQL', function () {
-            return $this->runCommandWithoutOutput(
-                Mysql::make('-e', Escaped::make('SELECT 1'))
-            );
+            return $this->runCallableWaitFor(function () {
+                return $this->runCommandWithoutOutput(
+                    Mysql::make('-e', Escaped::make('SELECT 1'))
+                );
+            }, $this->timeout);
         });
     }
 }

@@ -41,7 +41,7 @@ class Pull extends Command
     {
         return $this->runTask("Pulling image for {$name}", function () use ($image) {
             return $this->commandExecutor->runQuietly(
-                Docker::make('pull', $image, $this->getArgs())
+                Docker::makeWithDefaultArgs('pull', $image, $this->getArgs())
             );
         });
     }

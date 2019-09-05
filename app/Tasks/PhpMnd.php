@@ -8,6 +8,6 @@ class PhpMnd extends Task
 {
     public function run(...$args): int
     {
-        return $this->runCommand(PhpMndBuilder::make(...$args));
+        return $this->runCommand(PhpMndBuilder::makeWithDefaultArgs(...$args));
     }
 }

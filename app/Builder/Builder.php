@@ -25,6 +25,13 @@ class Builder
         return new static(...$args);
     }
 
+    public static function makeWithDefaultArgs(...$args) : self
+    {
+        $args = array_filter($args) ?: static::getDefaultArgs();
+
+        return new static(...$args);
+    }
+
     public function getProgramName() : string
     {
         return '';
@@ -32,14 +39,10 @@ class Builder
 
     public function makeArgs(...$args) : array
     {
-        if (empty($args)) {
-            return [];
-        }
-
-        return array_filter($args) ?: $this->getDefaultArgs();
+        return $args;
     }
 
-    public function getDefaultArgs(): array
+    public static function getDefaultArgs(): array
     {
         return [];
     }
@@ -156,5 +159,14 @@ class Builder
     protected function parseArgumentsToString() : string
     {
         return implode(' ', $this->getArguments());
+    }
+
+    public function __clone()
+    {
+        $this->args = clone $this->args;
+
+        if ($this->wrapper) {
+            $this->wrapper = clone $this->wrapper;
+        }
     }
 }

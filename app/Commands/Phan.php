@@ -31,7 +31,7 @@ class Phan extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            PhanBuilder::make($this->getArgs())
+            PhanBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

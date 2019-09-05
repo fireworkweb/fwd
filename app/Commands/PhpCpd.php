@@ -31,7 +31,7 @@ class PhpCpd extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            PhpCpdBuilder::make($this->getArgs())
+            PhpCpdBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

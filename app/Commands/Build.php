@@ -31,7 +31,7 @@ class Build extends Command
     public function handle()
     {
         $this->commandExecutor->run(
-            DockerCompose::make('build', $this->getArgs())
+            DockerCompose::makeWithDefaultArgs('build', $this->getArgs())
         );
     }
 }

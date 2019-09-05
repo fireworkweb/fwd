@@ -31,7 +31,7 @@ class JsInspect extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            JsInspectBuilder::make($this->getArgs())
+            JsInspectBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

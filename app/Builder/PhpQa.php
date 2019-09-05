@@ -9,7 +9,7 @@ class PhpQa extends Builder
         return (new DockerRun())->addArgument(env('FWD_IMAGE_PHP_QA'));
     }
 
-    public function getDefaultArgs(): array
+    public static function getDefaultArgs(): array
     {
         return ['php -v'];
     }

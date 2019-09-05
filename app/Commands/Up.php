@@ -31,7 +31,7 @@ class Up extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            DockerCompose::make('up', $this->getArgs())
+            DockerCompose::makeWithDefaultArgs('up', $this->getArgs())
         );
     }
 }

@@ -31,7 +31,7 @@ class PhpCsFixer extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            PhpCsFixerBuilder::make($this->getArgs())
+            PhpCsFixerBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

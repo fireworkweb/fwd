@@ -10,11 +10,7 @@ class StartTest extends TestCase
 {
     public function testStart()
     {
-        $this->mockChecker(
-            Checker::DOCKER_MIN_VERSION,
-            Checker::DOCKER_API_MIN_VERSION,
-            Checker::DOCKER_COMPOSE_MIN_VERSION
-        );
+        $this->mockChecker();
 
         $this->artisan('start')->assertExitCode(0);
 
@@ -66,9 +62,9 @@ class StartTest extends TestCase
     }
 
     protected function mockChecker(
-        $dockerVersion,
-        $dockerApiVersion,
-        $dockerComposeVersion
+        $dockerVersion = Checker::DOCKER_MIN_VERSION,
+        $dockerApiVersion = Checker::DOCKER_API_MIN_VERSION,
+        $dockerComposeVersion = Checker::DOCKER_COMPOSE_MIN_VERSION
     ) {
         $this->mock(Checker::class, function ($mock) use (
             $dockerVersion,
@@ -85,18 +81,4 @@ class StartTest extends TestCase
                 ->andReturn($dockerComposeVersion);
         })->makePartial();
     }
-
-    // public function testStartTimeout()
-    // {
-    //     resolve(CommandExecutor::class)
-    //         ->shouldReceive('getOutputBuffer')
-    //         ->andReturn(
-    //             CheckDockerVersion::DOCKER_MIN_VERSION,
-    //             CheckDockerComposeVersion::DOCKER_COMPOSE_MIN_VERSION
-    //         );
-
-    //     $this->artisan('start --timeout=1')
-    //         ->expectsOutput('Timed out waiting the command to finish')
-    //         ->assertExitCode(1);
-    // }
 }

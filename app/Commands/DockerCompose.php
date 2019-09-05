@@ -31,7 +31,7 @@ class DockerCompose extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            DockerComposeBuilder::make($this->getArgs())
+            DockerComposeBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

@@ -28,7 +28,7 @@ class Ssh extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            DockerCompose::make(
+            DockerCompose::makeWithDefaultArgs(
                 'exec',
                 $this->argument('service'),
                 $this->option('shell')

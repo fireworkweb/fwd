@@ -12,9 +12,16 @@ class Checker
     const DOCKER_API_MIN_VERSION = '1.25';
     const DOCKER_COMPOSE_MIN_VERSION = '1.23';
 
+    /** @var CommandExecutor $commandExecutor */
     protected $commandExecutor;
+
+    /** @var string $dockerVersion */
     protected $dockerVersion;
+
+    /** @var string $dockerApiVersion */
     protected $dockerApiVersion;
+
+    /** @var string $dockerComposeVersion */
     protected $dockerComposeVersion;
 
     public function __construct(CommandExecutor $commandExecutor)
