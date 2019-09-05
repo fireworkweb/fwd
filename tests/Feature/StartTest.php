@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Checker;
 use Tests\TestCase;
-use App\CommandExecutor;
 
 class StartTest extends TestCase
 {
