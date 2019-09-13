@@ -28,7 +28,7 @@ class Start extends Task
         return $this;
     }
 
-    protected function checkDependencies()
+    public function checkDependencies()
     {
         return $this->runTask('Checking dependencies', function () {
             $checker = app(Checker::class);
@@ -71,7 +71,7 @@ class Start extends Task
         });
     }
 
-    protected function dockerComposeUpD()
+    public function dockerComposeUpD()
     {
         return $this->runTask('Starting fwd', function () {
             return $this->runCommandWithoutOutput(
@@ -80,7 +80,7 @@ class Start extends Task
         });
     }
 
-    protected function mysql()
+    public function mysql()
     {
         return $this->runTask('Checking MySQL', function () {
             return $this->runCallableWaitFor(function () {

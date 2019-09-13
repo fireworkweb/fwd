@@ -19,7 +19,7 @@ class Buddy extends Builder
         return $this->wrapper;
     }
 
-    public static function getDefaultArgs(): array
+    public static function getDefaultArgs() : array
     {
         return ['src/'];
     }

@@ -22,10 +22,6 @@ class Start extends Command
      */
     protected $description = 'Start fwd environment containers.';
 
-    protected $seconds = 0;
-
-    protected $checker;
-
     /**
      * Execute the console command.
      *

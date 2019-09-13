@@ -9,6 +9,7 @@ use App\Builder\Escaped;
 use App\Builder\Composer;
 use App\Builder\RedisCli;
 use App\Builder\DockerComposeExec;
+use IntlCodePointBreakIterator;
 
 class Reset extends Command
 {
@@ -29,9 +30,9 @@ class Reset extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return int
      */
-    public function handle()
+    public function handle() : int
     {
         if ($envFile = $this->argument('envFile')) {
             $this->environment->overloadEnv(
@@ -65,44 +66,44 @@ class Reset extends Command
         return $this->runCommands($commands);
     }
 
-    protected function composerInstall()
+    protected function composerInstall() : int
     {
         return $this->runTask('Composer Install', function () {
-            return $this->commandExecutor->runQuietly(new Composer('install'));
+            return $this->commandExecutor->runQuietly(Composer::make('install'));
         });
     }
 
-    protected function redisFlushAll()
+    protected function redisFlushAll() : int
     {
         return $this->runTask('Redis Flush All', function () {
-            return $this->commandExecutor->runQuietly(new RedisCli('flushall'));
+            return $this->commandExecutor->runQuietly(RedisCli::make('flushall'));
         });
     }
 
-    protected function mysqlDropDatabase()
+    protected function mysqlDropDatabase() : int
     {
         return $this->runTask('MySQL Drop Database', function () {
-            return $this->commandExecutor->runQuietly(new Mysql(
+            return $this->commandExecutor->runQuietly(Mysql::make(
                 '-e',
                 Escaped::make(sprintf('drop database if exists %s', env('DB_DATABASE')))
             ));
         });
     }
 
-    protected function mysqlCreateDatabase()
+    protected function mysqlCreateDatabase() : int
     {
         return $this->runTask('MySQL Create Database', function () {
-            return $this->commandExecutor->runQuietly(new Mysql(
+            return $this->commandExecutor->runQuietly(Mysql::make(
                 '-e',
                 Escaped::make(sprintf('create database %s', env('DB_DATABASE')))
             ));
         });
     }
 
-    protected function mysqlGrantDatabase()
+    protected function mysqlGrantDatabase() : int
     {
         return $this->runTask('MySQL Grant Privileges', function () {
-            return $this->commandExecutor->runQuietly(new Mysql(
+            return $this->commandExecutor->runQuietly(Mysql::make(
                 '-e',
                 Escaped::make(vsprintf('grant all on %s.* to %s@"%%"', [
                     env('DB_DATABASE'),
@@ -112,7 +113,7 @@ class Reset extends Command
         });
     }
 
-    protected function artisanMigrateFresh()
+    protected function artisanMigrateFresh() : int
     {
         $task = $this->option('no-seed')
             ? 'Migrate Fresh'
@@ -120,7 +121,7 @@ class Reset extends Command
 
         return $this->runTask($task, function () {
             return $this->commandExecutor->runQuietly(
-                tap(new Artisan('migrate:fresh'), function ($artisan) {
+                tap(Artisan::make('migrate:fresh'), function (Artisan $artisan) {
                     if (! $this->option('no-seed')) {
                         $artisan->addArgument('--seed');
                     }
@@ -135,59 +136,59 @@ class Reset extends Command
         });
     }
 
-    protected function yarnInstall()
+    protected function yarnInstall() : int
     {
         return $this->runTask('Yarn Install', function () {
-            return $this->commandExecutor->runQuietly(new Yarn('install'));
+            return $this->commandExecutor->runQuietly(Yarn::make('install'));
         });
     }
 
-    protected function yarnDev()
+    protected function yarnDev(): int
     {
         return $this->runTask('Yarn Dev', function () {
-            return $this->commandExecutor->runQuietly(new Yarn('dev'));
+            return $this->commandExecutor->runQuietly(Yarn::make('dev'));
         });
     }
 
-    protected function clearCompiled()
+    protected function clearCompiled() : int
     {
         return $this->runTask('Clear Compiled', function () {
-            return $this->commandExecutor->runQuietly(new Artisan('clear-compiled'));
+            return $this->commandExecutor->runQuietly(Artisan::make('clear-compiled'));
         });
     }
 
-    protected function clearCache()
+    protected function clearCache() : int
     {
         return $this->runTask('Clear Cache', function () {
-            return $this->commandExecutor->runQuietly(new Artisan('cache:clear'));
+            return $this->commandExecutor->runQuietly(Artisan::make('cache:clear'));
         });
     }
 
-    protected function clearConfig()
+    protected function clearConfig() : int
     {
         return $this->runTask('Clear Config', function () {
-            return $this->commandExecutor->runQuietly(new Artisan('config:clear'));
+            return $this->commandExecutor->runQuietly(Artisan::make('config:clear'));
         });
     }
 
-    protected function clearRoute()
+    protected function clearRoute() : int
     {
         return $this->runTask('Clear Route', function () {
-            return $this->commandExecutor->runQuietly(new Artisan('route:clear'));
+            return $this->commandExecutor->runQuietly(Artisan::make('route:clear'));
         });
     }
 
-    protected function clearView()
+    protected function clearView() : int
     {
         return $this->runTask('Clear View', function () {
-            return $this->commandExecutor->runQuietly(new Artisan('view:clear'));
+            return $this->commandExecutor->runQuietly(Artisan::make('view:clear'));
         });
     }
 
-    protected function clearLogs()
+    protected function clearLogs() : int
     {
         return $this->runTask('Clear Logs', function () {
-            return $this->commandExecutor->runQuietly(new DockerComposeExec(
+            return $this->commandExecutor->runQuietly(DockerComposeExec::make(
                 'app rm',
                 '-f',
                 Escaped::make($this->environment->getContextFile('storage/logs/*.log'))

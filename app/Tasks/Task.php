@@ -23,25 +23,14 @@ abstract class Task
         return new static($command);
     }
 
-    abstract public function run(...$args): int;
+    abstract public function run(...$args) : int;
 
-    public function runCallables(array $commands)
+    public function runCallables(array $commands) : int
     {
-        // Run commands, first that isn't success (0) stops and return that exitCode
-        foreach ($commands as $command) {
-            $exitCode = is_callable($command)
-                ? call_user_func($command)
-                : call_user_func_array($command[0], array_get($command, 1, []));
-
-            if ($exitCode) {
-                return $exitCode;
-            }
-        }
-
-        return 0;
+        return $this->command->runCommands($commands);
     }
 
-    protected function runCallableWaitFor(\Closure $closure, $timeout = 0)
+    protected function runCallableWaitFor(\Closure $closure, $timeout = 0) : int
     {
         $seconds = 0;
 
@@ -62,7 +51,7 @@ abstract class Task
         return $exitCode;
     }
 
-    public function runQuietly()
+    public function runQuietly() : int
     {
         $this->quietly = true;
 
@@ -73,24 +62,24 @@ abstract class Task
         return $exit;
     }
 
-    protected function runCommand(Builder $builder): int
+    protected function runCommand(Builder $builder) : int
     {
         return $this->quietly
             ? $this->runCommandWithoutOutput($builder)
             : $this->runCommandWithOutput($builder);
     }
 
-    protected function runCommandWithOutput(Builder $builder): int
+    protected function runCommandWithOutput(Builder $builder) : int
     {
         return $this->command->getCommandExecutor()->run($builder);
     }
 
-    protected function runCommandWithoutOutput(Builder $builder): int
+    protected function runCommandWithoutOutput(Builder $builder) : int
     {
         return $this->command->getCommandExecutor()->runQuietly($builder);
     }
 
-    public function runTask(string $title, \Closure $task): int
+    public function runTask(string $title, \Closure $task) : int
     {
         return $this->quietly
             ? $task()

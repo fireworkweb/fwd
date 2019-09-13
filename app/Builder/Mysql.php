@@ -15,7 +15,10 @@ class Mysql extends Builder
 
     public function makeArgs(...$args) : array
     {
-        return array_merge(['-u', 'root'], $args);
+        return array_merge(
+            ['-u', 'root'],
+            parent::makeArgs(...$args)
+        );
     }
 
     public function makeWrapper() : ?Builder
