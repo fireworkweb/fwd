@@ -2,9 +2,9 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
 use App\Process;
 use App\Commands\Traits\HasDynamicArgs;
+use LaravelZero\Framework\Commands\Command;
 
 class MySqlDump extends Command
 {
