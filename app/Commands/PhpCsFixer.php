@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Builder\PhpCsFixer as PhpCsFixerBuilder;
+use App\Commands\Traits\HasDynamicArgs;
 
 class PhpCsFixer extends Command
 {

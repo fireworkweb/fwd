@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Builder\Artisan;
+use Tests\TestCase;
 
 class ArtisanCommandTest extends TestCase
 {

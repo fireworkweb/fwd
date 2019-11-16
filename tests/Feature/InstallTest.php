@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Environment;
 use Illuminate\Support\Facades\File;
+use Tests\TestCase;
 
 class InstallTest extends TestCase
 {

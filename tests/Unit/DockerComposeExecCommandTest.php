@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use App\Builder\Unescaped;
 use App\Builder\DockerComposeExec;
+use App\Builder\Unescaped;
+use Tests\TestCase;
 
 class DockerComposeExecCommandTest extends TestCase
 {

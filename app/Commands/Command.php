@@ -2,11 +2,11 @@
 
 namespace App\Commands;
 
-use App\Environment;
 use App\CommandExecutor;
+use App\Environment;
+use LaravelZero\Framework\Commands\Command as BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use LaravelZero\Framework\Commands\Command as BaseCommand;
 
 abstract class Command extends BaseCommand
 {

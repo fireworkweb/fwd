@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Environment;
+use Tests\TestCase;
 
 class DockerTest extends TestCase
 {

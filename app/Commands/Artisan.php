@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Builder\Artisan as ArtisanBuilder;
+use App\Commands\Traits\HasDynamicArgs;
 
 class Artisan extends Command
 {

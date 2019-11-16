@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Builder\Builder;
 use App\Events\BeforeExecuteCommand;
+use Tests\TestCase;
 
 class BeforeExecuteCommandTest extends TestCase
 {

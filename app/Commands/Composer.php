@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Builder\Composer as ComposerBuilder;
+use App\Commands\Traits\HasDynamicArgs;
 
 class Composer extends Command
 {

@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Builder\Docker;
 use App\Builder\Escaped;
+use Tests\TestCase;
 
 class DockerCommandTest extends TestCase
 {

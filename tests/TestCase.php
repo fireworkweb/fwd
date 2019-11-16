@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use App\Environment;
 use App\CommandExecutor;
+use App\Environment;
 use LaravelZero\Framework\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase

@@ -2,8 +2,8 @@
 
 namespace App;
 
-use App\Builder\Docker;
 use App\Builder\Builder;
+use App\Builder\Docker;
 use App\Builder\DockerCompose;
 
 class Checker

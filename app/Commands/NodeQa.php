@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Builder\NodeQa as NodeQaBuilder;
+use App\Commands\Traits\HasDynamicArgs;
 
 class NodeQa extends Command
 {

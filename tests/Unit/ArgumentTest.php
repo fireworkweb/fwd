@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
+use App\Builder\Argument;
 use App\Builder\Builder;
 use App\Builder\Escaped;
-use App\Builder\Argument;
 use App\Builder\Unescaped;
+use Tests\TestCase;
 
 class ArgumentTest extends TestCase
 {
