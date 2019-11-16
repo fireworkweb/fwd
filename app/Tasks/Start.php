@@ -2,10 +2,10 @@
 
 namespace App\Tasks;
 
-use App\Checker;
-use App\Builder\Mysql;
-use App\Builder\Escaped;
 use App\Builder\DockerCompose;
+use App\Builder\Escaped;
+use App\Builder\Mysql;
+use App\Checker;
 
 class Start extends Task
 {

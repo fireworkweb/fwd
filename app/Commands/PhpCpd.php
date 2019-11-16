@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Builder\PhpCpd as PhpCpdBuilder;
+use App\Commands\Traits\HasDynamicArgs;
 
 class PhpCpd extends Command
 {

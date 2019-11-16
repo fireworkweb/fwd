@@ -2,13 +2,13 @@
 
 namespace App\Commands;
 
-use App\Builder\Yarn;
-use App\Builder\Mysql;
 use App\Builder\Artisan;
-use App\Builder\Escaped;
 use App\Builder\Composer;
-use App\Builder\RedisCli;
 use App\Builder\DockerComposeExec;
+use App\Builder\Escaped;
+use App\Builder\Mysql;
+use App\Builder\RedisCli;
+use App\Builder\Yarn;
 
 class Reset extends Command
 {

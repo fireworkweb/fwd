@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Tasks\PhpMnd as PhpMndTask;
 use App\Commands\Traits\HasDynamicArgs;
+use App\Tasks\PhpMnd as PhpMndTask;
 
 class PhpMnd extends Command
 {

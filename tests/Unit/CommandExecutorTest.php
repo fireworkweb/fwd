@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Builder\Builder;
 use App\CommandExecutor;
+use Tests\TestCase;
 
 class CommandExecutorTest extends TestCase
 {

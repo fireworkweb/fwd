@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Builder\Docker as DockerBuilder;
+use App\Commands\Traits\HasDynamicArgs;
 
 class Docker extends Command
 {

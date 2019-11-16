@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Environment;
+use Tests\TestCase;
 
 class TestTest extends TestCase
 {

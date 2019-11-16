@@ -3,11 +3,11 @@
 namespace App\Providers;
 
 use App\Checker;
-use App\Environment;
 use App\CommandExecutor;
+use App\Environment;
 use Illuminate\Console\Command;
-use Symfony\Component\Finder\Finder;
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 class AppServiceProvider extends ServiceProvider

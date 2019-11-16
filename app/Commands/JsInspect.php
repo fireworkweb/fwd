@@ -2,8 +2,8 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\HasDynamicArgs;
 use App\Builder\JsInspect as JsInspectBuilder;
+use App\Commands\Traits\HasDynamicArgs;
 
 class JsInspect extends Command
 {
