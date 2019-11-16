@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\CommandExecutor;
-use App\Builder\PhpQa as PhpQaBuilder;
+use App\Builder\PhpMd as PhpMdBuilder;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class PhpMd extends Command
 {
@@ -30,25 +28,10 @@ class PhpMd extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(new PhpQaBuilder('phpmd', $this->getArgs()));
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return sprintf('app/ text %s', implode(',', [
-            'phpmd/codesize.xml',
-            'phpmd/controversial.xml',
-            'phpmd/design.xml',
-            'phpmd/naming.xml',
-            'unusedcode',
-            'phpmd/cleancode.xml',
-        ]));
+        return $this->commandExecutor->run(
+            PhpMdBuilder::makeWithDefaultArgs($this->getArgs())
+        );
     }
 }

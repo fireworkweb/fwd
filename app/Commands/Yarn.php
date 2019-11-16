@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\CommandExecutor;
 use App\Builder\Yarn as YarnBuilder;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class Yarn extends Command
 {
@@ -30,8 +28,10 @@ class Yarn extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(new YarnBuilder($this->getArgs()));
+        return $this->commandExecutor->run(
+            YarnBuilder::makeWithDefaultArgs($this->getArgs())
+        );
     }
 }

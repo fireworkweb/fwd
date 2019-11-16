@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\CommandExecutor;
-use App\Builder\PhpQa as PhpQaBuilder;
+use App\Tasks\PhpMnd as PhpMndTask;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class PhpMnd extends Command
 {
@@ -30,24 +28,8 @@ class PhpMnd extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(new PhpQaBuilder('phpmnd', $this->getArgs()));
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return implode(' ', [
-            'app/',
-            '--ignore-funcs=round,sleep,abort,strpad,number_format',
-            '--exclude=tests',
-            '--progress',
-            '--extensions=default_parameter,-return,argument',
-        ]);
+        return PhpMndTask::make($this)->run($this->getArgs());
     }
 }

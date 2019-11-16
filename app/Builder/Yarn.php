@@ -2,14 +2,14 @@
 
 namespace App\Builder;
 
-class Yarn extends Command
+class Yarn extends Builder
 {
-    public function getProgramName()
+    public function getProgramName() : string
     {
         return 'yarn';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return (new DockerRun())->addArgument(env('FWD_IMAGE_NODE'));
     }

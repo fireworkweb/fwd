@@ -2,8 +2,7 @@
 
 namespace App\Commands;
 
-use App\Process;
-use LaravelZero\Framework\Commands\Command;
+use App\Builder\DockerCompose;
 
 class Ssh extends Command
 {
@@ -26,12 +25,14 @@ class Ssh extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle()
     {
-        return $process->dockerCompose(
-            'exec',
-            $this->argument('service'),
-            $this->option('shell')
+        return $this->commandExecutor->run(
+            DockerCompose::makeWithDefaultArgs(
+                'exec',
+                $this->argument('service'),
+                $this->option('shell')
+            )
         );
     }
 }

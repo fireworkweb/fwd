@@ -3,15 +3,11 @@
 namespace App\Commands;
 
 use App\Builder\Docker;
-use App\CommandExecutor;
-use App\Commands\Traits\RunTask;
-use App\Commands\Traits\ArtisanCall;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class Pull extends Command
 {
-    use ArtisanCall, HasDynamicArgs, RunTask;
+    use HasDynamicArgs;
 
     /**
      * The name of the command.
@@ -27,36 +23,25 @@ class Pull extends Command
      */
     protected $description = 'Pull all containers used by fwd.';
 
-    /**
-     * @var CommandExecutor
-     */
-    protected $executor;
-
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        $this->executor = $executor->disableOutput();
+        $callable = [$this, 'pullDockerImage'];
 
-        $images = [
-            'app' => env('FWD_IMAGE_APP'),
-            'php-qa' => env('FWD_IMAGE_PHP_QA'),
-            'node' => env('FWD_IMAGE_NODE'),
-            'node-qa' => env('FWD_IMAGE_NODE_QA'),
-            'cache' => env('FWD_IMAGE_CACHE'),
-            'database' => env('FWD_IMAGE_DATABASE'),
-        ];
-
-        foreach ($images as $name => $image) {
-            if ($exitCode = $this->pullDockerImage($name, $image)) {
-                return $exitCode;
-            }
-        }
+        return $this->runCommands([
+            [$callable, ['app', env('FWD_IMAGE_APP')]],
+            [$callable, ['php-qa', env('FWD_IMAGE_PHP_QA')]],
+            [$callable, ['node', env('FWD_IMAGE_NODE')]],
+            [$callable, ['node-qa', env('FWD_IMAGE_NODE_QA')]],
+            [$callable, ['cache', env('FWD_IMAGE_CACHE')]],
+            [$callable, ['database', env('FWD_IMAGE_DATABASE')]],
+        ]);
     }
 
     protected function pullDockerImage($name, $image)
     {
         return $this->runTask("Pulling image for {$name}", function () use ($image) {
-            return $this->executor->run(
-                new Docker('pull', $image, $this->getArgs())
+            return $this->commandExecutor->runQuietly(
+                Docker::makeWithDefaultArgs('pull', $image, $this->getArgs())
             );
         });
     }

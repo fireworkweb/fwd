@@ -9,7 +9,7 @@ use App\Builder\DockerCompose;
 
 class DockerComposeCommandTest extends TestCase
 {
-    public function testDocker()
+    public function testDockerCompose()
     {
         $comm = new DockerCompose();
 

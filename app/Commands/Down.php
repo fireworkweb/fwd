@@ -2,9 +2,8 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\Builder\DockerCompose;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class Down extends Command
 {
@@ -29,8 +28,10 @@ class Down extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle()
     {
-        return $process->dockerCompose('down', $this->getArgs());
+        return $this->commandExecutor->run(
+            DockerCompose::makeWithDefaultArgs('down', $this->getArgs())
+        );
     }
 }

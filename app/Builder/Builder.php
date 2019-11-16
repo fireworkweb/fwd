@@ -2,7 +2,7 @@
 
 namespace App\Builder;
 
-class Command
+class Builder
 {
     /** @var string $cwd */
     protected $cwd;
@@ -10,7 +10,7 @@ class Command
     /** @var Collection $args */
     protected $args;
 
-    /** @var Command $wrapper */
+    /** @var Builder $wrapper */
     protected $wrapper;
 
     public function __construct(...$args)
@@ -25,7 +25,14 @@ class Command
         return new static(...$args);
     }
 
-    public function getProgramName()
+    public static function makeWithDefaultArgs(...$args) : self
+    {
+        $args = array_filter($args) ?: static::getDefaultArgs();
+
+        return new static(...$args);
+    }
+
+    public function getProgramName() : string
     {
         return '';
     }
@@ -33,6 +40,11 @@ class Command
     public function makeArgs(...$args) : array
     {
         return $args;
+    }
+
+    public static function getDefaultArgs(): array
+    {
+        return [];
     }
 
     public function setArgs(array $args) : self
@@ -147,5 +159,14 @@ class Command
     protected function parseArgumentsToString() : string
     {
         return implode(' ', $this->getArguments());
+    }
+
+    public function __clone()
+    {
+        $this->args = clone $this->args;
+
+        if ($this->wrapper) {
+            $this->wrapper = clone $this->wrapper;
+        }
     }
 }

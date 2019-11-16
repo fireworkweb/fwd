@@ -36,11 +36,6 @@ class Environment
         'COMPOSE_API_VERSION',
     ];
 
-    public function __construct(DotenvFactory $dotenvFactory)
-    {
-        $this->envVariables = $dotenvFactory->create();
-    }
-
     public function getKeys(): array
     {
         return static::$keys;
@@ -53,11 +48,10 @@ class Environment
 
     public function load(): void
     {
-        $this->safeLoadEnv($this->getContextEnv('.fwd'));
-        $this->safeLoadEnv($this->getContextEnv('.env'));
-        $this->safeLoadEnv($this->getDefaultFwd());
-
-        $this->fixVariables();
+        $this->loadEnv($this->getContextEnv('.fwd'))
+            ->loadEnv($this->getContextEnv('.env'))
+            ->loadEnv($this->getDefaultFwd())
+            ->fixVariables();
     }
 
     public function getDefaultPath()
@@ -95,24 +89,17 @@ class Environment
         return sprintf('%s/%s', $this->getContextPath(), $file);
     }
 
-    public function safeLoadEnv($envFile): void
+    public function safeLoadEnv($envFile): self
     {
-        $this->loadEnv($envFile);
+        return $this->loadEnv($envFile)->fixVariables();
     }
 
-    public function overloadEnv($envFile): void
+    public function overloadEnv($envFile): self
     {
-        $this->loadEnv($envFile, true);
+        return $this->loadEnv($envFile, true)->fixVariables();
     }
 
-    public function set(string $var, string $value) : self
-    {
-        $this->envVariables->set($var, $value);
-
-        return $this;
-    }
-
-    protected function loadEnv($envFile, $overload = false): void
+    protected function loadEnv($envFile, $overload = false): self
     {
         try {
             $method = $overload ? 'overload' : 'safeLoad';
@@ -122,40 +109,46 @@ class Environment
                 pathinfo($envFile, PATHINFO_BASENAME)
             )->{$method}();
         } catch (InvalidPathException $e) {
-            // nothing to do
+            // do nothing
         } catch (InvalidFileException $e) {
             echo 'The environment file is invalid: ' . $e->getMessage();
             die(1);
         }
+
+        return $this;
     }
 
-    protected function fixVariables(): void
+    protected function fixVariables(): self
     {
+        $envVariables = app(DotenvFactory::class)->create();
+
         if (empty(env('FWD_NAME'))) {
-            $this->set(
+            $envVariables->set(
                 'FWD_NAME',
                 basename(getcwd())
             );
         }
 
-        $this->set(
+        $envVariables->set(
             'FWD_SSH_KEY_PATH',
             str_replace('$HOME', $_SERVER['HOME'], env('FWD_SSH_KEY_PATH'))
         );
 
-        $this->set(
+        $envVariables->set(
             'FWD_CONTEXT_PATH',
             str_replace('$PWD', getcwd(), env('FWD_CONTEXT_PATH'))
         );
 
-        $this->set(
+        $envVariables->set(
             'FWD_CUSTOM_PATH',
             str_replace('$PWD', getcwd(), env('FWD_CUSTOM_PATH'))
         );
 
-        $this->set(
+        $envVariables->set(
             'FWD_ASUSER',
             str_replace('$UID', posix_geteuid(), env('FWD_ASUSER'))
         );
+
+        return $this;
     }
 }

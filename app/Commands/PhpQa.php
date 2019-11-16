@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\CommandExecutor;
 use App\Builder\PhpQa as PhpQaBuilder;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class PhpQa extends Command
 {
@@ -30,18 +28,10 @@ class PhpQa extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(new PhpQaBuilder($this->getArgs()));
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return 'php -v';
+        return $this->commandExecutor->run(
+            PhpQaBuilder::makeWithDefaultArgs($this->getArgs())
+        );
     }
 }

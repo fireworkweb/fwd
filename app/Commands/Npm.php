@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\CommandExecutor;
 use App\Builder\Npm as NpmBuilder;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class Npm extends Command
 {
@@ -30,18 +28,10 @@ class Npm extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(NpmBuilder::make($this->getArgs()));
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return '-v';
+        return $this->commandExecutor->run(
+            NpmBuilder::makeWithDefaultArgs($this->getArgs())
+        );
     }
 }

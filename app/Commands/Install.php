@@ -2,9 +2,7 @@
 
 namespace App\Commands;
 
-use App\Environment;
 use Illuminate\Support\Facades\File;
-use LaravelZero\Framework\Commands\Command;
 
 class Install extends Command
 {
@@ -13,8 +11,7 @@ class Install extends Command
      *
      * @var string
      */
-    protected $signature = 'install
-                            {--f|force : Overwrites docker-compose.yml.}';
+    protected $signature = 'install {--f|force : Overwrites docker-compose.yml.}';
 
     /**
      * The description of the command.
@@ -28,26 +25,33 @@ class Install extends Command
      *
      * @return mixed
      */
-    public function handle(Environment $environment)
+    public function handle()
     {
         if (! $this->option('force')) {
-            if (File::exists($environment->getContextDockerCompose())) {
+            if (File::exists($this->environment->getContextDockerCompose())) {
                 $this->error('File "docker-compose.yml" already exists.');
 
                 return;
             }
 
-            if (File::exists($environment->getContextEnv('.fwd'))) {
+            if (File::exists($this->environment->getContextEnv('.fwd'))) {
                 $this->error('File ".fwd" already exists.');
 
                 return;
             }
         }
 
-        File::copy($environment->getDefaultDockerCompose(), $environment->getContextDockerCompose());
-        $this->info('File "docker-compose.yml" copied.');
+        File::copy(
+            $this->environment->getDefaultDockerCompose(),
+            $this->environment->getContextDockerCompose()
+        );
 
-        File::copy($environment->getDefaultFwd(), $environment->getContextEnv('.fwd'));
+        File::copy(
+            $this->environment->getDefaultFwd(),
+            $this->environment->getContextEnv('.fwd')
+        );
+
+        $this->info('File "docker-compose.yml" copied.');
         $this->info('File ".fwd" copied.');
     }
 }

@@ -4,11 +4,11 @@ namespace App\Builder;
 
 use App\Builder\Concerns\HasEnvironmentVariables;
 
-class DockerRun extends Command
+class DockerRun extends Builder
 {
     use HasEnvironmentVariables;
 
-    public function getProgramName()
+    public function getProgramName() : string
     {
         return 'run';
     }
@@ -21,10 +21,10 @@ class DockerRun extends Command
             new Argument('-w', '/app', ' '),
             new Argument('-v', sprintf('%s:/app:cached', env('FWD_CONTEXT_PATH')), ' '),
             new Argument('-v', sprintf('%s:/home/developer/.ssh/id_rsa:cached', env('FWD_SSH_KEY_PATH')), ' '),
-        ], $args);
+        ], parent::makeArgs(...$args));
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
         return new Docker();
     }

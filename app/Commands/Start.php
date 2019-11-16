@@ -2,14 +2,10 @@
 
 namespace App\Commands;
 
-use App\Commands\Traits\RunTask;
-use App\Commands\Traits\ArtisanCall;
-use LaravelZero\Framework\Commands\Command;
+use App\Tasks\Start as StartTask;
 
 class Start extends Command
 {
-    use ArtisanCall, RunTask;
-
     /**
      * The signature of the command.
      *
@@ -26,8 +22,6 @@ class Start extends Command
      */
     protected $description = 'Start fwd environment containers.';
 
-    protected $seconds = 0;
-
     /**
      * Execute the console command.
      *
@@ -35,76 +29,8 @@ class Start extends Command
      */
     public function handle()
     {
-        $commands = [
-            [$this, 'dockerComposePs'],
-            [$this, 'dockerComposeUpD'],
-            [$this, 'mysql'],
-        ];
+        $timeout = ! $this->option('no-wait') ? $this->option('timeout') : 0;
 
-        // Run commands, first that isn't success (0) stops and return that exitCode
-        foreach ($commands as $command) {
-            if ($exitCode = call_user_func($command)) {
-                return $exitCode;
-            }
-        }
-    }
-
-    protected function dockerComposePs()
-    {
-        return $this->runTask('Checking dependencies', function () {
-            if ($this->artisanCall('check-docker-version')) {
-                $this->error('Incompatible docker version.');
-
-                return 1;
-            }
-
-            if ($this->artisanCall('check-docker-compose-version')) {
-                $this->error('Incompatible docker-compose version.');
-
-                return 1;
-            }
-
-            return $this->runCommand(function () {
-                return $this->artisanCallNoOutput('ps');
-            });
-        });
-    }
-
-    protected function dockerComposeUpD()
-    {
-        return $this->runTask('Starting fwd', function () {
-            return $this->artisanCallNoOutput('up', ['-d']);
-        });
-    }
-
-    protected function mysql()
-    {
-        return $this->runTask('Checking MySQL', function () {
-            return $this->runCommand(function () {
-                return $this->artisanCallNoOutput('mysql-raw', ['-e', 'SELECT 1']);
-            });
-        });
-    }
-
-    protected function runCommand(\Closure $closure)
-    {
-        return ! $this->option('no-wait')
-            ? $this->waitForCommand($closure)
-            : $closure();
-    }
-
-    protected function waitForCommand(\Closure $closure)
-    {
-        while ($exitCode = $closure()) {
-            if ($this->seconds++ > $this->option('timeout')) {
-                $this->error('Timed out waiting the command to finish');
-
-                return 1;
-            }
-
-            sleep(1);
-        }
-
-        return $exitCode;
+        return StartTask::make($this)->timeout($timeout)->run();
     }
 }
