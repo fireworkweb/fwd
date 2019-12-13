@@ -65,7 +65,8 @@ class Start extends Task
 
             return $this->runCallableWaitFor(function () {
                 return $this->runCommandWithoutOutput(
-                    DockerCompose::make('ps')
+                    DockerCompose::make('ps'),
+                    false
                 );
             }, $this->timeout);
         });
@@ -75,7 +76,8 @@ class Start extends Task
     {
         return $this->runTask('Starting fwd', function () {
             return $this->runCommandWithoutOutput(
-                DockerCompose::make('up', '-d')
+                DockerCompose::make('up', '-d'),
+                false
             );
         });
     }
@@ -85,7 +87,8 @@ class Start extends Task
         return $this->runTask('Checking MySQL', function () {
             return $this->runCallableWaitFor(function () {
                 return $this->runCommandWithoutOutput(
-                    Mysql::make('-e', Escaped::make('SELECT 1'))
+                    Mysql::make('-e', Escaped::make('SELECT 1')),
+                    false
                 );
             }, $this->timeout);
         });
