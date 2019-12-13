@@ -38,6 +38,8 @@ FWD_IMAGE_DATABASE="mysql:5.7"
 FWD_IMAGE_NODE_QA="fireworkweb/node:qa"
 FWD_IMAGE_PHP_QA="jakzal/phpqa:alpine"
 
+FWD_START_DEFAULT_SERVICES="mysql redis app http"
+
 # Database
 DB_DATABASE="docker"
 DB_USERNAME="docker"

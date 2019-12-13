@@ -13,7 +13,25 @@ class StartTest extends TestCase
 
         $this->artisan('start')->assertExitCode(0);
 
+        $this->assertDockerCompose('up -d ' . env('FWD_START_DEFAULT_SERVICES'));
+    }
+
+    public function testStartWithAll()
+    {
+        $this->mockChecker();
+
+        $this->artisan('start --all')->assertExitCode(0);
+
         $this->assertDockerCompose('up -d');
+    }
+
+    public function testStartWithSpecificServices()
+    {
+        $this->mockChecker();
+
+        $this->artisan('start --services=chromedriver')->assertExitCode(0);
+
+        $this->assertDockerCompose('up -d chromedriver');
     }
 
     public function testStartOldVersionAllDependencies()
