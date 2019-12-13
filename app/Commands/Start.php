@@ -13,7 +13,9 @@ class Start extends Command
      */
     protected $signature = 'start
                             {--no-wait : Do not wait for Docker and MySQL to become available}
-                            {--timeout=60 : The number of seconds to wait}';
+                            {--timeout=60 : The number of seconds to wait}
+                            {--all : Start all services}
+                            {--services= : The services from docker-compose.yml to be started}';
 
     /**
      * The description of the command.
@@ -31,6 +33,12 @@ class Start extends Command
     {
         $timeout = ! $this->option('no-wait') ? $this->option('timeout') : 0;
 
-        return StartTask::make($this)->timeout($timeout)->run();
+        $task = StartTask::make($this)->timeout($timeout);
+
+        if (! $this->option('all')) {
+            $task->services((string) $this->option('services'));
+        }
+
+        return $task->run();
     }
 }

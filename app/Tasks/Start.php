@@ -12,6 +12,9 @@ class Start extends Task
     /** @var int $timeout */
     protected $timeout = 60; // seconds
 
+    /** @var string $services */
+    protected $services;
+
     public function run(...$args): int
     {
         return $this->runCallables([
@@ -21,7 +24,14 @@ class Start extends Task
         ]);
     }
 
-    public function timeout(int $timeout)
+    public function services(string $services) : self
+    {
+        $this->services = $services;
+
+        return $this;
+    }
+
+    public function timeout(int $timeout) : self
     {
         $this->timeout = $timeout;
 
@@ -75,8 +85,12 @@ class Start extends Task
     public function dockerComposeUpD()
     {
         return $this->runTask('Starting fwd', function () {
+            $services = ! is_null($this->services)
+                ? ($this->services ?: env('FWD_START_DEFAULT_SERVICES'))
+                : null;
+
             return $this->runCommandWithoutOutput(
-                DockerCompose::make('up', '-d'),
+                DockerCompose::make('up', '-d', $services),
                 false
             );
         });
