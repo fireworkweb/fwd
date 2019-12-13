@@ -39,7 +39,7 @@ class CommandExecutor
         return $this;
     }
 
-    public function runQuietly(Builder $command) : int
+    public function runQuietly(Builder $command, bool $outputOnError = true) : int
     {
         $this->disableOutput();
 
@@ -47,11 +47,16 @@ class CommandExecutor
 
         $this->enableOutput();
 
-        if ($exitCode || env('FWD_VERBOSE')) {
-            $this->print($this->getOutputBuffer());
+        if (($exitCode && $outputOnError) || env('FWD_VERBOSE')) {
+            $this->printOutputBuffer();
         }
 
         return $exitCode;
+    }
+
+    public function printOutputBuffer() : void
+    {
+        $this->print($this->getOutputBuffer());
     }
 
     public function run(Builder $builder) : int

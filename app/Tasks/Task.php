@@ -32,20 +32,25 @@ abstract class Task
 
     protected function runCallableWaitFor(\Closure $closure, $timeout = 0) : int
     {
-        $seconds = 0;
+        $microSecondsDelay = (int) env('FWD_ATTEMPTS_DELAY');
+        $waitedMicroSeconds = 0;
 
         while ($exitCode = $closure()) {
             if ($timeout === 0) {
+                $this->command->getCommandExecutor()->printOutputBuffer();
                 break;
             }
 
-            if ($seconds++ > $timeout) {
-                $this->command->error('Timed out waiting the command to finish');
+            $waitedMicroSeconds += $microSecondsDelay;
 
-                return 1;
+            if ($waitedMicroSeconds / 1000000 > $timeout) {
+                $this->command->error('fwd: Timed out waiting the command to finish.');
+                $this->command->getCommandExecutor()->printOutputBuffer();
+
+                return $exitCode;
             }
 
-            usleep(env('FWD_ATTEMPTS_DELAY'));
+            usleep($microSecondsDelay);
         }
 
         return $exitCode;
@@ -74,9 +79,9 @@ abstract class Task
         return $this->command->getCommandExecutor()->run($builder);
     }
 
-    protected function runCommandWithoutOutput(Builder $builder) : int
+    protected function runCommandWithoutOutput(Builder $builder, bool $outputOnError = true) : int
     {
-        return $this->command->getCommandExecutor()->runQuietly($builder);
+        return $this->command->getCommandExecutor()->runQuietly($builder, $outputOnError);
     }
 
     public function runTask(string $title, \Closure $task) : int
