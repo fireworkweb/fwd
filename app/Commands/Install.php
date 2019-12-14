@@ -11,7 +11,8 @@ class Install extends Command
      *
      * @var string
      */
-    protected $signature = 'install {--f|force : Overwrites docker-compose.yml.}';
+    protected $signature = 'install
+                                {--f|force : Overwrites project files (docker-compose.yml and .fwd)}';
 
     /**
      * The description of the command.
@@ -29,13 +30,13 @@ class Install extends Command
     {
         if (! $this->option('force')) {
             if (File::exists($this->environment->getContextDockerCompose())) {
-                $this->error('File "docker-compose.yml" already exists.');
+                $this->error('File "docker-compose.yml" already exists. (use -f to override)');
 
                 return;
             }
 
             if (File::exists($this->environment->getContextEnv('.fwd'))) {
-                $this->error('File ".fwd" already exists.');
+                $this->error('File ".fwd" already exists. (use -f to override)');
 
                 return;
             }
@@ -47,7 +48,7 @@ class Install extends Command
         );
 
         File::copy(
-            $this->environment->getDefaultFwd(),
+            $this->environment->getDefaultFwd('.fwd.install'),
             $this->environment->getContextEnv('.fwd')
         );
 

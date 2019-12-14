@@ -1,0 +1,41 @@
+# Prints commands instead of running
+# FWD_DEBUG=false
+# Prints commands
+# FWD_VERBOSE=false
+# Microseconds
+# FWD_ATTEMPTS_DELAY=1000000
+
+# Optional, default is folder name
+# FWD_NAME=custom_name
+
+# Ports - used on docker-compose.yml
+FWD_HTTP_PORT=80
+FWD_MYSQL_PORT=3306
+
+# Host user for mapping execution within the containers
+# FWD_ASUSER=$UID
+
+# Docker Bin
+# FWD_DOCKER_BIN=docker
+# Docker Compose Bin
+# FWD_DOCKER_COMPOSE_BIN=docker-compose
+# Docker Compose Exec flags
+# FWD_COMPOSE_EXEC_FLAGS=""
+# Docker Run flags
+# FWD_DOCKER_RUN_FLAGS="-it --init"
+
+# SSH key for mapping within container so compose/npm
+# can have access to secured sources
+# FWD_SSH_KEY_PATH="$HOME/.ssh/id_rsa"
+# FWD_CONTEXT_PATH="$PWD"
+# FWD_CUSTOM_PATH="$PWD/fwd"
+
+# Images to use out of docker-compose.yml; can be overriden on .env
+FWD_IMAGE_APP="fireworkweb/app:7.2-alpine"
+FWD_IMAGE_NODE="fireworkweb/node:alpine"
+FWD_IMAGE_CACHE="redis:alpine"
+FWD_IMAGE_DATABASE="mysql:5.7"
+FWD_IMAGE_NODE_QA="fireworkweb/node:qa"
+FWD_IMAGE_PHP_QA="jakzal/phpqa:alpine"
+
+# FWD_START_DEFAULT_SERVICES="mysql redis app http"

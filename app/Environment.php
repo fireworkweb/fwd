@@ -48,8 +48,9 @@ class Environment
 
     public function load(): void
     {
-        $this->loadEnv($this->getContextEnv('.fwd'))
-            ->loadEnv($this->getContextEnv('.env'))
+        $this->loadEnv($this->getContextEnv('.env'))
+            ->loadEnv($this->getContextEnv('.fwd'))
+            ->loadEnv($this->getHomeFwd())
             ->loadEnv($this->getDefaultFwd())
             ->fixVariables();
     }
@@ -74,9 +75,14 @@ class Environment
         return $this->getContextFile('docker-compose.yml');
     }
 
-    public function getDefaultFwd()
+    public function getDefaultFwd($filename = '.fwd') : string
     {
-        return sprintf('%s/.fwd', $this->getDefaultPath());
+        return sprintf('%s/%s', $this->getDefaultPath(), $filename);
+    }
+
+    public function getHomeFwd() : string
+    {
+        return sprintf('%s/.fwd', $_SERVER['HOME']);
     }
 
     public function getContextEnv($env = '.env')

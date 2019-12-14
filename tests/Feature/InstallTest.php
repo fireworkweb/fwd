@@ -29,7 +29,7 @@ class InstallTest extends TestCase
             ->andReturn(true);
 
         $this->artisan('install')
-            ->expectsOutput('File "docker-compose.yml" already exists.');
+            ->expectsOutput('File "docker-compose.yml" already exists. (use -f to override)');
 
         $this->assertCommandCalled('install');
     }
@@ -43,7 +43,7 @@ class InstallTest extends TestCase
             ->andReturn(true);
 
         $this->artisan('install')
-            ->expectsOutput('File "docker-compose.yml" already exists.');
+            ->expectsOutput('File "docker-compose.yml" already exists. (use -f to override)');
 
         $this->assertCommandCalled('install');
     }
@@ -61,7 +61,7 @@ class InstallTest extends TestCase
             ->andReturn(true);
 
         $this->artisan('install')
-            ->expectsOutput('File ".fwd" already exists.');
+            ->expectsOutput('File ".fwd" already exists. (use -f to override)');
 
         $this->assertCommandCalled('install');
     }
