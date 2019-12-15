@@ -2,10 +2,13 @@
 
 namespace App\Tasks;
 
+use App\Builder\Builder;
 use App\Builder\DockerCompose;
 use App\Builder\Escaped;
 use App\Builder\Mysql;
 use App\Checker;
+use App\Environment;
+use Illuminate\Support\Facades\File;
 
 class Start extends Task
 {
@@ -14,6 +17,9 @@ class Start extends Task
 
     /** @var string $services */
     protected $services;
+
+    /** @var bool $noPortBinding */
+    protected $noPortBinding = false;
 
     public function run(...$args): int
     {
@@ -34,6 +40,13 @@ class Start extends Task
     public function timeout(int $timeout) : self
     {
         $this->timeout = $timeout;
+
+        return $this;
+    }
+
+    public function noPortBinding(bool $noPortBinding) : self
+    {
+        $this->noPortBinding = $noPortBinding;
 
         return $this;
     }
@@ -85,14 +98,41 @@ class Start extends Task
     public function dockerComposeUpD()
     {
         return $this->runTask('Starting fwd', function () {
-            $services = ! is_null($this->services)
-                ? ($this->services ?: env('FWD_START_DEFAULT_SERVICES'))
-                : null;
+            try {
+                $environment = app(Environment::class);
 
-            return $this->runCommandWithoutOutput(
-                DockerCompose::make('up', '-d', $services),
-                false
-            );
+                if ($this->noPortBinding) {
+                    File::copy(
+                        $environment->getContextDockerCompose(),
+                        $environment->getContextDockerCompose() . '.bak'
+                    );
+
+                    $this->runCommandWithoutOutput(Builder::make(
+                        'sed',
+                        '-i',
+                        Escaped::make('/ports:/d'),
+                        'docker-compose.yml'
+                    ));
+                }
+
+                $services = ! is_null($this->services)
+                    ? ($this->services ?: env('FWD_START_DEFAULT_SERVICES'))
+                    : null;
+
+                return $this->runCommandWithoutOutput(
+                    DockerCompose::make('up', '-d', $services),
+                    false
+                );
+            } finally {
+                if ($this->noPortBinding) {
+                    File::copy(
+                        $environment->getContextDockerCompose() . '.bak',
+                        $environment->getContextDockerCompose()
+                    );
+
+                    File::delete($environment->getContextDockerCompose() . '.bak');
+                }
+            }
         });
     }
 
