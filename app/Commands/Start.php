@@ -2,7 +2,10 @@
 
 namespace App\Commands;
 
+use App\Builder\Builder;
+use App\Builder\Escaped;
 use App\Tasks\Start as StartTask;
+use Illuminate\Support\Facades\File;
 
 class Start extends Command
 {
@@ -12,10 +15,11 @@ class Start extends Command
      * @var string
      */
     protected $signature = 'start
-                            {--no-wait : Do not wait for Docker and MySQL to become available}
-                            {--timeout=60 : The number of seconds to wait}
                             {--all : Start all services}
-                            {--services= : The services from docker-compose.yml to be started}';
+                            {--services= : The services from docker-compose.yml to be started}
+                            {--no-port-binding : Skip port binding}
+                            {--no-wait : Do not wait for Docker and MySQL to become available}
+                            {--timeout=60 : The number of seconds to wait}';
 
     /**
      * The description of the command.
@@ -31,7 +35,22 @@ class Start extends Command
      */
     public function handle()
     {
+        $noPortBinding = $this->option('no-port-binding');
         $timeout = ! $this->option('no-wait') ? $this->option('timeout') : 0;
+
+        if ($noPortBinding) {
+            File::copy(
+                $this->environment->getContextDockerCompose(),
+                $this->environment->getContextDockerCompose() . '.bak'
+            );
+
+            $this->commandExecutor->runQuietly(Builder::make(
+                'sed',
+                '-i',
+                Escaped::make("/ports:/d"),
+                'docker-compose.yml'
+            ));
+        }
 
         $task = StartTask::make($this)->timeout($timeout);
 
@@ -39,6 +58,17 @@ class Start extends Command
             $task->services((string) $this->option('services'));
         }
 
-        return $task->run();
+        try {
+            return $task->run();
+        } finally {
+            if ($noPortBinding) {
+                File::copy(
+                    $this->environment->getContextDockerCompose() . '.bak',
+                    $this->environment->getContextDockerCompose()
+                );
+
+                File::delete($this->environment->getContextDockerCompose() . '.bak');
+            }
+        }
     }
 }

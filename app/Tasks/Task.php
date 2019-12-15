@@ -18,7 +18,7 @@ abstract class Task
         $this->command = $command;
     }
 
-    public static function make(Command $command) : self
+    public static function make(Command $command)
     {
         return new static($command);
     }
