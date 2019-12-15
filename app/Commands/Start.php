@@ -47,7 +47,7 @@ class Start extends Command
             $this->commandExecutor->runQuietly(Builder::make(
                 'sed',
                 '-i',
-                Escaped::make("/ports:/d"),
+                Escaped::make('/ports:/d'),
                 'docker-compose.yml'
             ));
         }
