@@ -102,7 +102,7 @@ class InstallTest extends TestCase
             ->andReturn(true);
 
         File::shouldReceive('get')
-            ->andReturn("FWD_VAR=x");
+            ->andReturn('FWD_VAR=x');
 
         File::shouldReceive('put')
             ->withArgs(function (string $file, string $env) {
@@ -126,7 +126,7 @@ class InstallTest extends TestCase
             ->andReturn(true);
 
         File::shouldReceive('get')
-            ->andReturn("FWD_IMAGE_APP=x");
+            ->andReturn('FWD_IMAGE_APP=x');
 
         File::shouldReceive('put')
             ->withArgs(function (string $file, string $env) {
