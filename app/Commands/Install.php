@@ -42,17 +42,52 @@ class Install extends Command
             }
         }
 
-        File::copy(
+        $localEnv = $this->uncommentsLocalVariables(
+            $this->commentsOutAllVariables(
+                File::get($this->environment->getDefaultFwd())
+            )
+        );
+
+        $put = File::put($this->environment->getContextEnv('.fwd'), $localEnv);
+
+        if (false === $put) {
+            $this->error('Failed to write local ".fwd" file.');
+            return 1;
+        }
+
+        $this->info('File ".fwd" copied.');
+
+        $copied = File::copy(
             $this->environment->getDefaultDockerCompose(),
             $this->environment->getContextDockerCompose()
         );
 
-        File::copy(
-            $this->environment->getDefaultFwd('.fwd.install'),
-            $this->environment->getContextEnv('.fwd')
-        );
+        if (false === $copied) {
+            $this->error('Failed to write local "docker-compose.yml" file.');
+            return 1;
+        }
 
         $this->info('File "docker-compose.yml" copied.');
-        $this->info('File ".fwd" copied.');
+    }
+
+    private function commentsOutAllVariables(string $env) : string
+    {
+        return preg_replace('/^([A-Z].*)$/m', '# $1', $env);
+    }
+
+    private function uncommentsLocalVariables(string $env) : string
+    {
+        $localVariables = [
+            'FWD_IMAGE_APP',
+            'FWD_IMAGE_CACHE',
+            'FWD_IMAGE_NODE',
+            'FWD_IMAGE_DATABASE',
+        ];
+
+        foreach ($localVariables as $variable) {
+            $env = preg_replace("/^# ($variable=.*)$/m", '$1', $env);
+        }
+
+        return $env;
     }
 }

@@ -55,29 +55,29 @@ class Environment
             ->fixVariables();
     }
 
-    public function getDefaultPath()
+    public function getDefaultPath() : string
     {
         return base_path();
     }
 
-    public function getContextPath()
+    public function getContextPath() : string
     {
         return getcwd();
     }
 
-    public function getDefaultDockerCompose()
+    public function getDefaultDockerCompose() : string
     {
         return sprintf('%s/docker-compose.yml', $this->getDefaultPath());
     }
 
-    public function getContextDockerCompose()
+    public function getContextDockerCompose() : string
     {
         return $this->getContextFile('docker-compose.yml');
     }
 
-    public function getDefaultFwd($filename = '.fwd') : string
+    public function getDefaultFwd() : string
     {
-        return sprintf('%s/%s', $this->getDefaultPath(), $filename);
+        return sprintf('%s/.fwd', $this->getDefaultPath());
     }
 
     public function getHomeFwd() : string
@@ -85,27 +85,27 @@ class Environment
         return sprintf('%s/.fwd', $_SERVER['HOME']);
     }
 
-    public function getContextEnv($env = '.env')
+    public function getContextEnv(string $env = '.env') : string
     {
         return $this->getContextFile($env);
     }
 
-    public function getContextFile($file)
+    public function getContextFile(string $file) : string
     {
         return sprintf('%s/%s', $this->getContextPath(), $file);
     }
 
-    public function safeLoadEnv($envFile): self
+    public function safeLoadEnv(string $envFile): self
     {
         return $this->loadEnv($envFile)->fixVariables();
     }
 
-    public function overloadEnv($envFile): self
+    public function overloadEnv(string $envFile): self
     {
         return $this->loadEnv($envFile, true)->fixVariables();
     }
 
-    protected function loadEnv($envFile, $overload = false): self
+    protected function loadEnv(string $envFile, bool $overload = false): self
     {
         try {
             $method = $overload ? 'overload' : 'safeLoad';

@@ -16,9 +16,15 @@ class InstallTest extends TestCase
         File::shouldReceive('copy')
             ->andReturn(true);
 
+        File::shouldReceive('get')
+            ->andReturn("var1\nvar2");
+
+        File::shouldReceive('put')
+            ->andReturn(100);
+
         $this->artisan('install')
-            ->expectsOutput('File "docker-compose.yml" copied.')
-            ->expectsOutput('File ".fwd" copied.');
+            ->expectsOutput('File ".fwd" copied.')
+            ->expectsOutput('File "docker-compose.yml" copied.');
 
         $this->assertCommandCalled('install');
     }
@@ -74,10 +80,64 @@ class InstallTest extends TestCase
         File::shouldReceive('copy')
             ->andReturn(true);
 
+        File::shouldReceive('get')
+            ->andReturn("var1\nvar2");
+
+        File::shouldReceive('put')
+            ->andReturn(100);
+
         $this->artisan('install --force')
-            ->expectsOutput('File "docker-compose.yml" copied.')
-            ->expectsOutput('File ".fwd" copied.');
+            ->expectsOutput('File ".fwd" copied.')
+            ->expectsOutput('File "docker-compose.yml" copied.');
 
         $this->assertCommandCalled('install --force');
+    }
+
+    public function testVariablesAreCommentedOut()
+    {
+        File::shouldReceive('exists')
+            ->andReturn(true);
+
+        File::shouldReceive('copy')
+            ->andReturn(true);
+
+        File::shouldReceive('get')
+            ->andReturn("FWD_VAR=x");
+
+        File::shouldReceive('put')
+            ->withArgs(function (string $file, string $env) {
+                $this->assertEquals($env, '# FWD_VAR=x');
+                $this->assertStringEndsWith('.fwd', $file);
+
+                return true;
+            });
+
+        $this->artisan('install --force')
+            ->expectsOutput('File ".fwd" copied.')
+            ->expectsOutput('File "docker-compose.yml" copied.');
+    }
+
+    public function testVariablesAreNotCommentedOut()
+    {
+        File::shouldReceive('exists')
+            ->andReturn(true);
+
+        File::shouldReceive('copy')
+            ->andReturn(true);
+
+        File::shouldReceive('get')
+            ->andReturn("FWD_IMAGE_APP=x");
+
+        File::shouldReceive('put')
+            ->withArgs(function (string $file, string $env) {
+                $this->assertEquals($env, 'FWD_IMAGE_APP=x');
+                $this->assertStringEndsWith('.fwd', $file);
+
+                return true;
+            });
+
+        $this->artisan('install --force')
+            ->expectsOutput('File ".fwd" copied.')
+            ->expectsOutput('File "docker-compose.yml" copied.');
     }
 }
