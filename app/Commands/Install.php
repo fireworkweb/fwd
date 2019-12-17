@@ -52,6 +52,7 @@ class Install extends Command
 
         if (false === $put) {
             $this->error('Failed to write local ".fwd" file.');
+
             return 1;
         }
 
@@ -64,6 +65,7 @@ class Install extends Command
 
         if (false === $copied) {
             $this->error('Failed to write local "docker-compose.yml" file.');
+
             return 1;
         }
 
