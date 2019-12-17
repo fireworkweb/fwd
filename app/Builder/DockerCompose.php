@@ -6,7 +6,7 @@ class DockerCompose extends Builder
 {
     public function getProgramName() : string
     {
-        return env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose');
+        return (string) env('FWD_DOCKER_COMPOSE_BIN');
     }
 
     public function makeArgs(...$args) : array
