@@ -11,7 +11,8 @@ class Install extends Command
      *
      * @var string
      */
-    protected $signature = 'install {--f|force : Overwrites docker-compose.yml.}';
+    protected $signature = 'install
+                                {--f|force : Overwrites project files (docker-compose.yml and .fwd)}';
 
     /**
      * The description of the command.
@@ -29,29 +30,66 @@ class Install extends Command
     {
         if (! $this->option('force')) {
             if (File::exists($this->environment->getContextDockerCompose())) {
-                $this->error('File "docker-compose.yml" already exists.');
+                $this->error('File "docker-compose.yml" already exists. (use -f to override)');
 
                 return;
             }
 
             if (File::exists($this->environment->getContextEnv('.fwd'))) {
-                $this->error('File ".fwd" already exists.');
+                $this->error('File ".fwd" already exists. (use -f to override)');
 
                 return;
             }
         }
 
-        File::copy(
+        $localEnv = $this->uncommentsLocalVariables(
+            $this->commentsOutAllVariables(
+                File::get($this->environment->getDefaultFwd())
+            )
+        );
+
+        $put = File::put($this->environment->getContextEnv('.fwd'), $localEnv);
+
+        if (false === $put) {
+            $this->error('Failed to write local ".fwd" file.');
+
+            return 1;
+        }
+
+        $this->info('File ".fwd" copied.');
+
+        $copied = File::copy(
             $this->environment->getDefaultDockerCompose(),
             $this->environment->getContextDockerCompose()
         );
 
-        File::copy(
-            $this->environment->getDefaultFwd(),
-            $this->environment->getContextEnv('.fwd')
-        );
+        if (false === $copied) {
+            $this->error('Failed to write local "docker-compose.yml" file.');
+
+            return 1;
+        }
 
         $this->info('File "docker-compose.yml" copied.');
-        $this->info('File ".fwd" copied.');
+    }
+
+    private function commentsOutAllVariables(string $env) : string
+    {
+        return preg_replace('/^([A-Z].*)$/m', '# $1', $env);
+    }
+
+    private function uncommentsLocalVariables(string $env) : string
+    {
+        $localVariables = [
+            'FWD_IMAGE_APP',
+            'FWD_IMAGE_CACHE',
+            'FWD_IMAGE_NODE',
+            'FWD_IMAGE_DATABASE',
+        ];
+
+        foreach ($localVariables as $variable) {
+            $env = preg_replace("/^# ($variable=.*)$/m", '$1', $env);
+        }
+
+        return $env;
     }
 }

@@ -48,58 +48,64 @@ class Environment
 
     public function load(): void
     {
-        $this->loadEnv($this->getContextEnv('.fwd'))
-            ->loadEnv($this->getContextEnv('.env'))
+        $this->loadEnv($this->getContextEnv('.env'))
+            ->loadEnv($this->getContextEnv('.fwd'))
+            ->loadEnv($this->getHomeFwd())
             ->loadEnv($this->getDefaultFwd())
             ->fixVariables();
     }
 
-    public function getDefaultPath()
+    public function getDefaultPath() : string
     {
         return base_path();
     }
 
-    public function getContextPath()
+    public function getContextPath() : string
     {
         return getcwd();
     }
 
-    public function getDefaultDockerCompose()
+    public function getDefaultDockerCompose() : string
     {
         return sprintf('%s/docker-compose.yml', $this->getDefaultPath());
     }
 
-    public function getContextDockerCompose()
+    public function getContextDockerCompose() : string
     {
         return $this->getContextFile('docker-compose.yml');
     }
 
-    public function getDefaultFwd()
+    public function getDefaultFwd() : string
     {
         return sprintf('%s/.fwd', $this->getDefaultPath());
     }
 
-    public function getContextEnv($env = '.env')
+    public function getHomeFwd() : string
+    {
+        return sprintf('%s/.fwd', $_SERVER['HOME']);
+    }
+
+    public function getContextEnv(string $env = '.env') : string
     {
         return $this->getContextFile($env);
     }
 
-    public function getContextFile($file)
+    public function getContextFile(string $file) : string
     {
         return sprintf('%s/%s', $this->getContextPath(), $file);
     }
 
-    public function safeLoadEnv($envFile): self
+    public function safeLoadEnv(string $envFile): self
     {
         return $this->loadEnv($envFile)->fixVariables();
     }
 
-    public function overloadEnv($envFile): self
+    public function overloadEnv(string $envFile): self
     {
         return $this->loadEnv($envFile, true)->fixVariables();
     }
 
-    protected function loadEnv($envFile, $overload = false): self
+    protected function loadEnv(string $envFile, bool $overload = false): self
     {
         try {
             $method = $overload ? 'overload' : 'safeLoad';
