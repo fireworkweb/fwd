@@ -13,7 +13,7 @@ class DockerComposeCommandTest extends TestCase
     {
         $comm = new DockerCompose();
 
-        $this->assertEquals('docker-compose -p fwd', (string) $comm);
+        $this->assertEquals($this->dockerComposeString(), (string) $comm);
     }
 
     public function testDockerComposeInnerCommand()
@@ -24,6 +24,9 @@ class DockerComposeCommandTest extends TestCase
         $comm->addArgument('mysql mysql');
         $comm->addArgument(new Argument('-e', 'SELECT 1', ' '));
 
-        $this->assertEquals('docker-compose -p fwd exec -e \'FOO=bar\' mysql mysql -e \'SELECT 1\'', (string) $comm);
+        $this->assertEquals(
+            $this->dockerComposeExecString() . ' -e \'FOO=bar\' mysql mysql -e \'SELECT 1\'',
+            (string) $comm
+        );
     }
 }

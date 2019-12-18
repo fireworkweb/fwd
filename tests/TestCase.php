@@ -123,13 +123,25 @@ abstract class TestCase extends BaseTestCase
     {
         $flags = env('FWD_COMPOSE_EXEC_FLAGS') ? ' ' . env('FWD_COMPOSE_EXEC_FLAGS') : '';
 
-        return trim('docker-compose -p fwd exec' . $flags . ' ' . $args);
+        return trim($this->dockerComposeExecString() . $flags . ' ' . $args);
     }
 
     protected function makeDockerComposeExecUserString($user = null, string $args = '') : string
     {
         $flags = env('FWD_COMPOSE_EXEC_FLAGS') ? ' ' . env('FWD_COMPOSE_EXEC_FLAGS') : '';
 
-        return trim('docker-compose -p fwd exec' . $flags . ' --user ' . $user . ' ' . $args);
+        return trim($this->dockerComposeExecString() . $flags . ' --user ' . $user . ' ' . $args);
+    }
+
+    protected function dockerComposeExecString() : string
+    {
+        return "{$this->dockerComposeString()} exec";
+    }
+
+    protected function dockerComposeString() : string
+    {
+        $project = env('FWD_NAME');
+
+        return "docker-compose -p {$project}";
     }
 }
