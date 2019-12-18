@@ -7,6 +7,7 @@ use Dotenv\Environment\DotenvFactory;
 use Dotenv\Environment\DotenvVariables;
 use Dotenv\Exception\InvalidFileException;
 use Dotenv\Exception\InvalidPathException;
+use Illuminate\Support\Arr;
 
 class Environment
 {
@@ -43,7 +44,7 @@ class Environment
 
     public function getValues(): array
     {
-        return array_only(getenv(), $this->getKeys());
+        return Arr::only(getenv(), $this->getKeys());
     }
 
     public function load(): void
