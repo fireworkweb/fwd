@@ -5,10 +5,15 @@
 
 ## Installation
 
+You need to have PHP 7.2+ installed in order to run `fwd`.
+
 ```bash
 curl -L https://github.com/fireworkweb/fwd/raw/php/builds/fwd -o /usr/local/bin/fwd
 chmod +x /usr/local/bin/fwd
 ```
+
+* For Release Candidate and testing the latest features please checkout https://github.com/fireworkweb/fwd/issues/70#issuecomment-554606414.
+* Don't have and don't want to have PHP installed locally? Checkout and follow https://github.com/fireworkweb/fwd/issues/21 for 100% Docker usage, thus not requiring PHP.
 
 ## Usage
 

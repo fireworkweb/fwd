@@ -4,6 +4,7 @@ namespace App\Commands;
 
 use App\CommandExecutor;
 use App\Environment;
+use Illuminate\Support\Arr;
 use LaravelZero\Framework\Commands\Command as BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,7 +23,7 @@ abstract class Command extends BaseCommand
         foreach ($commands as $command) {
             $exitCode = is_callable($command)
                 ? call_user_func($command)
-                : call_user_func_array($command[0], array_get($command, 1, []));
+                : call_user_func_array($command[0], Arr::get($command, 1, []));
 
             if ($exitCode) {
                 return $exitCode;
