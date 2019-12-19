@@ -60,9 +60,9 @@ class ResetTest extends TestCase
 
         $this->asFwdUser()->assertDockerComposeExec('app composer install');
         $this->setAsUser(null);
-        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' mysql mysql -u root -e 'drop database if exists dusk'");
-        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' mysql mysql -u root -e 'create database dusk'");
-        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' mysql mysql -u root -e 'grant all on dusk.* to docker@\"%\"'");
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root -e 'drop database if exists dusk'");
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root -e 'create database dusk'");
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root -e 'grant all on dusk.* to docker@\"%\"'");
 
         $this->asFwdUser()->assertDockerComposeExec(
             '-e DB_PASSWORD=\'secret\'',
@@ -78,11 +78,11 @@ class ResetTest extends TestCase
     protected function assertReset($noSeed = false)
     {
         $this->asFwdUser()->assertDockerComposeExec('app composer install');
-        $this->assertDockerComposeExec('redis redis-cli flushall');
+        $this->assertDockerComposeExec('cache redis-cli flushall');
         $this->setAsUser(null);
-        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' mysql mysql -u root -e 'drop database if exists docker'");
-        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' mysql mysql -u root -e 'create database docker'");
-        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' mysql mysql -u root -e 'grant all on docker.* to docker@\"%\"'");
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root -e 'drop database if exists docker'");
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root -e 'create database docker'");
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root -e 'grant all on docker.* to docker@\"%\"'");
 
         $this->asFwdUser()->assertDockerComposeExec(
             '-e DB_PASSWORD=\'secret\'',

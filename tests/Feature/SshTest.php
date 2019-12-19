@@ -34,17 +34,17 @@ class SshTest extends TestCase
         $this->assertDockerComposeExec('http sh');
     }
 
-    public function testSshMysql()
+    public function testSshDatabase()
     {
-        $this->artisan('ssh mysql')->assertExitCode(0);
+        $this->artisan('ssh database')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('mysql bash');
+        $this->assertDockerComposeExec('database bash');
     }
 
-    public function testSshMysqlSh()
+    public function testSshDatabaseSh()
     {
-        $this->artisan('ssh mysql --shell=sh')->assertExitCode(0);
+        $this->artisan('ssh database --shell=sh')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('mysql sh');
+        $this->assertDockerComposeExec('database sh');
     }
 }
