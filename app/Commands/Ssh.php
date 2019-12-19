@@ -18,7 +18,7 @@ class Ssh extends Command
      *
      * @var string
      */
-    protected $description = 'Start a bash session on a specific service (app, http, mysql)';
+    protected $description = 'Start a shell CLI session on a specific service (app, http, database)';
 
     /**
      * Execute the console command.

@@ -18,10 +18,10 @@ services:
     shm_size: 256M
     links:
       - http:web
-  mysql:
+  database:
     image: "$FWD_IMAGE_DATABASE"
     ports:
-     - "${FWD_MYSQL_PORT}:3306"
+     - "${FWD_DATABASE_PORT}:3306"
     environment:
       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
       MYSQL_DATABASE: "${DB_DATABASE}"
@@ -31,7 +31,7 @@ services:
      - db:/var/lib/mysql:cached
      # - ./docker/mysql/conf.d:/etc/mysql/conf.d
      # - ./docker/mysql/logs:/var/log/mysql
-  redis:
+  cache:
     image: "$FWD_IMAGE_CACHE"
     volumes:
      - cache:/data:cached

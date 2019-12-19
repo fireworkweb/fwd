@@ -20,7 +20,7 @@ class Start extends Task
         return $this->runCallables([
             [$this, 'checkDependencies'],
             [$this, 'dockerComposeUpD'],
-            [$this, 'mysql'],
+            [$this, 'database'],
         ]);
     }
 
@@ -96,9 +96,9 @@ class Start extends Task
         });
     }
 
-    public function mysql()
+    public function database()
     {
-        return $this->runTask('Checking MySQL', function () {
+        return $this->runTask('Checking Database', function () {
             return $this->runCallableWaitFor(function () {
                 return $this->runCommandWithoutOutput(
                     Mysql::make('-e', Escaped::make('SELECT 1')),

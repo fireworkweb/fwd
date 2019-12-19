@@ -18,7 +18,7 @@ class Environment
         'FWD_DEBUG',
         'FWD_NAME',
         'FWD_HTTP_PORT',
-        'FWD_MYSQL_PORT',
+        'FWD_DATABASE_PORT',
         'FWD_ASUSER',
         'FWD_COMPOSE_EXEC_FLAGS',
         'FWD_DOCKER_RUN_FLAGS',

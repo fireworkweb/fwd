@@ -12,7 +12,7 @@ class Start extends Command
      * @var string
      */
     protected $signature = 'start
-                            {--no-wait : Do not wait for Docker and MySQL to become available}
+                            {--no-wait : Do not wait for Docker and Database to become available}
                             {--timeout=60 : The number of seconds to wait}
                             {--all : Start all services}
                             {--services= : The services from docker-compose.yml to be started}';
