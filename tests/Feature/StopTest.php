@@ -10,13 +10,13 @@ class StopTest extends TestCase
     {
         $this->artisan('stop')->assertExitCode(0);
 
-        $this->assertDockerCompose('stop');
+        $this->assertDockerCompose('down');
     }
 
-    public function testStopCustom()
+    public function testStopAndPurge()
     {
-        $this->artisan('stop -t 5')->assertExitCode(0);
+        $this->artisan('stop --purge')->assertExitCode(0);
 
-        $this->assertDockerCompose('stop -t 5');
+        $this->assertDockerCompose('down --volumes');
     }
 }

@@ -30,7 +30,7 @@ class Stop extends Command
         $args = ['down'];
 
         if ($this->option('purge')) {
-            $args[] = '-v';
+            $args[] = '--volumes';
         }
 
         return $this->commandExecutor->run(
