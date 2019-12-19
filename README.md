@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/fireworkweb/fwd.svg?branch=php)](https://travis-ci.com/fireworkweb/fwd)
 [![codecov](https://codecov.io/gh/fireworkweb/fwd/branch/php/graph/badge.svg)](https://codecov.io/gh/fireworkweb/fwd)
 
-## Installation
+## Installation & Requirements
 
 You need to have PHP 7.2+ installed in order to run `fwd`.
 
@@ -15,23 +15,52 @@ chmod +x /usr/local/bin/fwd
 * For Release Candidate and testing the latest features please checkout https://github.com/fireworkweb/fwd/issues/70#issuecomment-554606414.
 * Don't have and don't want to have PHP installed locally? Checkout and follow https://github.com/fireworkweb/fwd/issues/21 for 100% Docker usage, thus not requiring PHP.
 
-## Usage
+## Getting started
+
+#### Use in a new project
+
+`fwd` is great for running Docker Compose based projects. If you wanna use it in your project simply go to the root folder and use:
+
+```base
+fwd install
+```
+
+This will create the `.fwd` (environment variables) and `docker-compose.ym` (services definitions) files in your project (you probably want to have them versioned).
+
+You should review the variables and services in both files to best suit them to your project needs. The out-of-the-box configuration is great for PHP Laravel applications. Special attention to the environment variables flexibity (check out the section down this README).
+
+#### Simple usage
+
+To start the services:
 
 ```bash
-# to install docker-compose.yml file into the project (just the first time)
-fwd install
-
-# start up the application containers
 fwd start
+```
 
-# bring down the containers
-fwd down
+To stop the services:
+```bash
+fwd stop
+```
 
-# other commands
-fwd composer install
-fwd artisan migrate:fresh --seed
-fwd yarn install
-fwd yarn dev
+Note: stopping will destroy all your containers, as they should all be ephemeral. Don't worry, important data should always be stored in volumes so they are kept amongst containers generations.
+
+#### Other commands
+
+There is a bunch of commands delivered out of the box. You can check a  list of all of them by running `fwd` without other arguments to see the help message.
+
+A couple of examples:
+
+```
+# PHP projects
+fwd composer install # runs PHP Composer
+fwd artisan migrate:fresh --seed # runs Laravel artisan CLI tool
+
+# JS projects
+fwd yarn install # runs Yarn install
+fwd yarn dev     # runs a package.json defined script
+
+# Custom docker and docker-compose
+fwd docker-compose logs -f http # tails the logs of the http service
 ```
 
 ## Environment variables
