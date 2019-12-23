@@ -41,10 +41,10 @@ class Reset extends Command
 
         $commands = [
             [$this, 'composerInstall'],
-            [$this, 'redisFlushAll'],
-            [$this, 'mysqlDropDatabase'],
-            [$this, 'mysqlCreateDatabase'],
-            [$this, 'mysqlGrantDatabase'],
+            [$this, 'cacheFlushAll'],
+            [$this, 'datatabaseDropDatabase'],
+            [$this, 'databaseCreateDatabase'],
+            [$this, 'databaseGrantDatabase'],
             [$this, 'artisanMigrateFresh'],
             [$this, 'yarnInstall'],
             [$this, 'yarnDev'],
@@ -72,14 +72,14 @@ class Reset extends Command
         });
     }
 
-    protected function redisFlushAll() : int
+    protected function cacheFlushAll() : int
     {
-        return $this->runTask('Redis Flush All', function () {
+        return $this->runTask('Cache Flush All', function () {
             return $this->commandExecutor->runQuietly(RedisCli::make('flushall'));
         });
     }
 
-    protected function mysqlDropDatabase() : int
+    protected function datatabaseDropDatabase() : int
     {
         return $this->runTask('MySQL Drop Database', function () {
             return $this->commandExecutor->runQuietly(Mysql::make(
@@ -89,7 +89,7 @@ class Reset extends Command
         });
     }
 
-    protected function mysqlCreateDatabase() : int
+    protected function databaseCreateDatabase() : int
     {
         return $this->runTask('MySQL Create Database', function () {
             return $this->commandExecutor->runQuietly(Mysql::make(
@@ -99,7 +99,7 @@ class Reset extends Command
         });
     }
 
-    protected function mysqlGrantDatabase() : int
+    protected function databaseGrantDatabase() : int
     {
         return $this->runTask('MySQL Grant Privileges', function () {
             return $this->commandExecutor->runQuietly(Mysql::make(

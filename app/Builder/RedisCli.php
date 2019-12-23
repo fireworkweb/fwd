@@ -6,7 +6,7 @@ class RedisCli extends Builder
 {
     public function getProgramName() : string
     {
-        return 'redis redis-cli';
+        return 'cache redis-cli';
     }
 
     public function makeWrapper() : ?Builder

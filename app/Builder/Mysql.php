@@ -10,7 +10,7 @@ class Mysql extends Builder
 
     public function getProgramName() : string
     {
-        return 'mysql mysql';
+        return 'database mysql';
     }
 
     public function makeArgs(...$args) : array

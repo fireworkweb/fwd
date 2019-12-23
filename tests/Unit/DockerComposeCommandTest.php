@@ -21,11 +21,11 @@ class DockerComposeCommandTest extends TestCase
         $comm = new DockerCompose(Unescaped::make('exec'));
 
         $comm->addArgument(new Argument('-e', 'FOO=bar', ' '));
-        $comm->addArgument('mysql mysql');
+        $comm->addArgument('database mysql');
         $comm->addArgument(new Argument('-e', 'SELECT 1', ' '));
 
         $this->assertEquals(
-            $this->dockerComposeExecString() . ' -e \'FOO=bar\' mysql mysql -e \'SELECT 1\'',
+            $this->dockerComposeExecString() . ' -e \'FOO=bar\' database mysql -e \'SELECT 1\'',
             (string) $comm
         );
     }
