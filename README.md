@@ -25,7 +25,7 @@ chmod +x /usr/local/bin/fwd
 fwd install
 ```
 
-This will create the `.fwd` (environment variables) and `docker-compose.ym` (services definitions) files in your project (you probably want to have them versioned).
+This will create the `.fwd` (environment variables) and `docker-compose.yml` (services definitions) files in your project (you probably want to have them versioned).
 
 You should review the variables and services in both files to best suit them to your project needs. The out-of-the-box configuration is great for PHP Laravel applications. Special attention to the environment variables flexibity (check out the section down this README).
 
