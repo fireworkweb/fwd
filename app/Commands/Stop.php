@@ -11,7 +11,8 @@ class Stop extends Command
      *
      * @var string
      */
-    protected $signature = 'stop {--purge}';
+    protected $signature = 'stop
+                                {--purge : Removes all data persisted from containers by removing the underlying Docker volumes}';
 
     /**
      * The description of the command.
@@ -31,6 +32,7 @@ class Stop extends Command
 
         if ($this->option('purge')) {
             $args[] = '--volumes';
+            $args[] = '--remove-orphans';
         }
 
         return $this->commandExecutor->run(

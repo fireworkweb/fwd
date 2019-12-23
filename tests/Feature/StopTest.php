@@ -17,6 +17,6 @@ class StopTest extends TestCase
     {
         $this->artisan('stop --purge')->assertExitCode(0);
 
-        $this->assertDockerCompose('down --volumes');
+        $this->assertDockerCompose('down --volumes --remove-orphans');
     }
 }
