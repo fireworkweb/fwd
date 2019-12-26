@@ -100,7 +100,7 @@ class Start extends Task
             // NETWORK ID          NAME                DRIVER              SCOPE
             // b06e288fa58f        fwd_fwd             bridge              local
             $this->runCommandWithoutOutput(
-                Docker::makeWithDefaultArgs('network', 'ls', '-f', 'NAME='.env('FWD_NETWORK'))
+                Docker::makeWithDefaultArgs('network', 'ls', '-f', 'NAME=' . env('FWD_NETWORK'))
             );
 
             $output = explode("\n", $this->command->getCommandExecutor()->getOutputBuffer());

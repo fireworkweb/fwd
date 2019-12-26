@@ -101,7 +101,7 @@ class Install extends Command
 
     private function validateDockerComposeFileVersion(string $dockerComposeFileVersion) : void
     {
-        if (!in_array($dockerComposeFileVersion, ['2', '3.7'])) {
+        if (! in_array($dockerComposeFileVersion, ['2', '3.7'])) {
             $this->error('Bad docker-compose-version option; valid values are either 2 or 3.7');
 
             throw new InvalidArgumentException('docker-compose-version must be either 2 or 3.7');
