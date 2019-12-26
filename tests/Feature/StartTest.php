@@ -14,6 +14,7 @@ class StartTest extends TestCase
         $this->artisan('start')->assertExitCode(0);
 
         $this->assertDockerCompose('up -d ' . env('FWD_START_DEFAULT_SERVICES'));
+        $this->assertDocker('network create --attachable ' . env('FWD_NETWORK'));
     }
 
     public function testStartWithAll()
@@ -23,6 +24,7 @@ class StartTest extends TestCase
         $this->artisan('start --all')->assertExitCode(0);
 
         $this->assertDockerCompose('up -d');
+        $this->assertDocker('network create --attachable ' . env('FWD_NETWORK'));
     }
 
     public function testStartWithSpecificServices()

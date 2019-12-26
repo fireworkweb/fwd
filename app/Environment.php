@@ -8,6 +8,7 @@ use Dotenv\Environment\DotenvVariables;
 use Dotenv\Exception\InvalidFileException;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class Environment
 {
@@ -40,6 +41,8 @@ class Environment
         'DB_USERNAME',
         'DB_PASSWORD',
         'COMPOSE_API_VERSION',
+        'FWD_COMPOSE_VERSION',
+        'FWD_NETWORK',
     ];
 
     public function getKeys(): array
@@ -71,9 +74,9 @@ class Environment
         return getcwd();
     }
 
-    public function getDefaultDockerCompose() : string
+    public function getDefaultDockerCompose(string $version) : string
     {
-        return sprintf('%s/docker-compose.yml', $this->getDefaultPath());
+        return sprintf('%s/docker-compose-v%s.yml', $this->getDefaultPath(), $version);
     }
 
     public function getContextDockerCompose() : string
@@ -138,6 +141,14 @@ class Environment
             $envVariables->set(
                 'FWD_NAME',
                 basename(getcwd())
+            );
+        }
+
+        if (empty(env('FWD_NETWORK'))) {
+            // defines default network name
+            $envVariables->set(
+                'FWD_NETWORK',
+                'fwd_'.Str::slug(env('FWD_NAME'))
             );
         }
 

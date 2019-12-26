@@ -2,6 +2,7 @@
 
 namespace App\Tasks;
 
+use App\Builder\Docker;
 use App\Builder\DockerCompose;
 use App\Builder\Escaped;
 use App\Builder\Mysql;
@@ -12,16 +13,25 @@ class Start extends Task
     /** @var int $timeout */
     protected $timeout = 60; // seconds
 
+    /** @var bool $checks */
+    protected $checks = true;
+
     /** @var string $services */
     protected $services;
 
     public function run(...$args): int
     {
-        return $this->runCallables([
-            [$this, 'checkDependencies'],
-            [$this, 'dockerComposeUpD'],
-            [$this, 'database'],
-        ]);
+        $tasks = [
+            [$this, 'handleNetwork'],
+            [$this, 'startContainers'],
+        ];
+
+        if ($this->checks) {
+            array_unshift($tasks, [$this, 'checkDependencies']);
+            $tasks[] = [$this, 'checkDatabase'];
+        }
+
+        return $this->runCallables($tasks);
     }
 
     public function services(string $services) : self
@@ -34,6 +44,13 @@ class Start extends Task
     public function timeout(int $timeout) : self
     {
         $this->timeout = $timeout;
+
+        return $this;
+    }
+
+    public function checks(bool $checks) : self
+    {
+        $this->checks = $checks;
 
         return $this;
     }
@@ -73,16 +90,39 @@ class Start extends Task
                 return 1;
             }
 
-            return $this->runCallableWaitFor(function () {
-                return $this->runCommandWithoutOutput(
-                    DockerCompose::make('ps'),
-                    false
-                );
-            }, $this->timeout);
+            return 0;
         });
     }
 
-    public function dockerComposeUpD()
+    public function handleNetwork() : int
+    {
+        return $this->runTask('Setting up network', function () {
+            // NETWORK ID          NAME                DRIVER              SCOPE
+            // b06e288fa58f        fwd_fwd             bridge              local
+            $this->runCommandWithoutOutput(
+                Docker::makeWithDefaultArgs('network', 'ls', '-f', 'NAME='.env('FWD_NETWORK'))
+            );
+
+            $output = explode("\n", $this->command->getCommandExecutor()->getOutputBuffer());
+            // ^ array:2 [
+            // 0 => "NETWORK ID          NAME                DRIVER              SCOPE"
+            // 1 => "b06e288fa58f        fwd_fwd             bridge              local"
+            // ]
+
+            $networkAlreadyExists = count($output) === 2;
+
+            if ($networkAlreadyExists) {
+                // nothing to do
+                return 0;
+            }
+
+            return $this->runCommandWithoutOutput(
+                Docker::makeWithDefaultArgs('network', 'create', '--attachable', env('FWD_NETWORK'))
+            );
+        });
+    }
+
+    public function startContainers() : int
     {
         return $this->runTask('Starting fwd', function () {
             $services = ! is_null($this->services)
@@ -96,7 +136,7 @@ class Start extends Task
         });
     }
 
-    public function database()
+    public function checkDatabase()
     {
         return $this->runTask('Checking Database', function () {
             return $this->runCallableWaitFor(function () {
