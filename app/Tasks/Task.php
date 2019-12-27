@@ -104,7 +104,7 @@ abstract class Task
         if ($exit) {
             throw new RuntimeException(vsprintf('Failed executing "%s" (exit code %d)', [
                 (string) $command,
-                $exit
+                $exit,
             ]));
         }
 

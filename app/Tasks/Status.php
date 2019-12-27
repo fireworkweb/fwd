@@ -5,8 +5,6 @@ namespace App\Tasks;
 use App\Builder\Docker;
 use App\Builder\DockerCompose;
 use App\Builder\Escaped;
-use App\Builder\Mysql;
-use App\Checker;
 
 class Status extends Task
 {
