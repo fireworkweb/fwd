@@ -4,6 +4,7 @@ namespace App\Tasks;
 
 use App\Builder\Builder;
 use App\Commands\Command;
+use RuntimeException;
 
 abstract class Task
 {
@@ -89,5 +90,24 @@ abstract class Task
         return $this->quietly
             ? $task()
             : $this->command->runTask($title, $task);
+    }
+
+    protected function getOutputLines(Builder $command) : array
+    {
+        return explode(PHP_EOL, $this->getOutput($command));
+    }
+
+    protected function getOutput(Builder $command) : string
+    {
+        $exit = $this->runCommandWithoutOutput($command);
+
+        if ($exit) {
+            throw new RuntimeException(vsprintf('Failed executing "%s" (exit code %d)', [
+                (string) $command,
+                $exit
+            ]));
+        }
+
+        return $this->command->getCommandExecutor()->getOutputBuffer();
     }
 }

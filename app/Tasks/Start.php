@@ -22,7 +22,7 @@ class Start extends Task
     public function run(...$args): int
     {
         $tasks = [
-            [$this, 'handleNetwork'],
+            [$this, 'handleNetworkTask'],
             [$this, 'startContainers'],
         ];
 
@@ -94,32 +94,27 @@ class Start extends Task
         });
     }
 
-    public function handleNetwork() : int
+    public function handleNetworkTask() : int
     {
         return $this->runTask('Setting up network', function () {
-            // NETWORK ID          NAME                DRIVER              SCOPE
-            // b06e288fa58f        fwd_fwd             bridge              local
-            $this->runCommandWithoutOutput(
-                Docker::makeWithDefaultArgs('network', 'ls', '-f', 'NAME=' . env('FWD_NETWORK'))
-            );
-
-            $output = explode("\n", $this->command->getCommandExecutor()->getOutputBuffer());
-            // ^ array:2 [
-            // 0 => "NETWORK ID          NAME                DRIVER              SCOPE"
-            // 1 => "b06e288fa58f        fwd_fwd             bridge              local"
-            // ]
-
-            $networkAlreadyExists = count($output) === 2;
-
-            if ($networkAlreadyExists) {
-                // nothing to do
-                return 0;
-            }
-
-            return $this->runCommandWithoutOutput(
-                Docker::makeWithDefaultArgs('network', 'create', '--attachable', env('FWD_NETWORK'))
-            );
+            return $this->handleNetwork();
         });
+    }
+
+    public function handleNetwork() : int
+    {
+        $command = Docker::make('network', 'ls', '-f', 'NAME=' . env('FWD_NETWORK'));
+        $lines = $this->getOutputLines($command);
+
+        $networkAlreadyExists = count($lines) === 2;
+
+        if ($networkAlreadyExists) {
+            return 0;
+        }
+
+        return $this->runCommandWithoutOutput(
+            Docker::makeWithDefaultArgs('network', 'create', '--attachable', env('FWD_NETWORK'))
+        );
     }
 
     public function startContainers() : int
