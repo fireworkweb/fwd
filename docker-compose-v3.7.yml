@@ -10,7 +10,8 @@ services:
     environment:
       ASUSER: "${FWD_ASUSER}"
     networks:
-     - "${FWD_NETWORK}"
+     - fwd_local
+     - fwd_global
     depends_on:
      - cache
      - database
@@ -21,7 +22,8 @@ services:
     volumes:
      - ${FWD_CONTEXT_PATH}:/app:cached
     networks:
-     - "${FWD_NETWORK}"
+     - fwd_local
+     - fwd_global
     depends_on:
      - app
     healthcheck:
@@ -33,7 +35,8 @@ services:
     image: "fireworkweb/chromedriver:latest"
     shm_size: 256M
     networks:
-     - "${FWD_NETWORK}"
+     - fwd_local
+     - fwd_global
   database:
     image: "$FWD_IMAGE_DATABASE"
     init: true
@@ -50,18 +53,22 @@ services:
      # - ./docker/mysql/conf.d:/etc/mysql/conf.d
      # - ./docker/mysql/logs:/var/log/mysql
     networks:
-     - "${FWD_NETWORK}"
+     - fwd_local
+     - fwd_global
   cache:
     image: "$FWD_IMAGE_CACHE"
     volumes:
      - cache:/data:cached
     networks:
-     - "${FWD_NETWORK}"
+     - fwd_local
+     - fwd_global
 volumes:
   db:
     driver: "local"
   cache:
     driver: "local"
 
-# networks:
-#   my-custom-network:
+networks:
+  fwd_local:
+  fwd_global:
+    external: true

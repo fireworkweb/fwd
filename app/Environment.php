@@ -148,7 +148,7 @@ class Environment
             // defines default network name
             $envVariables->set(
                 'FWD_NETWORK',
-                'fwd_' . Str::slug(env('FWD_NAME'))
+                'fwd_global'
             );
         }
 
