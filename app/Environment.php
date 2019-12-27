@@ -8,7 +8,6 @@ use Dotenv\Environment\DotenvVariables;
 use Dotenv\Exception\InvalidFileException;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 class Environment
 {
