@@ -103,12 +103,10 @@ class Start extends Task
 
     public function handleNetwork() : int
     {
-        $command = Docker::make('network', 'ls', '-f', 'NAME=' . env('FWD_NETWORK'));
-        $lines = $this->getOutputLines($command);
+        $command = Docker::make('network', 'ls', '-q', '-f', 'NAME=' . env('FWD_NETWORK'));
+        $id = $this->getOutput($command);
 
-        $networkAlreadyExists = count($lines) === 2;
-
-        if ($networkAlreadyExists) {
+        if (! empty($id)) {
             return 0;
         }
 
@@ -125,7 +123,7 @@ class Start extends Task
                 : null;
 
             return $this->runCommandWithoutOutput(
-                DockerCompose::make('up', '-d', $services),
+                DockerCompose::make('up', '-d', '--force-recreate', $services),
                 false
             );
         });

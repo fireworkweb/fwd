@@ -108,6 +108,6 @@ abstract class Task
             ]));
         }
 
-        return $this->command->getCommandExecutor()->getOutputBuffer();
+        return trim($this->command->getCommandExecutor()->getOutputBuffer());
     }
 }

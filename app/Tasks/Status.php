@@ -63,24 +63,18 @@ class Status extends Task
 
     public function isRunning(string $service, array &$info) : bool
     {
-        $lines = $this->getOutputLines(DockerCompose::make('ps', $service));
-        // ignores two first output lines
-        array_shift($lines);
-        array_shift($lines);
+        $id = $this->getOutput(DockerCompose::make('ps', '-q', $service));
 
-        $isRunning = ! empty($lines);
+        $isRunning = ! empty($id);
         $info = [
             'state' => '',
             'ports' => '',
         ];
 
         if ($isRunning) {
-            $pieces = array_filter(explode(' ', $lines[0]));
-            $containerName = $pieces[0];
-
             $ps = $this->getOutput(Docker::make(
                 'ps',
-                '--filter', 'NAME=' . $containerName,
+                '--filter', 'ID=' . $id,
                 '--format',
                 Escaped::make('{{.Status}} : {{.Ports}}')
             ));

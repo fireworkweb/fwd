@@ -13,7 +13,7 @@ class StartTest extends TestCase
 
         $this->artisan('start')->assertExitCode(0);
 
-        $this->assertDockerCompose('up -d ' . env('FWD_START_DEFAULT_SERVICES'));
+        $this->assertDockerCompose('up -d --force-recreate ' . env('FWD_START_DEFAULT_SERVICES'));
         $this->assertDocker('network create --attachable ' . env('FWD_NETWORK'));
     }
 
@@ -23,7 +23,7 @@ class StartTest extends TestCase
 
         $this->artisan('start --all')->assertExitCode(0);
 
-        $this->assertDockerCompose('up -d');
+        $this->assertDockerCompose('up -d --force-recreate');
         $this->assertDocker('network create --attachable ' . env('FWD_NETWORK'));
     }
 
@@ -33,7 +33,7 @@ class StartTest extends TestCase
 
         $this->artisan('start --services=chromedriver')->assertExitCode(0);
 
-        $this->assertDockerCompose('up -d chromedriver');
+        $this->assertDockerCompose('up -d --force-recreate chromedriver');
     }
 
     public function testStartOldVersionAllDependencies()

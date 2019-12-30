@@ -11,6 +11,6 @@ class StatusTest extends TestCase
         $this->artisan('status')->assertExitCode(0);
 
         $this->assertDockerCompose('ps --services');
-        $this->assertDockerCompose('ps');
+        $this->assertDockerCompose('ps -q');
     }
 }

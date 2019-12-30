@@ -72,3 +72,4 @@ networks:
   fwd_local:
   fwd_global:
     external: true
+    name: "${FWD_NETWORK}"
