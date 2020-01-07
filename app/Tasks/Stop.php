@@ -20,14 +20,14 @@ class Stop extends Task
         return $this->runCallables($tasks);
     }
 
-    public function purge(bool $purge) : self
+    public function purge(bool $purge): self
     {
         $this->purge = $purge;
 
         return $this;
     }
 
-    public function handleNetwork() : int
+    public function handleNetwork(): int
     {
         return $this->runTask('Destroy network', function () {
             return $this->runCommandWithoutOutput(
@@ -36,7 +36,7 @@ class Stop extends Task
         });
     }
 
-    public function destroyContainers() : int
+    public function destroyContainers(): int
     {
         return $this->runTask('Turning off fwd', function () {
             $args[] = 'down';

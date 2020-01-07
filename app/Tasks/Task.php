@@ -19,19 +19,19 @@ abstract class Task
         $this->command = $command;
     }
 
-    public static function make(Command $command) : self
+    public static function make(Command $command): self
     {
         return new static($command);
     }
 
-    abstract public function run(...$args) : int;
+    abstract public function run(...$args): int;
 
-    public function runCallables(array $commands) : int
+    public function runCallables(array $commands): int
     {
         return $this->command->runCommands($commands);
     }
 
-    protected function runCallableWaitFor(\Closure $closure, $timeout = 0) : int
+    protected function runCallableWaitFor(\Closure $closure, $timeout = 0): int
     {
         $microSecondsDelay = (int) env('FWD_ATTEMPTS_DELAY');
         $waitedMicroSeconds = 0;
@@ -57,7 +57,7 @@ abstract class Task
         return $exitCode;
     }
 
-    public function runQuietly() : int
+    public function runQuietly(): int
     {
         $this->quietly = true;
 
@@ -68,36 +68,36 @@ abstract class Task
         return $exit;
     }
 
-    protected function runCommand(Builder $builder) : int
+    protected function runCommand(Builder $builder): int
     {
         return $this->quietly
             ? $this->runCommandWithoutOutput($builder)
             : $this->runCommandWithOutput($builder);
     }
 
-    protected function runCommandWithOutput(Builder $builder) : int
+    protected function runCommandWithOutput(Builder $builder): int
     {
         return $this->command->getCommandExecutor()->run($builder);
     }
 
-    protected function runCommandWithoutOutput(Builder $builder, bool $outputOnError = true) : int
+    protected function runCommandWithoutOutput(Builder $builder, bool $outputOnError = true): int
     {
         return $this->command->getCommandExecutor()->runQuietly($builder, $outputOnError);
     }
 
-    public function runTask(string $title, \Closure $task) : int
+    public function runTask(string $title, \Closure $task): int
     {
         return $this->quietly
             ? $task()
             : $this->command->runTask($title, $task);
     }
 
-    protected function getOutputLines(Builder $command) : array
+    protected function getOutputLines(Builder $command): array
     {
         return explode(PHP_EOL, $this->getOutput($command));
     }
 
-    protected function getOutput(Builder $command) : string
+    protected function getOutput(Builder $command): string
     {
         $exit = $this->runCommandWithoutOutput($command);
 

@@ -34,21 +34,21 @@ class Start extends Task
         return $this->runCallables($tasks);
     }
 
-    public function services(string $services) : self
+    public function services(string $services): self
     {
         $this->services = $services;
 
         return $this;
     }
 
-    public function timeout(int $timeout) : self
+    public function timeout(int $timeout): self
     {
         $this->timeout = $timeout;
 
         return $this;
     }
 
-    public function checks(bool $checks) : self
+    public function checks(bool $checks): self
     {
         $this->checks = $checks;
 
@@ -94,14 +94,14 @@ class Start extends Task
         });
     }
 
-    public function handleNetworkTask() : int
+    public function handleNetworkTask(): int
     {
         return $this->runTask('Setting up network', function () {
             return $this->handleNetwork();
         });
     }
 
-    public function handleNetwork() : int
+    public function handleNetwork(): int
     {
         $command = Docker::make('network', 'ls', '-q', '-f', 'NAME=' . env('FWD_NETWORK'));
         $id = $this->getOutput($command);
@@ -115,7 +115,7 @@ class Start extends Task
         );
     }
 
-    public function startContainers() : int
+    public function startContainers(): int
     {
         return $this->runTask('Starting fwd', function () {
             $services = ! is_null($this->services)

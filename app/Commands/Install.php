@@ -78,12 +78,12 @@ class Install extends Command
         $this->info('File "docker-compose.yml" copied.');
     }
 
-    private function commentsOutAllVariables(string $env) : string
+    private function commentsOutAllVariables(string $env): string
     {
         return preg_replace('/^([A-Z].*)$/m', '# $1', $env);
     }
 
-    private function uncommentsLocalVariables(string $env) : string
+    private function uncommentsLocalVariables(string $env): string
     {
         $localVariables = [
             'FWD_IMAGE_APP',
@@ -99,7 +99,7 @@ class Install extends Command
         return $env;
     }
 
-    private function validateDockerComposeFileVersion(string $dockerComposeFileVersion) : void
+    private function validateDockerComposeFileVersion(string $dockerComposeFileVersion): void
     {
         if (! in_array($dockerComposeFileVersion, ['2', '3.7'])) {
             $this->error('Bad docker-compose-version option; valid values are either 2 or 3.7');
