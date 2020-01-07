@@ -23,14 +23,14 @@ class Status extends Task
         return $this->runCallables($chain);
     }
 
-    public function quite(bool $quite) : self
+    public function quite(bool $quite): self
     {
         $this->quite = $quite;
 
         return $this;
     }
 
-    public function displayServices() : int
+    public function displayServices(): int
     {
         $lines = $this->getOutputLines(DockerCompose::make('ps', '--services'));
 
@@ -61,7 +61,7 @@ class Status extends Task
         return 0;
     }
 
-    public function isRunning(string $service, array &$info) : bool
+    public function isRunning(string $service, array &$info): bool
     {
         $id = $this->getOutput(DockerCompose::make('ps', '-q', $service));
 
