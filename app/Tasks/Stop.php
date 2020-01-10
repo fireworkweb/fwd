@@ -2,7 +2,6 @@
 
 namespace App\Tasks;
 
-use App\Builder\Docker;
 use App\Builder\DockerCompose;
 
 class Stop extends Task
@@ -14,7 +13,6 @@ class Stop extends Task
     {
         $tasks = [
             [$this, 'destroyContainers'],
-            [$this, 'handleNetwork'],
         ];
 
         return $this->runCallables($tasks);
@@ -25,15 +23,6 @@ class Stop extends Task
         $this->purge = $purge;
 
         return $this;
-    }
-
-    public function handleNetwork(): int
-    {
-        return $this->runTask('Destroy network', function () {
-            return $this->runCommandWithoutOutput(
-                Docker::makeWithDefaultArgs('network', 'rm', env('FWD_NETWORK'))
-            );
-        });
     }
 
     public function destroyContainers(): int
