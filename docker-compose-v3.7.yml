@@ -3,7 +3,6 @@ services:
   app:
     image: "${FWD_IMAGE_APP}"
     init: true
-    restart: unless-stopped
     volumes:
      - ${FWD_CONTEXT_PATH}:/app:cached
      - "${FWD_SSH_KEY_PATH}:/home/developer/.ssh/id_rsa:cached"
@@ -26,11 +25,6 @@ services:
      - fwd_global
     depends_on:
      - app
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost']
-      interval: 1m
-      timeout: 10s
-      retries: 3
   chromedriver:
     image: "fireworkweb/chromedriver:latest"
     shm_size: 256M
