@@ -1,0 +1,69 @@
+version: "3.7"
+services:
+  app:
+    image: "${FWD_IMAGE_APP}"
+    init: true
+    volumes:
+     - ${FWD_CONTEXT_PATH}:/app:cached
+     - "${FWD_SSH_KEY_PATH}:/home/developer/.ssh/id_rsa:cached"
+    environment:
+      ASUSER: "${FWD_ASUSER}"
+    networks:
+     - fwd_local
+     - fwd_global
+    depends_on:
+     - cache
+     - database
+  http:
+    image: "fireworkweb/http:alpine"
+    ports:
+     - "${FWD_HTTP_PORT}"
+    volumes:
+     - ${FWD_CONTEXT_PATH}:/app:cached
+    networks:
+     - fwd_local
+     - fwd_global
+    depends_on:
+     - app
+  chromedriver:
+    image: "fireworkweb/chromedriver:latest"
+    shm_size: 256M
+    networks:
+     - fwd_local
+     - fwd_global
+  database:
+    image: "$FWD_IMAGE_DATABASE"
+    init: true
+    stop_grace_period: 30s
+    ports:
+     - "${FWD_DATABASE_PORT}"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+     - db:/var/lib/mysql:cached
+     # - ./docker/mysql/conf.d:/etc/mysql/conf.d
+     # - ./docker/mysql/logs:/var/log/mysql
+    networks:
+     - fwd_local
+     - fwd_global
+  cache:
+    image: "$FWD_IMAGE_CACHE"
+    volumes:
+     - cache:/data:cached
+    networks:
+     - fwd_local
+     - fwd_global
+volumes:
+  db:
+    driver: "local"
+  cache:
+    driver: "local"
+
+networks:
+  fwd_local:
+  fwd_global:
+    external: true
+    name: "${FWD_NETWORK}"

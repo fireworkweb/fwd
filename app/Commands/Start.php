@@ -12,7 +12,7 @@ class Start extends Command
      * @var string
      */
     protected $signature = 'start
-                            {--no-wait : Do not wait for Docker and Database to become available}
+                            {--no-checks : Do not wait for Database to become available}
                             {--timeout=60 : The number of seconds to wait}
                             {--all : Start all services}
                             {--services= : The services from docker-compose.yml to be started}';
@@ -31,9 +31,11 @@ class Start extends Command
      */
     public function handle()
     {
-        $timeout = ! $this->option('no-wait') ? $this->option('timeout') : 0;
+        $timeout = ! $this->option('no-checks') ? $this->option('timeout') : 0;
 
-        $task = StartTask::make($this)->timeout($timeout);
+        $task = StartTask::make($this)
+            ->checks(! $this->option('no-checks'))
+            ->timeout($timeout);
 
         if (! $this->option('all')) {
             $task->services((string) $this->option('services'));

@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use Illuminate\Support\Facades\File;
+use InvalidArgumentException;
 
 class Install extends Command
 {
@@ -12,7 +13,8 @@ class Install extends Command
      * @var string
      */
     protected $signature = 'install
-                                {--f|force : Overwrites project files (docker-compose.yml and .fwd)}';
+                                {--f|force : Overwrites project files (docker-compose.yml and .fwd)}
+                                {--docker-compose-version=3.7 : Which Docker Compose file version to use. Default is 3.7}';
 
     /**
      * The description of the command.
@@ -28,6 +30,10 @@ class Install extends Command
      */
     public function handle()
     {
+        $dockerComposeFileVersion = $this->option('docker-compose-version');
+
+        $this->validateDockerComposeFileVersion($dockerComposeFileVersion);
+
         if (! $this->option('force')) {
             if (File::exists($this->environment->getContextDockerCompose())) {
                 $this->error('File "docker-compose.yml" already exists. (use -f to override)');
@@ -59,7 +65,7 @@ class Install extends Command
         $this->info('File ".fwd" copied.');
 
         $copied = File::copy(
-            $this->environment->getDefaultDockerCompose(),
+            $this->environment->getDefaultDockerCompose($dockerComposeFileVersion),
             $this->environment->getContextDockerCompose()
         );
 
@@ -72,12 +78,12 @@ class Install extends Command
         $this->info('File "docker-compose.yml" copied.');
     }
 
-    private function commentsOutAllVariables(string $env) : string
+    private function commentsOutAllVariables(string $env): string
     {
         return preg_replace('/^([A-Z].*)$/m', '# $1', $env);
     }
 
-    private function uncommentsLocalVariables(string $env) : string
+    private function uncommentsLocalVariables(string $env): string
     {
         $localVariables = [
             'FWD_IMAGE_APP',
@@ -91,5 +97,18 @@ class Install extends Command
         }
 
         return $env;
+    }
+
+    private function validateDockerComposeFileVersion(string $dockerComposeFileVersion): void
+    {
+        if (! in_array($dockerComposeFileVersion, ['2', '3.7'])) {
+            $this->error('Bad docker-compose-version option; valid values are either 2 or 3.7');
+
+            throw new InvalidArgumentException('docker-compose-version must be either 2 or 3.7');
+        }
+
+        if ($dockerComposeFileVersion !== '3.7') {
+            $this->warn('Deprecated: not using the latest docker-compose-version=3.7 is deprecated and soon will lose support.');
+        }
     }
 }

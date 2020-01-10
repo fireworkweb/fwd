@@ -55,7 +55,7 @@ class Checker
     {
         if (is_null($this->dockerComposeVersion)) {
             $this->dockerComposeVersion = $this->version(
-                DockerCompose::make('version --short')
+                DockerCompose::make('version', '--short')
             );
         }
 

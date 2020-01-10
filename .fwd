@@ -17,8 +17,8 @@ FWD_ATTEMPTS_DELAY=1000000
 # FWD_NAME=custom_name
 
 # Ports - used on docker-compose.yml
-FWD_HTTP_PORT=80
-FWD_DATABASE_PORT=3306
+FWD_HTTP_PORT="80:80"
+FWD_DATABASE_PORT="3306:3306"
 
 # Host user for mapping execution within the containers
 FWD_ASUSER=$UID
@@ -47,3 +47,5 @@ DB_PASSWORD="secret"
 
 # Docker Composer
 COMPOSE_API_VERSION=1.25
+FWD_COMPOSE_VERSION=3.7
+# FWD_NETWORK="custom-network" # by default will be generated on the fly

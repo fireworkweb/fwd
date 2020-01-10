@@ -2,6 +2,7 @@
 
 namespace App\Tasks;
 
+use App\Builder\Docker;
 use App\Builder\DockerCompose;
 use App\Builder\Escaped;
 use App\Builder\Mysql;
@@ -12,28 +13,44 @@ class Start extends Task
     /** @var int $timeout */
     protected $timeout = 60; // seconds
 
+    /** @var bool $checks */
+    protected $checks = true;
+
     /** @var string $services */
     protected $services;
 
     public function run(...$args): int
     {
-        return $this->runCallables([
-            [$this, 'checkDependencies'],
-            [$this, 'dockerComposeUpD'],
-            [$this, 'database'],
-        ]);
+        $tasks = [
+            [$this, 'handleNetworkTask'],
+            [$this, 'startContainers'],
+        ];
+
+        if ($this->checks) {
+            array_unshift($tasks, [$this, 'checkDependencies']);
+            $tasks[] = [$this, 'checkDatabase'];
+        }
+
+        return $this->runCallables($tasks);
     }
 
-    public function services(string $services) : self
+    public function services(string $services): self
     {
         $this->services = $services;
 
         return $this;
     }
 
-    public function timeout(int $timeout) : self
+    public function timeout(int $timeout): self
     {
         $this->timeout = $timeout;
+
+        return $this;
+    }
+
+    public function checks(bool $checks): self
+    {
+        $this->checks = $checks;
 
         return $this;
     }
@@ -73,16 +90,32 @@ class Start extends Task
                 return 1;
             }
 
-            return $this->runCallableWaitFor(function () {
-                return $this->runCommandWithoutOutput(
-                    DockerCompose::make('ps'),
-                    false
-                );
-            }, $this->timeout);
+            return 0;
         });
     }
 
-    public function dockerComposeUpD()
+    public function handleNetworkTask(): int
+    {
+        return $this->runTask('Setting up network', function () {
+            return $this->handleNetwork();
+        });
+    }
+
+    public function handleNetwork(): int
+    {
+        $command = Docker::make('network', 'ls', '-q', '-f', 'NAME=' . env('FWD_NETWORK'));
+        $id = $this->getOutput($command);
+
+        if (! empty($id)) {
+            return 0;
+        }
+
+        return $this->runCommandWithoutOutput(
+            Docker::makeWithDefaultArgs('network', 'create', '--attachable', env('FWD_NETWORK'))
+        );
+    }
+
+    public function startContainers(): int
     {
         return $this->runTask('Starting fwd', function () {
             $services = ! is_null($this->services)
@@ -90,13 +123,13 @@ class Start extends Task
                 : null;
 
             return $this->runCommandWithoutOutput(
-                DockerCompose::make('up', '-d', $services),
+                DockerCompose::make('up', '-d', '--force-recreate', $services),
                 false
             );
         });
     }
 
-    public function database()
+    public function checkDatabase()
     {
         return $this->runTask('Checking Database', function () {
             return $this->runCallableWaitFor(function () {

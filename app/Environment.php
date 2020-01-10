@@ -40,6 +40,8 @@ class Environment
         'DB_USERNAME',
         'DB_PASSWORD',
         'COMPOSE_API_VERSION',
+        'FWD_COMPOSE_VERSION',
+        'FWD_NETWORK',
     ];
 
     public function getKeys(): array
@@ -61,42 +63,42 @@ class Environment
             ->fixVariables();
     }
 
-    public function getDefaultPath() : string
+    public function getDefaultPath(): string
     {
         return base_path();
     }
 
-    public function getContextPath() : string
+    public function getContextPath(): string
     {
         return getcwd();
     }
 
-    public function getDefaultDockerCompose() : string
+    public function getDefaultDockerCompose(string $version): string
     {
-        return sprintf('%s/docker-compose.yml', $this->getDefaultPath());
+        return sprintf('%s/docker-compose-v%s.yml', $this->getDefaultPath(), $version);
     }
 
-    public function getContextDockerCompose() : string
+    public function getContextDockerCompose(): string
     {
         return $this->getContextFile('docker-compose.yml');
     }
 
-    public function getDefaultFwd() : string
+    public function getDefaultFwd(): string
     {
         return sprintf('%s/.fwd', $this->getDefaultPath());
     }
 
-    public function getHomeFwd() : string
+    public function getHomeFwd(): string
     {
         return sprintf('%s/.fwd', $_SERVER['HOME']);
     }
 
-    public function getContextEnv(string $env = '.env') : string
+    public function getContextEnv(string $env = '.env'): string
     {
         return $this->getContextFile($env);
     }
 
-    public function getContextFile(string $file) : string
+    public function getContextFile(string $file): string
     {
         return sprintf('%s/%s', $this->getContextPath(), $file);
     }
@@ -138,6 +140,14 @@ class Environment
             $envVariables->set(
                 'FWD_NAME',
                 basename(getcwd())
+            );
+        }
+
+        if (empty(env('FWD_NETWORK'))) {
+            // defines default network name
+            $envVariables->set(
+                'FWD_NETWORK',
+                'fwd_global'
             );
         }
 

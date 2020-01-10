@@ -2,7 +2,7 @@
 
 namespace App\Commands;
 
-use App\Builder\DockerCompose;
+use App\Tasks\Stop as TasksStop;
 
 class Stop extends Command
 {
@@ -28,15 +28,8 @@ class Stop extends Command
      */
     public function handle()
     {
-        $args = ['down'];
+        $task = TasksStop::make($this)->purge((bool) $this->option('purge'));
 
-        if ($this->option('purge')) {
-            $args[] = '--volumes';
-            $args[] = '--remove-orphans';
-        }
-
-        return $this->commandExecutor->run(
-            DockerCompose::makeWithDefaultArgs(...$args)
-        );
+        return $task->run();
     }
 }
