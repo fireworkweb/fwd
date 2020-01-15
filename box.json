@@ -8,7 +8,8 @@
     ],
     "files": [
         "composer.json",
-        "docker-compose.yml",
+        "docker-compose-v2.yml",
+        "docker-compose-v3.7.yml",
         ".fwd"
     ],
     "exclude-composer-files": false,
