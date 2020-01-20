@@ -5,6 +5,7 @@ namespace App\Tasks;
 use App\Builder\Docker;
 use App\Builder\DockerCompose;
 use App\Builder\Escaped;
+use RuntimeException;
 
 class Status extends Task
 {
@@ -73,11 +74,15 @@ class Status extends Task
 
         if ($isRunning) {
             $ps = $this->getOutput(Docker::make(
-                'ps',
+                'ps', '-a',
                 '--filter', 'ID=' . $id,
                 '--format',
                 Escaped::make('{{.Status}} : {{.Ports}}')
             ));
+
+            if (empty($ps) || strpos($ps, ':') === false) {
+                throw new RuntimeException('could not fetch docker ps status of container with ID: '.$id);
+            }
 
             [
                 $info['state'],
