@@ -16,16 +16,6 @@ trait HasDynamicArgs
 
         return ($pos = mb_strpos($args, ' '))
             ? mb_substr($args, $pos + 1)
-            : $this->getDefaultArgs();
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return '';
+            : '';
     }
 }

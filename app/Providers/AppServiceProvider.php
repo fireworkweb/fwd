@@ -2,11 +2,12 @@
 
 namespace App\Providers;
 
-use App\Process;
+use App\Checker;
+use App\CommandExecutor;
 use App\Environment;
 use Illuminate\Console\Command;
-use Symfony\Component\Finder\Finder;
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,8 +29,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(Checker::class);
         $this->app->singleton(Environment::class);
-        $this->app->singleton(Process::class);
+        $this->app->singleton(CommandExecutor::class);
 
         $this->loadFwd();
     }

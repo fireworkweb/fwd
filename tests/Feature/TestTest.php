@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Environment;
+use Tests\TestCase;
 
 class TestTest extends TestCase
 {
@@ -11,14 +11,14 @@ class TestTest extends TestCase
     {
         $this->artisan('test')->assertExitCode(0);
 
-        $this->asFWDUSer()->assertDockerComposeExec('app ./vendor/bin/phpunit');
+        $this->asFwdUser()->assertDockerComposeExec('app php vendor/bin/phpunit');
     }
 
     public function testTestWithFilter()
     {
         $this->artisan('test --filter=something')->assertExitCode(0);
 
-        $this->asFWDUSer()->assertDockerComposeExec('app ./vendor/bin/phpunit --filter=something');
+        $this->asFwdUser()->assertDockerComposeExec('app php vendor/bin/phpunit --filter=something');
     }
 
     public function testTestingWithDockerComposeFlags()
@@ -27,6 +27,6 @@ class TestTest extends TestCase
 
         $this->artisan('test')->assertExitCode(0);
 
-        $this->asFWDUSer()->assertDockerComposeExec('-T app ./vendor/bin/phpunit');
+        $this->asFwdUser()->assertDockerComposeExec('app php vendor/bin/phpunit');
     }
 }

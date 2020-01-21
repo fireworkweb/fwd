@@ -8,7 +8,7 @@ class NodeQaTest extends TestCase
 {
     public function testNodeQa()
     {
-        $this->artisan('node-qa')->assertExitCode(0);
+        $this->artisan('node-qa node -v')->assertExitCode(0);
 
         $this->assertDockerRun('fireworkweb/node:qa node -v');
     }

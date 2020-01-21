@@ -2,9 +2,8 @@
 
 namespace App\Commands;
 
-use App\Process;
+use App\Builder\Php as PhpBuilder;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class Php extends Command
 {
@@ -29,18 +28,10 @@ class Php extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle()
     {
-        return $process->asFWDUser()->dockerComposeExec('app', $this->getArgs());
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return 'php -v';
+        return $this->commandExecutor->run(
+            PhpBuilder::makeWithDefaultArgs($this->getArgs())
+        );
     }
 }

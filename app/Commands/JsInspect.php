@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\Builder\NodeQa;
-use App\CommandExecutor;
+use App\Builder\JsInspect as JsInspectBuilder;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class JsInspect extends Command
 {
@@ -30,18 +28,10 @@ class JsInspect extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(new NodeQa('jsinspect', $this->getArgs()));
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return 'src/';
+        return $this->commandExecutor->run(
+            JsInspectBuilder::makeWithDefaultArgs($this->getArgs())
+        );
     }
 }

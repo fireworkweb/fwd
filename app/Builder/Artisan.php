@@ -2,19 +2,19 @@
 
 namespace App\Builder;
 
-class Artisan extends Command
+class Artisan extends Builder
 {
-    public function getProgramName()
+    public function getProgramName() : string
     {
-        return 'app php artisan';
+        return 'artisan';
     }
 
-    public function makeWrapper() : ?Command
+    public function makeWrapper() : ?Builder
     {
-        return (new DockerComposeExec())->setUser(env('FWD_ASUSER'));
+        return Php::make();
     }
 
-    public function getDockerComposeExec() : DockerComposeExec
+    public function getPhp() : Php
     {
         return $this->wrapper;
     }

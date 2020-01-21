@@ -2,61 +2,56 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Environment;
 use App\Builder\Artisan;
+use App\Environment;
+use Tests\TestCase;
 
 class EnvVarTest extends TestCase
 {
     public function testEnvironmentVariableFromFile()
     {
-        app(Environment::class)->overloadEnv('tests/fixtures/.env.example');
+        app(Environment::class)->overloadEnv('tests/fixtures/.env.custom1');
 
-        $this->assertEquals('custom-var', env('FWD_CUSTOM_ENV_VAR'));
+        $this->assertEquals('custom1', env('CUSTOM'));
     }
 
     public function testSafeLoadEnvVariables()
     {
         $env = app(Environment::class);
-        $env->set('FWD_CUSTOM_ENV_VAR', 'xxx');
 
-        $env->safeLoadEnv('tests/fixtures/.env.example');
+        $env->safeLoadEnv('tests/fixtures/.env.custom1');
+        $env->safeLoadEnv('tests/fixtures/.env.custom2');
 
-        $this->assertEquals('xxx', env('FWD_CUSTOM_ENV_VAR'));
+        $this->assertEquals('custom1', env('CUSTOM'));
     }
 
     public function testOverloadEnvVariables()
     {
         $env = app(Environment::class);
-        $env->set('FWD_CUSTOM_ENV_VAR', 'xxx');
 
-        $env->overloadEnv('tests/fixtures/.env.example');
+        $env->overloadEnv('tests/fixtures/.env.custom1');
+        $env->overloadEnv('tests/fixtures/.env.custom2');
 
-        $this->assertEquals('custom-var', env('FWD_CUSTOM_ENV_VAR'));
+        $this->assertEquals('custom2', env('CUSTOM'));
     }
 
     public function testNestingVariablesFromFile()
     {
         $env = app(Environment::class);
-        $env->set('CUSTOM_VAR', 'custom-var');
-
+        $env->overloadEnv('tests/fixtures/.env.custom1');
         $env->overloadEnv('tests/fixtures/.env.nesting');
 
-        $dockerBinary = env('FWD_DOCKER_BIN');
-        $this->assertEquals("docker binary is: $dockerBinary", env('FWD_CUSTOM_DOCKER_BINARY'));
-
-        $this->assertEquals('--custom-var=custom-var', env('FWD_CUSTOM_VAR_NESTED'));
+        $this->assertEquals('--custom=custom1', env('CUSTOM_NESTED'));
     }
 
     public function testNestingVariablesFromFileOntoCommand()
     {
         $env = app(Environment::class);
         // this could come from CLI prefixed var setting
-        $env->set('DOMAIN', 'example.com');
-
+        $env->overloadEnv('tests/fixtures/.env.custom1');
         $env->overloadEnv('tests/fixtures/.env.docker-compose_exec-nested');
 
         $comm = new Artisan('tinker');
-        $this->assertStringContainsString('exec -e DOMAIN=example.com', (string) $comm);
+        $this->assertStringContainsString('exec -e CUSTOM=custom1', (string) $comm);
     }
 }

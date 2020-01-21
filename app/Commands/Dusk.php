@@ -2,14 +2,12 @@
 
 namespace App\Commands;
 
-use App\Process;
-use App\Commands\Traits\ArtisanCall;
+use App\Builder\Artisan;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class Dusk extends Command
 {
-    use ArtisanCall, HasDynamicArgs;
+    use HasDynamicArgs;
 
     /**
      * The name of the command.
@@ -30,8 +28,10 @@ class Dusk extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle()
     {
-        return $process->asFWDUser()->dockerComposeExec('app php artisan dusk', $this->getArgs());
+        return $this->commandExecutor->run(
+            Artisan::makeWithDefaultArgs('dusk', $this->getArgs())
+        );
     }
 }

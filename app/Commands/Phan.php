@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\Builder\PhpQa;
-use App\CommandExecutor;
+use App\Builder\Phan as PhanBuilder;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class Phan extends Command
 {
@@ -30,18 +28,10 @@ class Phan extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(new PhpQa('phan', $this->getArgs()));
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return '--color -p -l app -iy 5';
+        return $this->commandExecutor->run(
+            PhanBuilder::makeWithDefaultArgs($this->getArgs())
+        );
     }
 }

@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\CommandExecutor;
 use App\Builder\Node as NodeBuilder;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class Node extends Command
 {
@@ -30,18 +28,10 @@ class Node extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(new NodeBuilder($this->getArgs()));
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return '-v';
+        return $this->commandExecutor->run(
+            NodeBuilder::makeWithDefaultArgs($this->getArgs())
+        );
     }
 }

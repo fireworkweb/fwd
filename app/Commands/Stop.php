@@ -2,35 +2,34 @@
 
 namespace App\Commands;
 
-use App\Process;
-use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
+use App\Tasks\Stop as TasksStop;
 
 class Stop extends Command
 {
-    use HasDynamicArgs;
-
     /**
-     * The name of the command.
+     * The signature of the command.
      *
      * @var string
      */
-    protected $name = 'stop';
+    protected $signature = 'stop
+                                {--purge : Removes all data persisted from containers by removing the underlying Docker volumes}';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Stop fwd environment containers.';
+    protected $description = 'Get down all containers AND DESTROY THEM.';
 
     /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle()
     {
-        return $process->dockerCompose('stop', $this->getArgs());
+        $task = TasksStop::make($this)->purge((bool) $this->option('purge'));
+
+        return $task->run();
     }
 }

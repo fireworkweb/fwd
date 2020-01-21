@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\CommandExecutor;
+use App\Builder\Artisan as ArtisanBuilder;
 use App\Commands\Traits\HasDynamicArgs;
-use App\Builder\Artisan as ArtisanCommand;
-use LaravelZero\Framework\Commands\Command;
 
 class Artisan extends Command
 {
@@ -30,8 +28,10 @@ class Artisan extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(ArtisanCommand::make($this->getArgs()));
+        return $this->commandExecutor->run(
+            ArtisanBuilder::makeWithDefaultArgs($this->getArgs())
+        );
     }
 }

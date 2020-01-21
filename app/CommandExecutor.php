@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Builder\Command;
+use App\Builder\Builder;
 use App\Events\BeforeExecuteCommand;
 
 class CommandExecutor
@@ -23,6 +23,10 @@ class CommandExecutor
     {
         $this->output = true;
 
+        $this->setOutputBuffer($this->getOutputFileContents());
+
+        $this->unsetOutputFile();
+
         return $this;
     }
 
@@ -30,49 +34,50 @@ class CommandExecutor
     {
         $this->output = false;
 
+        $this->prepareOutputFile();
+
         return $this;
     }
 
-    public function runQuietly(Command $command) : int
+    public function runQuietly(Builder $command, bool $outputOnError = true) : int
     {
         $this->disableOutput();
 
-        $this->prepareOutputFile();
-
         $exitCode = $this->run($command);
-
-        $this->setOutputBuffer($this->getOutputFileContents());
-
-        $this->unsetOutputFile();
 
         $this->enableOutput();
 
-        if ($exitCode) {
-            $this->print($this->getOutputBuffer());
+        if (($exitCode && $outputOnError) || env('FWD_VERBOSE')) {
+            $this->printOutputBuffer();
         }
 
         return $exitCode;
     }
 
-    public function run(Command $command) : int
+    public function printOutputBuffer() : void
+    {
+        $this->print($this->getOutputBuffer());
+    }
+
+    public function run(Builder $builder) : int
     {
         $this->setOutputBuffer('');
 
-        event(new BeforeExecuteCommand($command));
+        event(new BeforeExecuteCommand($builder));
 
-        $shellCommand = (string) $command;
+        $command = (string) $builder;
 
         if (env('FWD_DEBUG') || env('FWD_VERBOSE')) {
-            $this->print($shellCommand);
+            $this->print($command);
         }
 
         if (env('FWD_DEBUG')) {
             return 0;
         }
 
-        $this->commands[] = $shellCommand;
+        $this->commands[] = $command;
 
-        return $this->execute($shellCommand, $command->getCwd());
+        return $this->execute($command, $builder->getCwd());
     }
 
     public function commands() : array
@@ -113,14 +118,14 @@ class CommandExecutor
 
     protected function getDescriptors() : array
     {
-        if ($this->output || env('FWD_VERBOSE')) {
+        if ($this->output) {
             return [STDIN, STDOUT, STDERR];
         }
 
         return [STDIN, $this->outputFile, $this->outputFile];
     }
 
-    protected function print($line) : void
+    public function print($line) : void
     {
         if (! empty($line)) {
             echo $line . PHP_EOL;

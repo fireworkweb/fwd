@@ -2,9 +2,8 @@
 
 namespace Tests;
 
-use App\Process;
-use App\Environment;
 use App\CommandExecutor;
+use App\Environment;
 use LaravelZero\Framework\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -20,17 +19,17 @@ abstract class TestCase extends BaseTestCase
      */
     protected function setUp(): void
     {
+        // resets some env
+        app(Environment::class)
+            ->overloadEnv('.fwd')
+            ->overloadEnv('.fwd.testing');
+
         parent::setup();
 
-        $this->mockProcess();
         $this->mockCommandExecutor();
 
         // resets intended execution user
         $this->setAsUser(null);
-        // resets some env
-        $env = app(Environment::class);
-        $env->overloadEnv('.fwd');
-        $env->overloadEnv('.fwd.testing');
     }
 
     protected function setAsUser($user)
@@ -40,14 +39,14 @@ abstract class TestCase extends BaseTestCase
         return $this;
     }
 
-    protected function asFWDUser()
+    protected function asFwdUser()
     {
         return $this->setAsUser(env('FWD_ASUSER'));
     }
 
     protected function assertDocker(...$command)
     {
-        $this->assertProcessRun([
+        $this->assertCommandRun([
             env('FWD_DOCKER_BIN', 'docker'),
             $this->buildCommand($command),
         ]);
@@ -55,7 +54,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function assertDockerCompose(...$command)
     {
-        $this->assertProcessRun([
+        $this->assertCommandRun([
             env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose'),
             sprintf('-p %s', basename(getcwd())),
             $this->buildCommand($command),
@@ -67,7 +66,7 @@ abstract class TestCase extends BaseTestCase
         $params = [
             env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose'),
             sprintf('-p %s exec', basename(getcwd())),
-
+            env('FWD_COMPOSE_EXEC_FLAGS'),
         ];
 
         if (! empty($this->asUser)) {
@@ -77,12 +76,12 @@ abstract class TestCase extends BaseTestCase
 
         $params[] = $this->buildCommand($command);
 
-        $this->assertProcessRun($params);
+        $this->assertCommandRun($params);
     }
 
     protected function assertDockerRun(...$command)
     {
-        $this->assertProcessRun([
+        $this->assertCommandRun([
             env('FWD_DOCKER_BIN', 'docker'),
             'run',
             sprintf('-e ASUSER=%s', env('FWD_ASUSER')),
@@ -93,26 +92,17 @@ abstract class TestCase extends BaseTestCase
         ]);
     }
 
-    protected function assertProcessRun(array $command)
+    protected function assertCommandRun(array $command)
     {
         $command = $this->buildCommand($command);
 
-        $hasCommand = app(Process::class)->hasCommand($command) || app(CommandExecutor::class)->hasCommand($command);
+        $hasCommand = app(CommandExecutor::class)->hasCommand($command);
 
         if (! $hasCommand) {
             dump(app(CommandExecutor::class)->commands(), $command);
         }
 
         static::assertTrue($hasCommand, 'Failed asserting that this command was called: ' . $command);
-    }
-
-    protected function mockProcess()
-    {
-        $this->mock(Process::class, function ($mock) {
-            $mock->shouldAllowMockingProtectedMethods()
-                ->shouldReceive('run')
-                ->andReturn(0);
-        })->makePartial();
     }
 
     protected function mockCommandExecutor()
@@ -129,17 +119,29 @@ abstract class TestCase extends BaseTestCase
         return trim(implode(' ', array_filter($command)));
     }
 
-    protected function makeDockerComposeExecString(string $args = '') : string
+    protected function makeDockerComposeExecString(string $args = ''): string
     {
         $flags = env('FWD_COMPOSE_EXEC_FLAGS') ? ' ' . env('FWD_COMPOSE_EXEC_FLAGS') : '';
 
-        return trim('docker-compose -p fwd exec' . $flags . ' ' . $args);
+        return trim($this->dockerComposeExecString() . $flags . ' ' . $args);
     }
 
-    protected function makeDockerComposeExecUserString($user = null, string $args = '') : string
+    protected function makeDockerComposeExecUserString($user = null, string $args = ''): string
     {
         $flags = env('FWD_COMPOSE_EXEC_FLAGS') ? ' ' . env('FWD_COMPOSE_EXEC_FLAGS') : '';
 
-        return trim('docker-compose -p fwd exec' . $flags . ' --user ' . $user . ' ' . $args);
+        return trim($this->dockerComposeExecString() . $flags . ' --user ' . $user . ' ' . $args);
+    }
+
+    protected function dockerComposeExecString(): string
+    {
+        return "{$this->dockerComposeString()} exec";
+    }
+
+    protected function dockerComposeString(): string
+    {
+        $project = env('FWD_NAME');
+
+        return "docker-compose -p {$project}";
     }
 }

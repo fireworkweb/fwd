@@ -2,15 +2,15 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use App\Builder\Command;
+use App\Builder\Builder;
 use App\Events\BeforeExecuteCommand;
+use Tests\TestCase;
 
 class BeforeExecuteCommandTest extends TestCase
 {
     public function testBeforeExecuteCommand()
     {
-        $command = new Command('foo');
+        $command = new Builder('foo');
         $beforeExecuteCommandEvent = new BeforeExecuteCommand($command);
 
         $this->assertEquals($command, $beforeExecuteCommandEvent->getCommand());

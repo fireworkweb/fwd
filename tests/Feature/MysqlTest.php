@@ -10,13 +10,13 @@ class MysqlTest extends TestCase
     {
         $this->artisan('mysql')->assertExitCode(0);
 
-        $this->assertDockerComposeExec('-e MYSQL_PWD=secret mysql mysql -u root docker');
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root docker");
     }
 
     public function testMysqlExecution()
     {
         $this->artisan('mysql -e "show databases"')->assertExitCode(0);
 
-        $this->assertDockerComposeExec("-e MYSQL_PWD=secret mysql mysql -u root docker -e 'show databases'");
+        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root docker -e 'show databases'");
     }
 }

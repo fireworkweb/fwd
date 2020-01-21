@@ -2,10 +2,8 @@
 
 namespace App\Commands;
 
-use App\Builder\PhpQa;
-use App\CommandExecutor;
+use App\Builder\PhpCpd as PhpCpdBuilder;
 use App\Commands\Traits\HasDynamicArgs;
-use LaravelZero\Framework\Commands\Command;
 
 class PhpCpd extends Command
 {
@@ -30,18 +28,10 @@ class PhpCpd extends Command
      *
      * @return mixed
      */
-    public function handle(CommandExecutor $executor)
+    public function handle()
     {
-        return $executor->run(new PhpQa('phpcpd', $this->getArgs()));
-    }
-
-    /**
-     * Get default args when empty.
-     *
-     * @return string
-     */
-    public function getDefaultArgs(): string
-    {
-        return '--fuzzy app/';
+        return $this->commandExecutor->run(
+            PhpCpdBuilder::makeWithDefaultArgs($this->getArgs())
+        );
     }
 }

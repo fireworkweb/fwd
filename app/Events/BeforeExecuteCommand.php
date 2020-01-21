@@ -2,20 +2,20 @@
 
 namespace App\Events;
 
-use App\Builder\Command;
+use App\Builder\Builder;
 
 class BeforeExecuteCommand
 {
-    /** @var Command $command */
-    protected $command;
+    /** @var Builder $builder */
+    protected $builder;
 
-    public function __construct(Command $command)
+    public function __construct(Builder $builder)
     {
-        $this->command = $command;
+        $this->builder = $builder;
     }
 
     public function getCommand()
     {
-        return $this->command;
+        return $this->builder;
     }
 }

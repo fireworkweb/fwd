@@ -1,7 +1,7 @@
 <?php
 
-use App\Process;
-use LaravelZero\Framework\Commands\Command;
+use App\Builder\Builder;
+use App\Commands\Command;
 
 class Custom extends Command
 {
@@ -24,8 +24,10 @@ class Custom extends Command
      *
      * @return mixed
      */
-    public function handle(Process $process)
+    public function handle()
     {
-        $process->process(['echo', 'custom']);
+        return $this->commandExecutor->run(
+            Builder::make('echo custom')
+        );
     }
 }
