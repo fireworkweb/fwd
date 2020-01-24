@@ -36,6 +36,9 @@ jobs:
         run: |
           composer update --prefer-dist --no-interaction
 
+      - name: Build fwd
+        run: php fwd app:build --build-version=testing
+
       - name: Execute linter
         run: php-cs-fixer fix --dry-run --diff --verbose
 
