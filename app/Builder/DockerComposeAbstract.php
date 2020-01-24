@@ -11,10 +11,7 @@ abstract class DockerComposeAbstract extends Builder
     /** @var string $user */
     protected $user = '';
 
-    public function getProgramName() : string
-    {
-        throw new \Exception('Not implemented');
-    }
+    abstract public function getProgramName() : string;
 
     public function makeWrapper() : ?Builder
     {
