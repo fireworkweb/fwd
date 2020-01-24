@@ -31,6 +31,8 @@ FWD_DOCKER_BIN=docker
 FWD_DOCKER_COMPOSE_BIN=docker-compose
 # Docker Compose Exec flags
 FWD_COMPOSE_EXEC_FLAGS=""
+# Docker Compose Run flags
+FWD_COMPOSE_RUN_FLAGS=""
 # Docker Run flags
 FWD_DOCKER_RUN_FLAGS="-it --init"
 
