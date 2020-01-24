@@ -10,27 +10,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    protected $asUser = null;
-
-    /**
-     * Setup the test environment.
-     *
-     * @return void
-     */
-    protected function setUp(): void
-    {
-        // resets some env
-        app(Environment::class)
-            ->overloadEnv('.fwd')
-            ->overloadEnv('.fwd.testing');
-
-        parent::setup();
-
-        $this->mockCommandExecutor();
-
-        // resets intended execution user
-        $this->setAsUser(null);
-    }
+    protected $asUser;
 
     protected function setAsUser($user)
     {
@@ -143,5 +123,25 @@ abstract class TestCase extends BaseTestCase
         $project = env('FWD_NAME');
 
         return "docker-compose -p {$project}";
+    }
+
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        // resets some env
+        app(Environment::class)
+            ->overloadEnv('.fwd')
+            ->overloadEnv('.fwd.testing');
+
+        parent::setup();
+
+        $this->mockCommandExecutor();
+
+        // resets intended execution user
+        $this->setAsUser(null);
     }
 }
