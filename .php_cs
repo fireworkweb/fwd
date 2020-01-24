@@ -175,9 +175,17 @@ $rules = [
     'whitespace_after_comma_in_array' => true,
 ];
 
-return Config::create()
+$finder = PhpCsFixer\Finder::create()
+    ->in(__DIR__)
+    ->exclude(['bootstrap', 'builds', 'gitlab-ci', 'vendor'])
+    ->name('*.php')
+    ->ignoreDotFiles(true)
+    ->ignoreVCS(true);
+
+return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
     ->setRules($rules)
     ->setLineEnding(PHP_EOL)
     ->setHideProgress(true)
-    ->setUsingCache(true);
+    ->setUsingCache(true)
+    ->setFinder($finder);

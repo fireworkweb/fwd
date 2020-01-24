@@ -37,10 +37,7 @@ jobs:
           composer update --prefer-dist --no-interaction
 
       - name: Execute linter
-        run: |
-          php-cs-fixer fix app --dry-run --diff --verbose
-          php-cs-fixer fix config --dry-run --diff --verbose
-          php-cs-fixer fix tests --dry-run --diff --verbose
+        run: php-cs-fixer fix --dry-run --diff --verbose
 
       - name: Execute tests
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
