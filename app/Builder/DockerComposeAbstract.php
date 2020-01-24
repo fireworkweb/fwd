@@ -11,8 +11,6 @@ abstract class DockerComposeAbstract extends Builder
     /** @var string $user */
     protected $user = '';
 
-    abstract public function getProgramName() : string;
-
     public function makeWrapper() : ?Builder
     {
         return new DockerCompose();
