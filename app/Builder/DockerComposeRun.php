@@ -9,11 +9,6 @@ class DockerComposeRun extends DockerComposeAbstract
         return 'run';
     }
 
-    protected function getEnvVar() : string
-    {
-        return env('FWD_COMPOSE_RUN_FLAGS');
-    }
-
     public function makeArgs(...$args) : array
     {
         return array_merge([
