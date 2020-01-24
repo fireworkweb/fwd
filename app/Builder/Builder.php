@@ -2,7 +2,7 @@
 
 namespace App\Builder;
 
-class Builder
+abstract class Builder
 {
     /** @var string $cwd */
     protected $cwd;
@@ -32,10 +32,7 @@ class Builder
         return new static(...$args);
     }
 
-    public function getProgramName() : string
-    {
-        return '';
-    }
+    abstract public function getProgramName() : string;
 
     public function makeArgs(...$args) : array
     {

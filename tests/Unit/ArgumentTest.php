@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use App\Builder\Argument;
-use App\Builder\Builder;
 use App\Builder\Escaped;
+use App\Builder\Generic;
 use App\Builder\Unescaped;
 use Tests\TestCase;
 
@@ -37,14 +37,14 @@ class ArgumentTest extends TestCase
 
     public function testArgumentWithCommand()
     {
-        $arg = new Argument(new Builder('foo'));
+        $arg = new Argument(new Generic('foo'));
 
         $this->assertEquals((string) $arg, 'foo');
     }
 
     public function testArgumentWithCommandWithArgument()
     {
-        $arg = new Argument(new Builder('foo', new Argument('--bar')));
+        $arg = new Argument(new Generic('foo', new Argument('--bar')));
 
         $this->assertEquals((string) $arg, 'foo --bar');
     }

@@ -1,6 +1,6 @@
 <?php
 
-use App\Builder\Builder;
+use App\Builder\Generic;
 use App\Commands\Command;
 
 class Custom extends Command
@@ -27,7 +27,7 @@ class Custom extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            Builder::make('echo custom')
+            Generic::make('echo custom')
         );
     }
 }

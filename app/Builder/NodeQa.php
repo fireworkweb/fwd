@@ -4,6 +4,11 @@ namespace App\Builder;
 
 class NodeQa extends Builder
 {
+    public function getProgramName() : string
+    {
+        return '';
+    }
+
     public function makeWrapper() : ?Builder
     {
         return (new DockerRun())->addArgument(env('FWD_IMAGE_NODE_QA'));

@@ -2,22 +2,22 @@
 
 namespace Tests\Unit;
 
-use App\Builder\Builder;
 use App\Builder\Escaped;
+use App\Builder\Generic;
 use Tests\TestCase;
 
 class CommandTest extends TestCase
 {
     public function testSingleCommandToString()
     {
-        $comm = new Builder('foo');
+        $comm = new Generic('foo');
 
         $this->assertEquals((string) $comm, 'foo');
     }
 
     public function testCommandWithArgsToString()
     {
-        $comm = new Builder('foo');
+        $comm = new Generic('foo');
 
         $comm->addArgument('--bar');
 
@@ -26,19 +26,19 @@ class CommandTest extends TestCase
 
     public function testCommandWithArgsOnConstructorToString()
     {
-        $comm = new Builder('foo', '--bar');
+        $comm = new Generic('foo', '--bar');
 
         $this->assertEquals((string) $comm, 'foo --bar');
     }
 
     public function testCommandWithArgsEscapedToString()
     {
-        $comm = new Builder('foo');
+        $comm = new Generic('foo');
         $comm->addArgument(Escaped::make('/path/to/something'));
 
         $this->assertEquals((string) $comm, 'foo \'/path/to/something\'');
 
-        $comm = new Builder('foo');
+        $comm = new Generic('foo');
         $comm->addArgument(Escaped::make('/path/t o/something'));
 
         $this->assertEquals((string) $comm, 'foo \'/path/t o/something\'');
@@ -46,7 +46,7 @@ class CommandTest extends TestCase
 
     public function testCommandWithArgsWithValuesToString()
     {
-        $comm = new Builder('foo');
+        $comm = new Generic('foo');
 
         $comm->addArgument('--bar=\'zum\'');
 
@@ -55,7 +55,7 @@ class CommandTest extends TestCase
 
     public function testCommandWithArgsWithValuesParsedToString()
     {
-        $comm = new Builder('foo');
+        $comm = new Generic('foo');
         $comm->addArgument('--bar', 'zum');
 
         $this->assertEquals((string) $comm, 'foo --bar=\'zum\'');
@@ -63,12 +63,12 @@ class CommandTest extends TestCase
 
     public function testCommandWithArgsWithValuesEscapedToString()
     {
-        $comm = new Builder('foo');
+        $comm = new Generic('foo');
         $comm->addArgument('--bar', 'zum zap');
 
         $this->assertEquals((string) $comm, 'foo --bar=\'zum zap\'');
 
-        $comm = new Builder('foo');
+        $comm = new Generic('foo');
         $comm->addArgument('--bar', 'zum "zap"');
 
         $this->assertEquals((string) $comm, 'foo --bar=\'zum "zap"\'');
@@ -76,12 +76,12 @@ class CommandTest extends TestCase
 
     public function testCommandWithCommandAsArgsToString()
     {
-        $comm = new Builder('foo');
+        $comm = new Generic('foo');
         $comm->addArgument('--bar');
 
         $this->assertEquals((string) $comm, 'foo --bar');
 
-        $comm2 = new Builder('zum');
+        $comm2 = new Generic('zum');
         $comm2->addArgument('--bar');
         $comm2->addArgument($comm);
 
@@ -90,7 +90,7 @@ class CommandTest extends TestCase
 
     public function testCwd()
     {
-        $comm = new Builder('foo');
+        $comm = new Generic('foo');
 
         $this->assertEquals($comm->getCwd(), '');
 
