@@ -6,7 +6,9 @@ class Php extends Builder
 {
     public function getProgramName() : string
     {
-        return 'app php';
+        $phpService = env('FWD_PHP_SERVICE');
+
+        return "${phpService} php";
     }
 
     public function makeWrapper() : ?Builder

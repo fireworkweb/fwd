@@ -6,7 +6,9 @@ class Composer extends Builder
 {
     public function getProgramName() : string
     {
-        return 'app composer';
+        $phpService = env('FWD_PHP_SERVICE');
+
+        return "${phpService} composer";
     }
 
     public function makeWrapper() : ?Builder

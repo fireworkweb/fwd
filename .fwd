@@ -40,6 +40,9 @@ FWD_CUSTOM_PATH="$PWD/fwd"
 
 FWD_START_DEFAULT_SERVICES="database cache app http"
 
+# Which service to use when running PHP
+FWD_PHP_SERVICE="app"
+
 # Database
 DB_DATABASE="docker"
 DB_USERNAME="docker"
