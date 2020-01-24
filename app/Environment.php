@@ -13,7 +13,9 @@ class Environment
 {
     protected static $keys = [
         'FWD_IMAGE_APP',
+        'FWD_IMAGE_HTTP',
         'FWD_IMAGE_NODE',
+        'FWD_IMAGE_CHROMEDRIVER',
         'FWD_IMAGE_CACHE',
         'FWD_IMAGE_DATABASE',
         'FWD_IMAGE_NODE_QA',
