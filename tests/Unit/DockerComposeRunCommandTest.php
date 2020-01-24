@@ -47,7 +47,7 @@ class DockerComposeRunCommandTest extends TestCase
 
         $comm->addEnv('BAR', 'zum');
 
-        $this->assertEquals($this->makeDockerComposeRunString('-e BAR=\'zum\' foo'), (string) $comm);
+        $this->assertEquals($this->makeDockerComposeRunString('foo', 'BAR=\'zum\''), (string) $comm);
     }
 
     public function testDockerComposeRunServiceWithEnvEscaped()
@@ -56,6 +56,6 @@ class DockerComposeRunCommandTest extends TestCase
 
         $comm->addEnv('BAR', 'zum zap');
 
-        $this->assertEquals($this->makeDockerComposeRunString('-e BAR=\'zum zap\' foo'), (string) $comm);
+        $this->assertEquals($this->makeDockerComposeRunString('foo', 'BAR=\'zum zap\''), (string) $comm);
     }
 }

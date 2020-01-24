@@ -2,7 +2,7 @@
 
 namespace App\Builder;
 
-class DockerComposeRun extends DockerComposeExec
+class DockerComposeRun extends DockerComposeAbstract
 {
     public function getProgramName() : string
     {
@@ -14,12 +14,11 @@ class DockerComposeRun extends DockerComposeExec
         return env('FWD_COMPOSE_RUN_FLAGS');
     }
 
-    protected function beforeBuild(Builder $command) : Builder
+    public function makeArgs(...$args) : array
     {
-        parent::beforeBuild($command);
-
-        $command->prependArgument(new Argument('--rm'));
-
-        return $command;
+        return array_merge([
+            '--rm',
+            Unescaped::make(env('FWD_COMPOSE_RUN_FLAGS')),
+        ], parent::makeArgs(...$args));
     }
 }
