@@ -138,6 +138,25 @@ abstract class TestCase extends BaseTestCase
         return "{$this->dockerComposeString()} exec";
     }
 
+    protected function makeDockerComposeRunString(string $args = ''): string
+    {
+        $flags = env('FWD_COMPOSE_RUN_FLAGS') ? ' ' . env('FWD_COMPOSE_RUN_FLAGS') : '';
+
+        return trim($this->dockerComposeRunString() . $flags . ' ' . $args);
+    }
+
+    protected function makeDockerComposeRunUserString($user = null, string $args = ''): string
+    {
+        $flags = env('FWD_COMPOSE_RUN_FLAGS') ? ' ' . env('FWD_COMPOSE_RUN_FLAGS') : '';
+
+        return trim($this->dockerComposeRunString() . $flags . ' --user ' . $user . ' ' . $args);
+    }
+
+    protected function dockerComposeRunString(): string
+    {
+        return "{$this->dockerComposeString()} run";
+    }
+
     protected function dockerComposeString(): string
     {
         $project = env('FWD_NAME');
