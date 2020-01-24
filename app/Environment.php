@@ -11,9 +11,6 @@ use Illuminate\Support\Arr;
 
 class Environment
 {
-    /** @var DotenvVariables $envVariables */
-    protected $envVariables;
-
     protected static $keys = [
         'FWD_IMAGE_APP',
         'FWD_IMAGE_NODE',
@@ -43,6 +40,9 @@ class Environment
         'FWD_COMPOSE_VERSION',
         'FWD_NETWORK',
     ];
+
+    /** @var DotenvVariables $envVariables */
+    protected $envVariables;
 
     public function getKeys(): array
     {

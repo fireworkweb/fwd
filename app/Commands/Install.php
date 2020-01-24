@@ -93,7 +93,7 @@ class Install extends Command
         ];
 
         foreach ($localVariables as $variable) {
-            $env = preg_replace("/^# ($variable=.*)$/m", '$1', $env);
+            $env = preg_replace("/^# ({$variable}=.*)$/m", '$1', $env);
         }
 
         return $env;

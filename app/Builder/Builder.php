@@ -20,16 +20,24 @@ class Builder
         $this->setArgs($this->makeArgs(...$args));
     }
 
-    public static function make(...$args) : self
+    public function __toString() : string
     {
-        return new static(...$args);
+        $built = $this->build();
+
+        if ($this->getWrapper()) {
+            return (string) $built;
+        }
+
+        return $built->parseToString();
     }
 
-    public static function makeWithDefaultArgs(...$args) : self
+    public function __clone()
     {
-        $args = array_filter($args) ?: static::getDefaultArgs();
+        $this->args = clone $this->args;
 
-        return new static(...$args);
+        if ($this->wrapper) {
+            $this->wrapper = clone $this->wrapper;
+        }
     }
 
     public function getProgramName() : string
@@ -40,11 +48,6 @@ class Builder
     public function makeArgs(...$args) : array
     {
         return $args;
-    }
-
-    public static function getDefaultArgs(): array
-    {
-        return [];
     }
 
     public function setArgs(array $args) : self
@@ -137,17 +140,6 @@ class Builder
         return $command;
     }
 
-    public function __toString() : string
-    {
-        $built = $this->build();
-
-        if ($this->getWrapper()) {
-            return (string) $built;
-        }
-
-        return $built->parseToString();
-    }
-
     protected function parseToString() : string
     {
         return trim(vsprintf('%s %s', [
@@ -161,12 +153,20 @@ class Builder
         return implode(' ', $this->getArguments());
     }
 
-    public function __clone()
+    public static function make(...$args) : self
     {
-        $this->args = clone $this->args;
+        return new static(...$args);
+    }
 
-        if ($this->wrapper) {
-            $this->wrapper = clone $this->wrapper;
-        }
+    public static function makeWithDefaultArgs(...$args) : self
+    {
+        $args = array_filter($args) ?: static::getDefaultArgs();
+
+        return new static(...$args);
+    }
+
+    public static function getDefaultArgs(): array
+    {
+        return [];
     }
 }
