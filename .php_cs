@@ -178,5 +178,6 @@ $rules = [
 return Config::create()
     ->setRiskyAllowed(true)
     ->setRules($rules)
+    ->setLineEnding(PHP_EOL)
     ->setHideProgress(true)
     ->setUsingCache(true);
