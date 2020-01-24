@@ -38,6 +38,11 @@ class DockerComposeExec extends Builder
         return $this->user;
     }
 
+    protected function getEnvVar() : string
+    {
+        return env('FWD_COMPOSE_EXEC_FLAGS');
+    }
+
     protected function beforeBuild(Builder $command) : Builder
     {
         $command->parseEnvironmentToArgument();
@@ -49,7 +54,7 @@ class DockerComposeExec extends Builder
         }
 
         $command->prependArgument(new Argument(
-            Unescaped::make(env('FWD_COMPOSE_EXEC_FLAGS'))
+            Unescaped::make($this->getEnvVar())
         ));
 
         return $command;
