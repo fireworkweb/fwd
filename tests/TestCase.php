@@ -154,7 +154,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function dockerComposeRunString(): string
     {
-        return "{$this->dockerComposeString()} run";
+        return "{$this->dockerComposeString()} run --rm";
     }
 
     protected function dockerComposeString(): string

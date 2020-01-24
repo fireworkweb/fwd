@@ -13,4 +13,13 @@ class DockerComposeRun extends DockerComposeExec
     {
         return env('FWD_COMPOSE_RUN_FLAGS');
     }
+
+    protected function beforeBuild(Builder $command) : Builder
+    {
+        parent::beforeBuild($command);
+
+        $command->prependArgument(new Argument('--rm'));
+
+        return $command;
+    }
 }
