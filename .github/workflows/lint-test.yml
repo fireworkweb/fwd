@@ -41,9 +41,11 @@ jobs:
 
       - name: Execute linter
         run: php-cs-fixer fix --dry-run --diff --verbose
+        shell: bash
 
       - name: Execute tests
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
+        shell: bash
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
