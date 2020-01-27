@@ -19,7 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
     }
 
     /**
@@ -51,7 +50,7 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        return collect((new Finder)->in(env('FWD_CUSTOM_PATH'))->files())
+        return collect((new Finder())->in(env('FWD_CUSTOM_PATH'))->files())
             ->map(function (SplFileInfo $file) {
                 return $file->getPathname();
             })

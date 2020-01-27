@@ -20,13 +20,6 @@ class Argument
         $this->separator = $separator;
     }
 
-    public static function makeArgv($value)
-    {
-        return is_string($value)
-            ? new Escaped($value)
-            : $value;
-    }
-
     public function __toString() : string
     {
         if (! is_null($this->argv)) {
@@ -38,5 +31,12 @@ class Argument
         }
 
         return (string) $this->argn;
+    }
+
+    public static function makeArgv($value)
+    {
+        return is_string($value)
+            ? new Escaped($value)
+            : $value;
     }
 }

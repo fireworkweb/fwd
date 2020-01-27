@@ -44,6 +44,11 @@ abstract class Command extends BaseCommand
         return $exitCode;
     }
 
+    public function getCommandExecutor() : CommandExecutor
+    {
+        return $this->commandExecutor;
+    }
+
     /**
      * Execute the console command.
      *
@@ -57,10 +62,5 @@ abstract class Command extends BaseCommand
         $this->environment = app(Environment::class);
 
         return parent::execute($input, $output);
-    }
-
-    public function getCommandExecutor() : CommandExecutor
-    {
-        return $this->commandExecutor;
     }
 }

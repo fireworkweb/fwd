@@ -116,6 +116,13 @@ class CommandExecutor
         return $this->outputBuffer;
     }
 
+    public function print($line) : void
+    {
+        if (! empty($line)) {
+            echo $line . PHP_EOL;
+        }
+    }
+
     protected function getDescriptors() : array
     {
         if ($this->output) {
@@ -123,13 +130,6 @@ class CommandExecutor
         }
 
         return [STDIN, $this->outputFile, $this->outputFile];
-    }
-
-    public function print($line) : void
-    {
-        if (! empty($line)) {
-            echo $line . PHP_EOL;
-        }
     }
 
     protected function prepareOutputFile(): void
@@ -160,7 +160,7 @@ class CommandExecutor
         $output = file_get_contents($filename);
 
         if ($output === false) {
-            return "FWD Error: Unexpected failure trying to read the output file $filename.";
+            return "FWD Error: Unexpected failure trying to read the output file {$filename}.";
         }
 
         return trim($output);

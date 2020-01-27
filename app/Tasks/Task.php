@@ -19,16 +19,29 @@ abstract class Task
         $this->command = $command;
     }
 
-    public static function make(Command $command): self
-    {
-        return new static($command);
-    }
-
     abstract public function run(...$args): int;
 
     public function runCallables(array $commands): int
     {
         return $this->command->runCommands($commands);
+    }
+
+    public function runQuietly(): int
+    {
+        $this->quietly = true;
+
+        $exit = $this->run();
+
+        $this->quietly = false;
+
+        return $exit;
+    }
+
+    public function runTask(string $title, \Closure $task): int
+    {
+        return $this->quietly
+            ? $task()
+            : $this->command->runTask($title, $task);
     }
 
     protected function runCallableWaitFor(\Closure $closure, $timeout = 0): int
@@ -39,6 +52,7 @@ abstract class Task
         while ($exitCode = $closure()) {
             if ($timeout === 0) {
                 $this->command->getCommandExecutor()->printOutputBuffer();
+
                 break;
             }
 
@@ -55,17 +69,6 @@ abstract class Task
         }
 
         return $exitCode;
-    }
-
-    public function runQuietly(): int
-    {
-        $this->quietly = true;
-
-        $exit = $this->run();
-
-        $this->quietly = false;
-
-        return $exit;
     }
 
     protected function runCommand(Builder $builder): int
@@ -85,13 +88,6 @@ abstract class Task
         return $this->command->getCommandExecutor()->runQuietly($builder, $outputOnError);
     }
 
-    public function runTask(string $title, \Closure $task): int
-    {
-        return $this->quietly
-            ? $task()
-            : $this->command->runTask($title, $task);
-    }
-
     protected function getOutputLines(Builder $command): array
     {
         return explode(PHP_EOL, $this->getOutput($command));
@@ -109,5 +105,10 @@ abstract class Task
         }
 
         return trim($this->command->getCommandExecutor()->getOutputBuffer());
+    }
+
+    public static function make(Command $command): self
+    {
+        return new static($command);
     }
 }
