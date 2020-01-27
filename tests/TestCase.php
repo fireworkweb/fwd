@@ -121,7 +121,7 @@ abstract class TestCase extends BaseTestCase
     protected function makeDockerComposeRunString(string $args = '', string $envs = ''): string
     {
         $flags = env('FWD_COMPOSE_RUN_FLAGS') ? ' ' . env('FWD_COMPOSE_RUN_FLAGS') : '';
-        $extraArgs = $envs ? " -e $envs " : ' ';
+        $extraArgs = $envs ? " -e {$envs} " : ' ';
 
         return trim($this->dockerComposeRunString($extraArgs) . $flags . ' ' . $args);
     }
@@ -136,7 +136,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function dockerComposeRunString(string $extraArgs = ' '): string
     {
-        return "{$this->dockerComposeString()} run" . $extraArgs . "--rm";
+        return "{$this->dockerComposeString()} run" . $extraArgs . '--rm';
     }
 
     protected function dockerComposeString(): string
