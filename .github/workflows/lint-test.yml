@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         php: [7.2, 7.3, 7.4]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
 
     name: PHP v${{ matrix.php }} - ${{ matrix.os }}
 
@@ -41,11 +41,9 @@ jobs:
 
       - name: Execute linter
         run: php-cs-fixer fix --dry-run --diff --verbose
-        shell: bash
 
       - name: Execute tests
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
-        shell: bash
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
