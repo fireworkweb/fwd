@@ -29,7 +29,6 @@ class StopTest extends TestCase
 
     public function testStartWithSpecificServices()
     {
-
         $this->artisan('stop --services=chromedriver')->assertExitCode(0);
 
         $this->assertDockerCompose('down chromedriver');
