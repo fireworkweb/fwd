@@ -28,10 +28,18 @@ class Start extends Task
 
         if ($this->checks) {
             array_unshift($tasks, [$this, 'checkDependencies']);
-            $tasks[] = [$this, 'checkDatabase'];
+
+            if($this->checkDatabaseAvailability) {
+                $tasks[] = [$this, 'checkDatabase'];
+            }
         }
 
         return $this->runCallables($tasks);
+    }
+
+    public function checkableService(string $service)
+    {
+        return strpos(env('FWD_START_DEFAULT_SERVICES'), $service) !== false;
     }
 
     public function services(string $services): self
@@ -51,6 +59,13 @@ class Start extends Task
     public function checks(bool $checks): self
     {
         $this->checks = $checks;
+
+        return $this;
+    }
+    
+    public function checkDatabaseAvailability(bool $check): self
+    {
+        $this->checkDatabaseAvailability = $check;
 
         return $this;
     }

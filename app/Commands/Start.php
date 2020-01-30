@@ -12,7 +12,8 @@ class Start extends Command
      * @var string
      */
     protected $signature = 'start
-                            {--no-checks : Do not wait for Database to become available}
+                            {--no-checks : Do not wait for defaults checks}
+                            {--no-check-database : Do not wait for Database to become available}
                             {--timeout=60 : The number of seconds to wait}
                             {--all : Start all services}
                             {--services= : The services from docker-compose.yml to be started}';
@@ -35,6 +36,7 @@ class Start extends Command
 
         $task = StartTask::make($this)
             ->checks(! $this->option('no-checks'))
+            ->checkDatabaseAvailability(! $this->option('no-check-database'))
             ->timeout($timeout);
 
         if (! $this->option('all')) {
