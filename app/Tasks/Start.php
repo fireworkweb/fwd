@@ -37,11 +37,6 @@ class Start extends Task
         return $this->runCallables($tasks);
     }
 
-    public function checkableService(string $service)
-    {
-        return strpos(env('FWD_START_DEFAULT_SERVICES'), $service) !== false;
-    }
-
     public function services(string $services): self
     {
         $this->services = $services;

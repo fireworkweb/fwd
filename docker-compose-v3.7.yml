@@ -15,7 +15,7 @@ services:
      - cache
      - database
   http:
-    image: "fireworkweb/http:alpine"
+    image: "${FWD_IMAGE_HTTP}"
     ports:
      - "${FWD_HTTP_PORT}"
     volumes:
@@ -26,7 +26,7 @@ services:
     depends_on:
      - app
   chromedriver:
-    image: "fireworkweb/chromedriver:latest"
+    image: "${FWD_IMAGE_CHROMEDRIVER}"
     shm_size: 256M
     networks:
      - fwd_local

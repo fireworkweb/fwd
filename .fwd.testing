@@ -1,1 +1,2 @@
 FWD_CUSTOM_PATH="$PWD/tests/fixtures"
+FWD_NAME="fwd"

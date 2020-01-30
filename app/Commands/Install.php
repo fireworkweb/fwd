@@ -87,13 +87,15 @@ class Install extends Command
     {
         $localVariables = [
             'FWD_IMAGE_APP',
+            'FWD_IMAGE_HTTP',
             'FWD_IMAGE_CACHE',
+            'FWD_IMAGE_CHROMEDRIVER',
             'FWD_IMAGE_NODE',
             'FWD_IMAGE_DATABASE',
         ];
 
         foreach ($localVariables as $variable) {
-            $env = preg_replace("/^# ($variable=.*)$/m", '$1', $env);
+            $env = preg_replace("/^# ({$variable}=.*)$/m", '$1', $env);
         }
 
         return $env;

@@ -52,6 +52,6 @@ class EnvVarTest extends TestCase
         $env->overloadEnv('tests/fixtures/.env.docker-compose_exec-nested');
 
         $comm = new Artisan('tinker');
-        $this->assertStringContainsString('exec -e CUSTOM=custom1', (string) $comm);
+        $this->assertStringContainsString('-e CUSTOM=custom1', (string) $comm);
     }
 }
