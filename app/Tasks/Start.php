@@ -29,7 +29,7 @@ class Start extends Task
         if ($this->checks) {
             array_unshift($tasks, [$this, 'checkDependencies']);
 
-            if($this->checkDatabaseAvailability) {
+            if ($this->checkDatabaseAvailability) {
                 $tasks[] = [$this, 'checkDatabase'];
             }
         }
@@ -57,7 +57,7 @@ class Start extends Task
 
         return $this;
     }
-    
+
     public function checkDatabaseAvailability(bool $check): self
     {
         $this->checkDatabaseAvailability = $check;
