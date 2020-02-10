@@ -2,10 +2,10 @@
 
 namespace App\Commands;
 
-use App\Builder\DockerRun as DockerRunBuilder;
+use App\Builder\DockerRun;
 use App\Commands\Traits\HasDynamicArgs;
 
-class DockerRun extends Command
+class Run extends Command
 {
     use HasDynamicArgs;
 
@@ -14,7 +14,7 @@ class DockerRun extends Command
      *
      * @var string
      */
-    protected $name = 'docker-run';
+    protected $name = 'run';
 
     /**
      * The description of the command.
@@ -31,7 +31,7 @@ class DockerRun extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            DockerRunBuilder::makeWithDefaultArgs($this->getArgs())
+            DockerRun::makeWithDefaultArgs($this->getArgs())
         );
     }
 }
