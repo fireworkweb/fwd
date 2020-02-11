@@ -8,6 +8,7 @@ use Dotenv\Environment\DotenvVariables;
 use Dotenv\Exception\InvalidFileException;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Support\Arr;
+use XdgBaseDir\Xdg;
 
 class Environment
 {
@@ -45,6 +46,35 @@ class Environment
 
     /** @var DotenvVariables $envVariables */
     protected $envVariables;
+
+    protected $xdg;
+
+    public function __construct(Xdg $xdg)
+    {
+        $this->xdg = $xdg;
+    }
+
+    public function getConfigDir()
+    {
+        $path = sprintf('%s/%s', $this->xdg->getHomeConfigDir(), 'fwd');
+
+        if (! is_dir($path)) {
+            mkdir($path, 0755, true);
+        }
+
+        return $path;
+    }
+
+    public function getConfigDirFolder($folder)
+    {
+        $path = sprintf('%s/%s', $this->getConfigDir(), $folder);
+
+        if (! is_dir($path)) {
+            mkdir($path, 0755, true);
+        }
+
+        return $path;
+    }
 
     public function getKeys(): array
     {

@@ -1,0 +1,39 @@
+{
+    "output": ".",
+    "builds": [
+        {
+            "name": "folder1",
+            "data": {
+                "from": "image1",
+                "version": "version1"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                }
+            ]
+        },
+        {
+            "name": "folder2",
+            "data": {
+                "from": "image2",
+                "version": "version2"
+            },
+            "files": [
+                {
+                    "name": "Dockerfile",
+                    "path": "template/Dockerfile"
+                },
+                {
+                    "name": "entrypoint",
+                    "path": "template/entrypoint"
+                }
+            ]
+        },
+    ]
+}
