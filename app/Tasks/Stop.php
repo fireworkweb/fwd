@@ -9,9 +9,6 @@ class Stop extends Task
     /** @var bool $purge */
     protected $purge = true;
 
-    /** @var string $services */
-    protected $services;
-
     public function run(...$args): int
     {
         $tasks = [
@@ -28,13 +25,6 @@ class Stop extends Task
         return $this;
     }
 
-    public function services(string $services): self
-    {
-        $this->services = $services;
-
-        return $this;
-    }
-
     public function destroyContainers(): int
     {
         return $this->runTask('Turning off fwd', function () {
@@ -43,10 +33,6 @@ class Stop extends Task
             if ($this->purge) {
                 $args[] = '--volumes';
                 $args[] = '--remove-orphans';
-            }
-
-            if (! is_null($this->services)) {
-                $args[] = ($this->services ?: env('FWD_START_DEFAULT_SERVICES'));
             }
 
             return $this->runCommandWithoutOutput(
