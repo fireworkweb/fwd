@@ -44,7 +44,6 @@ class AppServiceProvider extends ServiceProvider
             'compiled' => resolve(Environment::class)->getConfigDirFolder('views'),
         ]);
 
-
         $this->app->register(ViewServiceProvider::class);
     }
 
