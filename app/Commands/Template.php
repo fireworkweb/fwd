@@ -2,7 +2,6 @@
 
 namespace App\Commands;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 
 class Template extends Command
