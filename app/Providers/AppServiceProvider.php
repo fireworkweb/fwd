@@ -7,6 +7,7 @@ use App\CommandExecutor;
 use App\Environment;
 use Illuminate\Console\Command;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\ViewServiceProvider;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -32,7 +33,18 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(Environment::class);
         $this->app->singleton(CommandExecutor::class);
 
+        $this->registerView();
         $this->loadFwd();
+    }
+
+    protected function registerView()
+    {
+        $this->app['config']->set('view', [
+            'paths' => [getcwd()],
+            'compiled' => resolve(Environment::class)->getConfigDirFolder('views'),
+        ]);
+
+        $this->app->register(ViewServiceProvider::class);
     }
 
     protected function loadFwd()

@@ -1,2 +1,2 @@
-FWD_CUSTOM_PATH="$PWD/tests/fixtures"
+FWD_CUSTOM_PATH="$PWD/tests/fixtures/custom"
 FWD_NAME="fwd"
