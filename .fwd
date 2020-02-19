@@ -1,6 +1,6 @@
 # Docker images to be used for each service
-FWD_IMAGE_APP="fireworkweb/app:7.2-alpine"
-FWD_IMAGE_HTTP="fireworkweb/http:alpine"
+FWD_IMAGE_APP="fireworkweb/php:7.4"
+FWD_IMAGE_HTTP="fireworkweb/http:latest"
 FWD_IMAGE_NODE="fireworkweb/node:alpine"
 FWD_IMAGE_CHROMEDRIVER="fireworkweb/chromedriver:latest"
 FWD_IMAGE_CACHE="redis:alpine"
