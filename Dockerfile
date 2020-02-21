@@ -20,7 +20,7 @@ RUN apk add --no-cache \
     php-posix
 
 # installs latest fwd version
-RUN curl -L https://github.com/fireworkweb/fwd/blob/v1.0-rc.5/builds/fwd?raw=true -o /usr/local/bin/fwd
+RUN curl -L https://github.com/fireworkweb/fwd/blob/v1.0-rc.6/builds/fwd?raw=true -o /usr/local/bin/fwd
 RUN chmod +x /usr/local/bin/fwd
 
 ENTRYPOINT [ "" ]
