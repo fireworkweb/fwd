@@ -45,6 +45,14 @@ jobs:
       - name: Execute tests
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
+      - name: Build docker fwd
+        if: matrix.os == 'ubuntu-latest'
+        run: docker build --pull -t fireworkweb/fwd .
+
+      - name: Test docker fwd
+        if: matrix.os == 'ubuntu-latest'
+        run: docker run fireworkweb/fwd fwd -V
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
