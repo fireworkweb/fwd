@@ -29,7 +29,6 @@ jobs:
     - name: Push to Hub
       env:
         TAGNAME: ${{ steps.tagName.outputs.tag }}
-      env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
