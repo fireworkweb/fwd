@@ -89,7 +89,7 @@ class Status extends Task
             [
                 $info['state'],
                 $info['ports'],
-            ] = explode(' : ', $ps);
+            ] = array_map('trim', explode(':', $ps));
         }
 
         return $isRunning;
