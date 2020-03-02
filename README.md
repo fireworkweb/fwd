@@ -10,6 +10,13 @@ curl -L https://github.com/fireworkweb/fwd/raw/php/builds/fwd -o /usr/local/bin/
 chmod +x /usr/local/bin/fwd
 ```
 
+## Download Latest Release Candidate
+
+```
+curl -L "https://github.com/fireworkweb/fwd/raw/1.0-rc/builds/fwd" -o /usr/local/bin/fwd
+chmod +x /usr/local/bin/fwd
+```
+
 ## Usage
 
 ```bash
