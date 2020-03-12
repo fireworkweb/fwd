@@ -8,7 +8,6 @@ use Dotenv\Exception\InvalidPathException;
 use Dotenv\Repository\RepositoryBuilder;
 use Dotenv\Repository\RepositoryInterface;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Env;
 use XdgBaseDir\Xdg;
 
 class Environment
@@ -173,8 +172,6 @@ class Environment
 
     protected function fixVariables(): self
     {
-        $repository = Env::getRepository();
-
         if (empty(env('FWD_NAME'))) {
             $this->repositoryMutable->set(
                 'FWD_NAME',
