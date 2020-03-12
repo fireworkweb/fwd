@@ -8,7 +8,7 @@
 You need to have PHP 7.2+ installed in order to run `fwd`.
 
 ```bash
-curl -L https://github.com/fireworkweb/fwd/raw/php/builds/fwd -o /usr/local/bin/fwd
+curl -L "https://github.com/fireworkweb/fwd/raw/1.0-rc/builds/fwd" -o /usr/local/bin/fwd
 chmod +x /usr/local/bin/fwd
 ```
 
