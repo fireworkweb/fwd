@@ -5,7 +5,7 @@ namespace App\Commands;
 use App\Builder\Php;
 use App\Commands\Traits\HasDynamicArgs;
 
-class Test extends Command
+class PhpUnit extends Command
 {
     use HasDynamicArgs;
 
@@ -14,7 +14,7 @@ class Test extends Command
      *
      * @var string
      */
-    protected $name = 'test';
+    protected $name = 'phpunit';
 
     /**
      * The description of the command.

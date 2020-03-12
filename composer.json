@@ -20,10 +20,10 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.2.5",
         "dnoegel/php-xdg-base-dir": "^0.1.1",
-        "illuminate/view": "^6.15",
-        "laravel-zero/framework": "^6.0",
+        "illuminate/view": "^7.0",
+        "laravel-zero/framework": "^7.0",
         "padraic/phar-updater": "^1.0.6"
     },
     "require-dev": {
