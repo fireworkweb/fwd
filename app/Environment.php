@@ -3,10 +3,10 @@
 namespace App;
 
 use Dotenv\Dotenv;
-use Dotenv\Environment\DotenvFactory;
-use Dotenv\Environment\DotenvVariables;
 use Dotenv\Exception\InvalidFileException;
 use Dotenv\Exception\InvalidPathException;
+use Dotenv\Repository\RepositoryBuilder;
+use Dotenv\Repository\RepositoryInterface;
 use Illuminate\Support\Arr;
 use XdgBaseDir\Xdg;
 
@@ -44,14 +44,19 @@ class Environment
         'FWD_NETWORK',
     ];
 
-    /** @var DotenvVariables $envVariables */
-    protected $envVariables;
+    /** @var RepositoryInterface $repositoryMutable */
+    protected $repositoryMutable;
+
+    /** @var RepositoryInterface $repositoryImmutable */
+    protected $repositoryImmutable;
 
     protected $xdg;
 
     public function __construct(Xdg $xdg)
     {
         $this->xdg = $xdg;
+        $this->repositoryMutable = RepositoryBuilder::create()->make();
+        $this->repositoryImmutable = RepositoryBuilder::create()->immutable()->make();
     }
 
     public function getConfigDir()
@@ -148,12 +153,13 @@ class Environment
     protected function loadEnv(string $envFile, bool $overload = false): self
     {
         try {
-            $method = $overload ? 'overload' : 'safeLoad';
+            $repository = $overload ? 'repositoryMutable' : 'repositoryImmutable';
 
             Dotenv::create(
+                $this->{$repository},
                 pathinfo($envFile, PATHINFO_DIRNAME),
                 pathinfo($envFile, PATHINFO_BASENAME)
-            )->{$method}();
+            )->load();
         } catch (InvalidPathException $e) {
             // do nothing
         } catch (InvalidFileException $e) {
@@ -166,10 +172,8 @@ class Environment
 
     protected function fixVariables(): self
     {
-        $envVariables = app(DotenvFactory::class)->create();
-
         if (empty(env('FWD_NAME'))) {
-            $envVariables->set(
+            $this->repositoryMutable->set(
                 'FWD_NAME',
                 basename(getcwd())
             );
@@ -177,28 +181,28 @@ class Environment
 
         if (empty(env('FWD_NETWORK'))) {
             // defines default network name
-            $envVariables->set(
+            $this->repositoryMutable->set(
                 'FWD_NETWORK',
                 'fwd_global'
             );
         }
 
-        $envVariables->set(
+        $this->repositoryMutable->set(
             'FWD_SSH_KEY_PATH',
             str_replace('$HOME', $_SERVER['HOME'], env('FWD_SSH_KEY_PATH'))
         );
 
-        $envVariables->set(
+        $this->repositoryMutable->set(
             'FWD_CONTEXT_PATH',
             str_replace('$PWD', getcwd(), env('FWD_CONTEXT_PATH'))
         );
 
-        $envVariables->set(
+        $this->repositoryMutable->set(
             'FWD_CUSTOM_PATH',
             str_replace('$PWD', getcwd(), env('FWD_CUSTOM_PATH'))
         );
 
-        $envVariables->set(
+        $this->repositoryMutable->set(
             'FWD_ASUSER',
             str_replace('$UID', posix_geteuid(), env('FWD_ASUSER'))
         );
