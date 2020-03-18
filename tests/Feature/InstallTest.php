@@ -10,17 +10,8 @@ class InstallTest extends TestCase
 {
     public function testInstall()
     {
-        File::shouldReceive('exists')
-            ->andReturn(false);
-
-        File::shouldReceive('copy')
-            ->andReturn(true);
-
-        File::shouldReceive('get')
-            ->andReturn("var1\nvar2");
-
-        File::shouldReceive('put')
-            ->andReturn(100);
+        $this->mockFwd();
+        $this->mockDockerCompose();
 
         $this->artisan('install')
             ->expectsOutput('File ".fwd" copied.')
@@ -31,60 +22,58 @@ class InstallTest extends TestCase
 
     public function testInstallAgain()
     {
-        File::shouldReceive('exists')
-            ->andReturn(true);
+        $this->mockFwd(true);
+        $this->mockDockerCompose(true);
 
         $this->artisan('install')
-            ->expectsOutput('File "docker-compose.yml" already exists. (use -f to override)');
+            ->expectsOutput('File ".fwd" already exists, skipping. (to override run again with --force)')
+            ->expectsOutput('File "docker-compose.yml" already exists, skipping. (to override run again with --force)');
 
         $this->assertCommandCalled('install');
     }
 
     public function testDockerComposeExists()
     {
-        $environment = app(Environment::class);
-
-        File::shouldReceive('exists')
-            ->with($environment->getContextDockerCompose())
-            ->andReturn(true);
+        $this->mockFwd();
+        $this->mockDockerCompose(true);
 
         $this->artisan('install')
-            ->expectsOutput('File "docker-compose.yml" already exists. (use -f to override)');
+            ->expectsOutput('File ".fwd" copied.')
+            ->expectsOutput('File "docker-compose.yml" already exists, skipping. (to override run again with --force)');
 
         $this->assertCommandCalled('install');
     }
 
     public function testFwdExists()
     {
-        $environment = app(Environment::class);
-
-        File::shouldReceive('exists')
-            ->with($environment->getContextDockerCompose())
-            ->andReturn(false);
-
-        File::shouldReceive('exists')
-            ->with($environment->getContextEnv('.fwd'))
-            ->andReturn(true);
+        $this->mockFwd(true);
+        $this->mockDockerCompose();
 
         $this->artisan('install')
-            ->expectsOutput('File ".fwd" already exists. (use -f to override)');
+            ->expectsOutput('File ".fwd" already exists, skipping. (to override run again with --force)')
+            ->expectsOutput('File "docker-compose.yml" copied.');
 
         $this->assertCommandCalled('install');
     }
 
-    public function testForceReinstall()
+    public function testLaravel()
     {
-        File::shouldReceive('exists')
-            ->andReturn(true);
+        $this->mockFwd();
+        $this->mockDockerCompose();
+        $this->mockLaravel();
 
-        File::shouldReceive('copy')
-            ->andReturn(true);
+        $this->artisan('install --laravel')
+            ->expectsOutput('File ".fwd" copied.')
+            ->expectsOutput('File "docker-compose.yml" copied.')
+            ->expectsOutput('File ".env" updated.');
 
-        File::shouldReceive('get')
-            ->andReturn("var1\nvar2");
+        $this->assertCommandCalled('install --laravel');
+    }
 
-        File::shouldReceive('put')
-            ->andReturn(100);
+    public function testForce()
+    {
+        $this->mockFwd(true);
+        $this->mockDockerCompose(true);
 
         $this->artisan('install --force')
             ->expectsOutput('File ".fwd" copied.')
@@ -139,5 +128,56 @@ class InstallTest extends TestCase
         $this->artisan('install --force')
             ->expectsOutput('File ".fwd" copied.')
             ->expectsOutput('File "docker-compose.yml" copied.');
+    }
+
+    protected function mockFwd($exists = false)
+    {
+        $environment = app(Environment::class);
+
+        File::shouldReceive('exists')
+            ->with($environment->getContextEnv('.fwd'))
+            ->andReturn($exists);
+
+        File::shouldReceive('get')
+            ->with($environment->getDefaultFwd())
+            ->andReturn("var1\nvar2");
+
+        File::shouldReceive('put')
+            ->with($environment->getContextEnv('.fwd'), "var1\nvar2")
+            ->andReturn(100);
+    }
+
+    protected function mockDockerCompose($exists = false)
+    {
+        $environment = app(Environment::class);
+
+        File::shouldReceive('exists')
+            ->with($environment->getContextDockerCompose())
+            ->andReturn($exists);
+
+        File::shouldReceive('copy')
+            ->with($environment->getDefaultDockerCompose('3.7'), $environment->getContextDockerCompose())
+            ->andReturn(true);
+    }
+
+    protected function mockLaravel()
+    {
+        $environment = app(Environment::class);
+
+        File::shouldReceive('exists')
+            ->with($environment->getContextEnv('.env'))
+            ->andReturn(false);
+
+        File::shouldReceive('copy')
+            ->with($environment->getContextEnv('.env.example'), $environment->getContextEnv('.env'))
+            ->andReturn(true);
+
+        File::shouldReceive('get')
+            ->with($environment->getContextEnv('.env'))
+            ->andReturn("var1\nvar2");
+
+        File::shouldReceive('put')
+            ->with($environment->getContextEnv('.env'), "var1\nvar2")
+            ->andReturn(true);
     }
 }
