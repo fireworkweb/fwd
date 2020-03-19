@@ -26,7 +26,7 @@ class Start extends Task
             [$this, 'startContainers'],
         ];
 
-        if ($this->checks) {
+        if ($this->checks && env('FWD_START_CHECK')) {
             array_unshift($tasks, [$this, 'checkDependencies']);
             $tasks[] = [$this, 'checkDatabase'];
         }
