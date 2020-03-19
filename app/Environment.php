@@ -153,10 +153,8 @@ class Environment
     protected function loadEnv(string $envFile, bool $overload = false): self
     {
         try {
-            $repository = $overload ? 'repositoryMutable' : 'repositoryImmutable';
-
             Dotenv::create(
-                $this->{$repository},
+                $this->getRepository($overload),
                 pathinfo($envFile, PATHINFO_DIRNAME),
                 pathinfo($envFile, PATHINFO_BASENAME)
             )->load();
@@ -208,5 +206,12 @@ class Environment
         );
 
         return $this;
+    }
+
+    protected function getRepository($overload = false)
+    {
+        return $overload
+            ? RepositoryBuilder::create()->make()
+            : RepositoryBuilder::create()->immutable()->make();
     }
 }
