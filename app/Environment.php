@@ -44,6 +44,7 @@ class Environment
         'FWD_NETWORK',
     ];
 
+    /** @var Xdg $xdg */
     protected $xdg;
 
     /** @var RepositoryInterface $repositoryImmutable */
