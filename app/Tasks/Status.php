@@ -79,17 +79,17 @@ class Status extends Task
                 '--filter',
                 'ID=' . $id,
                 '--format',
-                Escaped::make('{{.Status}} : {{.Ports}}')
+                Escaped::make('{{.Status}} | {{.Ports}}')
             ));
 
-            if (empty($ps) || mb_strpos($ps, ':') === false) {
+            if (empty($ps) || mb_strpos($ps, '|') === false) {
                 throw new RuntimeException('could not fetch docker ps status of container with ID: ' . $id);
             }
 
             [
                 $info['state'],
                 $info['ports'],
-            ] = array_map('trim', explode(':', $ps));
+            ] = array_map('trim', explode('|', $ps));
         }
 
         return $isRunning;
