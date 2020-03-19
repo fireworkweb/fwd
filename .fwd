@@ -42,6 +42,8 @@ FWD_SSH_KEY_PATH="$HOME/.ssh/id_rsa"
 FWD_CONTEXT_PATH="$PWD"
 FWD_CUSTOM_PATH="$PWD/fwd"
 
+# Start configuration
+FWD_START_CHECK=true
 FWD_START_DEFAULT_SERVICES="database cache app http"
 
 # Database
