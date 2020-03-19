@@ -44,19 +44,11 @@ class Environment
         'FWD_NETWORK',
     ];
 
-    /** @var RepositoryInterface $repositoryMutable */
-    protected $repositoryMutable;
-
-    /** @var RepositoryInterface $repositoryImmutable */
-    protected $repositoryImmutable;
-
     protected $xdg;
 
     public function __construct(Xdg $xdg)
     {
         $this->xdg = $xdg;
-        $this->repositoryMutable = RepositoryBuilder::create()->make();
-        $this->repositoryImmutable = RepositoryBuilder::create()->immutable()->make();
     }
 
     public function getConfigDir()
