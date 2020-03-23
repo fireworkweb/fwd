@@ -2,16 +2,21 @@
 
 namespace App\Commands;
 
+use App\Commands\Traits\HasDynamicArgs;
 use App\Tasks\Start as StartTask;
+use App\Tasks\Stop as StopTask;
 
-class Start extends Command
+class Restart extends Command
 {
+    use HasDynamicArgs;
+
     /**
      * The signature of the command.
      *
      * @var string
      */
-    protected $signature = 'start
+    protected $signature = 'restart
+                            {--purge : Removes all data persisted from containers by removing the underlying Docker volumes}
                             {--no-checks : Do not wait for Database to become available}
                             {--timeout=60 : The number of seconds to wait}
                             {--all : Start all services}
@@ -22,7 +27,7 @@ class Start extends Command
      *
      * @var string
      */
-    protected $description = 'Start fwd environment containers.';
+    protected $description = 'Down all contaners, destroy them and restart.';
 
     /**
      * Execute the console command.
@@ -31,6 +36,14 @@ class Start extends Command
      */
     public function handle()
     {
+        $stopTask = StopTask::make($this)
+            ->purge((bool) $this->option('purge'))
+            ->run();
+
+        if ($stopTask) {
+            return $stopTask;
+        }
+
         return StartTask::make($this)
             ->checks(! $this->option('no-checks'))
             ->timeout($this->option('timeout'))
