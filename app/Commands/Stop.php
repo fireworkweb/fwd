@@ -28,8 +28,8 @@ class Stop extends Command
      */
     public function handle()
     {
-        $task = TasksStop::make($this)->purge((bool) $this->option('purge'));
-
-        return $task->run();
+        return TasksStop::make($this)
+            ->purge((bool) $this->option('purge'))
+            ->run();
     }
 }
