@@ -27,7 +27,7 @@ class Restart extends Command
      *
      * @var string
      */
-    protected $description = 'Down all contaners, destroy them and restart.';
+    protected $description = 'Runs stop and start commands at once.';
 
     /**
      * Execute the console command.
