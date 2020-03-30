@@ -1,12 +1,10 @@
 .phpmnd:
   stage: QA
-  image: jakzal/phpqa:alpine
+  image: fireworkweb/fwd:1.0-rc
+  services:
+    - docker:dind
   tags:
-    - docker
+    - dind
   script:
-    - cp .env.testing .env
-    - phpmnd app/ --ignore-funcs=round,sleep,abort,strpad,number_format --exclude=tests --progress --extensions=default_parameter,-return,argument
-  variables:
-    GIT_STRATEGY: fetch
-  dependencies:
-    - vendor
+    - fwd phpmnd
+  dependencies: []
