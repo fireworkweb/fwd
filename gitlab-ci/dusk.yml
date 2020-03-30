@@ -1,28 +1,16 @@
+include:
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/testing-base.yml
+
 .dusk:
-  stage: test
-  image: fireworkweb/fwd
-  services:
-    - docker:dind
-  tags:
-    - dind
+  extends: .testing-base
   script:
-    - mv .env.dusk.local .env
-    - fwd up -d
-    - fwd artisan dusk
-  after_script:
-    - fwd logs http > storage/logs/nginx.log
-    - fwd logs app > storage/logs/php-fpm.log
-    - fwd down -v
+    - fwd dusk
   artifacts:
     paths:
-      - storage/logs/
+      - storage/logs
       - tests/Browser/screenshots
       - tests/Browser/console
     when: on_failure
     expire_in: 1 week
   variables:
-    GIT_STRATEGY: fetch
-    COMPOSE_EXEC_FLAGS: "-T"
-  dependencies:
-    - assets
-    - vendor
+    TESTING_ENV_FILE: .env.dusk.local
