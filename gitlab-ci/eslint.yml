@@ -1,16 +1,9 @@
 .eslint:
   stage: QA
-  image:
-    name: fireworkweb/node:alpine
-    entrypoint: [""]
+  image: fireworkweb/fwd:1.0-rc
   tags:
-    - docker
+    - dind
   script:
-    - yarn install
-    - yarn lint
-  cache:
-    paths:
-      - node_modules/
-  variables:
-    GIT_STRATEGY: fetch
-  dependencies: []
+    - fwd yarn lint
+  dependencies:
+    - assets

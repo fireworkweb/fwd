@@ -1,10 +1,8 @@
 .phpcpd:
   stage: QA
-  image: jakzal/phpqa:alpine
+  image: fireworkweb/fwd:1.0-rc
   tags:
-    - docker
+    - dind
   script:
-    - phpcpd --fuzzy app/
-  variables:
-    GIT_STRATEGY: fetch
+    - fwd phpcpd
   dependencies: []

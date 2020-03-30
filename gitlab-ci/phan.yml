@@ -1,12 +1,10 @@
 .phan:
   stage: QA
-  image: jakzal/phpqa:alpine
+  image: fireworkweb/fwd:1.0-rc
   tags:
-    - docker
+    - dind
   script:
     - cp .env.testing .env
-    - phan --color -p -l app -iy 5
-  variables:
-    GIT_STRATEGY: fetch
+    - fwd phan --color -p -l app -iy 5
   dependencies:
    - vendor

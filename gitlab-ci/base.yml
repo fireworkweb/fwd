@@ -20,12 +20,15 @@ include:
   - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/dusk.yml
   - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/phpunit.yml
 
+# build
 vendor:
   extends: .vendor
 
 assets:
   extends: .assets
+# build
 
+# QA
 eslint:
   extends: .eslint
 
@@ -46,9 +49,12 @@ phpcpd:
 
 phan:
   extends: .phan
+# QA
 
+# test
 dusk:
   extends: .dusk
 
 phpunit:
   extends: .phpunit
+# test
