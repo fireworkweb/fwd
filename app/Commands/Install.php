@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 
 class Install extends Command
@@ -13,7 +14,7 @@ class Install extends Command
      * @var string
      */
     protected $signature = 'install
-                                {--laravel : Enable config optimizations to laravel (sync .env) }
+                                {--preset= : Preset with optimizations (laravel)}
                                 {--f|force : Overwrites project files (docker-compose.yml and .fwd)}
                                 {--docker-compose-version=3.7 : Which Docker Compose file version to use. Default is 3.7}';
 
@@ -72,9 +73,7 @@ class Install extends Command
             $this->warn('File "docker-compose.yml" already exists, skipping. (to override run again with --force)');
         }
 
-        if ($this->option('laravel')) {
-            $this->laravel();
-        }
+        $this->preset();
     }
 
     private function commentsOutAllVariables(string $env): string
@@ -113,7 +112,20 @@ class Install extends Command
         }
     }
 
-    private function laravel()
+    private function preset()
+    {
+        if (! $preset = $this->option('preset')) {
+            return;
+        }
+
+        $method = Str::camel("preset-{$preset}");
+
+        if (method_exists($this, $method)) {
+            $this->{$method}();
+        }
+    }
+
+    private function presetLaravel()
     {
         if (! File::exists($this->environment->getContextEnv('.env'))) {
             File::copy(

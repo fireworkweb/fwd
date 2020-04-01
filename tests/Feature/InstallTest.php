@@ -56,18 +56,18 @@ class InstallTest extends TestCase
         $this->assertCommandCalled('install');
     }
 
-    public function testLaravel()
+    public function testPresetLaravel()
     {
         $this->mockFwd();
         $this->mockDockerCompose();
         $this->mockLaravel();
 
-        $this->artisan('install --laravel')
+        $this->artisan('install --preset=laravel')
             ->expectsOutput('File ".fwd" copied.')
             ->expectsOutput('File "docker-compose.yml" copied.')
             ->expectsOutput('File ".env" updated.');
 
-        $this->assertCommandCalled('install --laravel');
+        $this->assertCommandCalled('install --preset=laravel');
     }
 
     public function testForce()
