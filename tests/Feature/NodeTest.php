@@ -10,7 +10,7 @@ class NodeTest extends TestCase
     {
         $this->artisan('node')->assertExitCode(0);
 
-        $this->assertDockerRun('fireworkweb/node:12 node -v');
+        $this->assertDockerRun('fireworkweb/node:12 node');
     }
 
     public function testNodeCustom()

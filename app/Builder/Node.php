@@ -13,9 +13,4 @@ class Node extends Builder
     {
         return (new DockerRun())->addArgument(env('FWD_IMAGE_NODE'));
     }
-
-    public static function getDefaultArgs(): array
-    {
-        return [''];
-    }
 }
