@@ -36,6 +36,7 @@ class Environment
         'FWD_SSH_KEY_PATH',
         'FWD_CONTEXT_PATH',
         'FWD_CUSTOM_PATH',
+        'FWD_START_CHECK',
         'FWD_START_DEFAULT_SERVICES',
         'DB_DATABASE',
         'DB_USERNAME',
@@ -186,25 +187,20 @@ class Environment
             );
         }
 
-        $this->repository()->set(
-            'FWD_SSH_PATH',
-            str_replace('$HOME', $_SERVER['HOME'], env('FWD_SSH_PATH'))
-        );
-
-        $this->repository()->set(
-            'FWD_SSH_KEY_PATH',
-            str_replace('$HOME', $_SERVER['HOME'], env('FWD_SSH_KEY_PATH'))
-        );
-
-        $this->repository()->set(
-            'FWD_CONTEXT_PATH',
-            str_replace('$PWD', getcwd(), env('FWD_CONTEXT_PATH'))
-        );
-
-        $this->repository()->set(
-            'FWD_CUSTOM_PATH',
-            str_replace('$PWD', getcwd(), env('FWD_CUSTOM_PATH'))
-        );
+        collect(static::$keys)
+            ->filter(function ($envVar) {
+                return mb_strpos($envVar, 'FWD_') !== false;
+            })
+            ->each(function ($envVar) {
+                $this->repository()->set(
+                    $envVar,
+                    str_replace(
+                        ['$HOME', '$PWD'],
+                        [$_SERVER['HOME'], getcwd()],
+                        env($envVar)
+                    )
+                );
+            });
 
         $this->repository()->set(
             'FWD_ASUSER',
