@@ -10,13 +10,13 @@ class PhpMdTest extends TestCase
     {
         $this->artisan('phpmd')->assertExitCode(0);
 
-        $this->assertDockerRun('jakzal/phpqa:alpine phpmd app/ text phpmd/codesize.xml,phpmd/controversial.xml,phpmd/design.xml,phpmd/naming.xml,unusedcode,phpmd/cleancode.xml');
+        $this->assertDockerRun('jakzal/phpqa:1.34-alpine phpmd app/ text phpmd/codesize.xml,phpmd/controversial.xml,phpmd/design.xml,phpmd/naming.xml,unusedcode,phpmd/cleancode.xml');
     }
 
     public function testPhpMdCustom()
     {
         $this->artisan('phpmd something')->assertExitCode(0);
 
-        $this->assertDockerRun('jakzal/phpqa:alpine phpmd something');
+        $this->assertDockerRun('jakzal/phpqa:1.34-alpine phpmd something');
     }
 }

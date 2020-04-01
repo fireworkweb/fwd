@@ -10,13 +10,13 @@ class PhpSecurityCheckerTest extends TestCase
     {
         $this->artisan('php-security-checker')->assertExitCode(0);
 
-        $this->assertDockerRun('jakzal/phpqa:alpine security-checker security:check composer.lock');
+        $this->assertDockerRun('jakzal/phpqa:1.34-alpine security-checker security:check composer.lock');
     }
 
     public function testPhpSecurityCheckerCustom()
     {
         $this->artisan('php-security-checker something')->assertExitCode(0);
 
-        $this->assertDockerRun('jakzal/phpqa:alpine security-checker something');
+        $this->assertDockerRun('jakzal/phpqa:1.34-alpine security-checker something');
     }
 }

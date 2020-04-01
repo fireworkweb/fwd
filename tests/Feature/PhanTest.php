@@ -10,13 +10,13 @@ class PhanTest extends TestCase
     {
         $this->artisan('phan')->assertExitCode(0);
 
-        $this->assertDockerRun('jakzal/phpqa:alpine phan --color -p -l app -iy 5');
+        $this->assertDockerRun('jakzal/phpqa:1.34-alpine phan --color -p -l app -iy 5');
     }
 
     public function testPhanCustom()
     {
         $this->artisan('phan something')->assertExitCode(0);
 
-        $this->assertDockerRun('jakzal/phpqa:alpine phan something');
+        $this->assertDockerRun('jakzal/phpqa:1.34-alpine phan something');
     }
 }

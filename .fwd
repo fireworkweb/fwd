@@ -6,7 +6,7 @@ FWD_IMAGE_CHROMEDRIVER="fireworkweb/chromedriver:latest"
 FWD_IMAGE_CACHE="redis:alpine"
 FWD_IMAGE_DATABASE="mysql:5.7"
 FWD_IMAGE_NODE_QA="fireworkweb/node:12-qa"
-FWD_IMAGE_PHP_QA="jakzal/phpqa:alpine"
+FWD_IMAGE_PHP_QA="jakzal/phpqa:1.34-alpine"
 
 # Only print out the generated commands instead of running them
 FWD_DEBUG=false
