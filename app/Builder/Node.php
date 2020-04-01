@@ -16,6 +16,6 @@ class Node extends Builder
 
     public static function getDefaultArgs(): array
     {
-        return ['-v'];
+        return [''];
     }
 }
