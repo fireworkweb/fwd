@@ -19,6 +19,9 @@ class Start extends Task
     /** @var string $services */
     protected $services;
 
+    /** @var bool $all */
+    protected $all;
+
     public function run(...$args): int
     {
         $tasks = [
@@ -26,7 +29,7 @@ class Start extends Task
             [$this, 'startContainers'],
         ];
 
-        if ($this->checks) {
+        if ($this->checks && env('FWD_START_CHECK')) {
             array_unshift($tasks, [$this, 'checkDependencies']);
             $tasks[] = [$this, 'checkDatabase'];
         }
@@ -37,6 +40,13 @@ class Start extends Task
     public function services(string $services): self
     {
         $this->services = $services;
+
+        return $this;
+    }
+
+    public function all(bool $all): self
+    {
+        $this->all = $all;
 
         return $this;
     }
@@ -118,7 +128,7 @@ class Start extends Task
     public function startContainers(): int
     {
         return $this->runTask('Starting fwd', function () {
-            $services = ! is_null($this->services)
+            $services = ! is_null($this->services) && ! $this->all
                 ? ($this->services ?: env('FWD_START_DEFAULT_SERVICES'))
                 : null;
 

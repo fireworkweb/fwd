@@ -44,19 +44,15 @@ class Environment
         'FWD_NETWORK',
     ];
 
-    /** @var RepositoryInterface $repositoryMutable */
-    protected $repositoryMutable;
+    /** @var Xdg $xdg */
+    protected $xdg;
 
     /** @var RepositoryInterface $repositoryImmutable */
-    protected $repositoryImmutable;
-
-    protected $xdg;
+    protected $repository;
 
     public function __construct(Xdg $xdg)
     {
         $this->xdg = $xdg;
-        $this->repositoryMutable = RepositoryBuilder::create()->make();
-        $this->repositoryImmutable = RepositoryBuilder::create()->immutable()->make();
     }
 
     public function getConfigDir()
@@ -153,10 +149,12 @@ class Environment
     protected function loadEnv(string $envFile, bool $overload = false): self
     {
         try {
-            $repository = $overload ? 'repositoryMutable' : 'repositoryImmutable';
+            $repository = $overload
+                ? $this->repository()
+                : $this->repositoryImmutable();
 
             Dotenv::create(
-                $this->{$repository},
+                $repository,
                 pathinfo($envFile, PATHINFO_DIRNAME),
                 pathinfo($envFile, PATHINFO_BASENAME)
             )->load();
@@ -173,7 +171,7 @@ class Environment
     protected function fixVariables(): self
     {
         if (empty(env('FWD_NAME'))) {
-            $this->repositoryMutable->set(
+            $this->repository()->set(
                 'FWD_NAME',
                 basename(getcwd())
             );
@@ -181,32 +179,46 @@ class Environment
 
         if (empty(env('FWD_NETWORK'))) {
             // defines default network name
-            $this->repositoryMutable->set(
+            $this->repository()->set(
                 'FWD_NETWORK',
                 'fwd_global'
             );
         }
 
-        $this->repositoryMutable->set(
+        $this->repository()->set(
             'FWD_SSH_KEY_PATH',
             str_replace('$HOME', $_SERVER['HOME'], env('FWD_SSH_KEY_PATH'))
         );
 
-        $this->repositoryMutable->set(
+        $this->repository()->set(
             'FWD_CONTEXT_PATH',
             str_replace('$PWD', getcwd(), env('FWD_CONTEXT_PATH'))
         );
 
-        $this->repositoryMutable->set(
+        $this->repository()->set(
             'FWD_CUSTOM_PATH',
             str_replace('$PWD', getcwd(), env('FWD_CUSTOM_PATH'))
         );
 
-        $this->repositoryMutable->set(
+        $this->repository()->set(
             'FWD_ASUSER',
             str_replace('$UID', posix_geteuid(), env('FWD_ASUSER'))
         );
 
         return $this;
+    }
+
+    protected function repository()
+    {
+        if (! $this->repository) {
+            $this->repository = RepositoryBuilder::create()->make();
+        }
+
+        return $this->repository;
+    }
+
+    protected function repositoryImmutable()
+    {
+        return RepositoryBuilder::create()->immutable()->make();
     }
 }
