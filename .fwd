@@ -1,11 +1,11 @@
 # Docker images to be used for each service
-FWD_IMAGE_APP="fireworkweb/app:7.2-alpine"
-FWD_IMAGE_HTTP="fireworkweb/http:alpine"
-FWD_IMAGE_NODE="fireworkweb/node:alpine"
+FWD_IMAGE_APP="fireworkweb/php:7.4"
+FWD_IMAGE_HTTP="fireworkweb/http:latest"
+FWD_IMAGE_NODE="fireworkweb/node:12"
 FWD_IMAGE_CHROMEDRIVER="fireworkweb/chromedriver:latest"
 FWD_IMAGE_CACHE="redis:alpine"
 FWD_IMAGE_DATABASE="mysql:5.7"
-FWD_IMAGE_NODE_QA="fireworkweb/node:qa"
+FWD_IMAGE_NODE_QA="fireworkweb/node:12-qa"
 FWD_IMAGE_PHP_QA="jakzal/phpqa:alpine"
 
 # Only print out the generated commands instead of running them
@@ -38,7 +38,8 @@ FWD_DOCKER_RUN_FLAGS="-it --init"
 
 # SSH key for mapping within container so compose/npm
 # can have access to secured sources
-FWD_SSH_KEY_PATH="$HOME/.ssh/id_rsa"
+FWD_SSH_PATH="$HOME/.ssh"
+FWD_SSH_KEY_PATH="$HOME/.ssh/id_rsa" # deprecated, use the above
 FWD_CONTEXT_PATH="$PWD"
 FWD_CUSTOM_PATH="$PWD/fwd"
 

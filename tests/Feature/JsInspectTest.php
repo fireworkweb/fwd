@@ -10,13 +10,13 @@ class JsInspectTest extends TestCase
     {
         $this->artisan('jsinspect')->assertExitCode(0);
 
-        $this->assertDockerRun('fireworkweb/node:qa jsinspect src/');
+        $this->assertDockerRun('fireworkweb/node:12-qa jsinspect src/');
     }
 
     public function testJsInspectCustom()
     {
         $this->artisan('jsinspect app/')->assertExitCode(0);
 
-        $this->assertDockerRun("fireworkweb/node:qa jsinspect 'app/'");
+        $this->assertDockerRun("fireworkweb/node:12-qa jsinspect 'app/'");
     }
 }

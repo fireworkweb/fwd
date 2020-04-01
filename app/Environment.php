@@ -32,6 +32,7 @@ class Environment
         'FWD_DOCKER_COMPOSE_BIN',
         'FWD_COMPOSE_EXEC_FLAGS',
         'FWD_DOCKER_RUN_FLAGS',
+        'FWD_SSH_PATH',
         'FWD_SSH_KEY_PATH',
         'FWD_CONTEXT_PATH',
         'FWD_CUSTOM_PATH',
@@ -184,6 +185,11 @@ class Environment
                 'fwd_global'
             );
         }
+
+        $this->repository()->set(
+            'FWD_SSH_PATH',
+            str_replace('$HOME', $_SERVER['HOME'], env('FWD_SSH_PATH'))
+        );
 
         $this->repository()->set(
             'FWD_SSH_KEY_PATH',

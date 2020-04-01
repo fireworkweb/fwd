@@ -20,7 +20,7 @@ class DockerRun extends Builder
             '--rm',
             new Argument('-w', '/app', ' '),
             new Argument('-v', sprintf('%s:/app:cached', env('FWD_CONTEXT_PATH')), ' '),
-            new Argument('-v', sprintf('%s:/home/developer/.ssh/id_rsa:cached', env('FWD_SSH_KEY_PATH')), ' '),
+            new Argument('-v', sprintf('%s:/home/fwd/.ssh:cached', env('FWD_SSH_PATH')), ' '),
         ], parent::makeArgs(...$args));
     }
 
