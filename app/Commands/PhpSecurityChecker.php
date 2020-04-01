@@ -3,9 +3,9 @@
 namespace App\Commands;
 
 use App\Commands\Traits\HasDynamicArgs;
-use App\Builder\SecurityChecker as SecurityCheckerBuilder;
+use App\Builder\PhpSecurityChecker as PhpSecurityCheckerBuilder;
 
-class SecurityChecker extends Command
+class PhpSecurityChecker extends Command
 {
     use HasDynamicArgs;
 
@@ -14,7 +14,7 @@ class SecurityChecker extends Command
      *
      * @var string
      */
-    protected $name = 'security-checker';
+    protected $name = 'php-security-checker';
 
     /**
      * The description of the command.
@@ -31,7 +31,7 @@ class SecurityChecker extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            SecurityCheckerBuilder::makeWithDefaultArgs($this->getArgs())
+            PhpSecurityCheckerBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

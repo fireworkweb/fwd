@@ -2,7 +2,7 @@
 
 namespace App\Builder;
 
-class SecurityChecker extends Builder
+class PhpSecurityChecker extends Builder
 {
     public function getProgramName() : string
     {
