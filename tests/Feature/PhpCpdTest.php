@@ -10,13 +10,13 @@ class PhpCpdTest extends TestCase
     {
         $this->artisan('phpcpd')->assertExitCode(0);
 
-        $this->assertDockerRun('jakzal/phpqa:alpine phpcpd --fuzzy app/');
+        $this->assertDockerRun('jakzal/phpqa:1.34-alpine phpcpd --fuzzy app/');
     }
 
     public function testPhpCpdCustom()
     {
         $this->artisan('phpcpd something')->assertExitCode(0);
 
-        $this->assertDockerRun('jakzal/phpqa:alpine phpcpd something');
+        $this->assertDockerRun('jakzal/phpqa:1.34-alpine phpcpd something');
     }
 }

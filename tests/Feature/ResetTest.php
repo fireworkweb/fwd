@@ -63,8 +63,8 @@ class ResetTest extends TestCase
             'app php artisan migrate:fresh --seed'
         );
 
-        $this->assertDockerRun('fireworkweb/node:alpine yarn install');
-        $this->assertDockerRun('fireworkweb/node:alpine yarn dev');
+        $this->assertDockerRun('fireworkweb/node:12 yarn install');
+        $this->assertDockerRun('fireworkweb/node:12 yarn dev');
     }
 
     protected function assertReset($noSeed = false)
@@ -83,7 +83,7 @@ class ResetTest extends TestCase
             'app php artisan migrate:fresh ' . (! $noSeed ? '--seed' : '')
         );
 
-        $this->assertDockerRun('fireworkweb/node:alpine yarn install');
-        $this->assertDockerRun('fireworkweb/node:alpine yarn dev');
+        $this->assertDockerRun('fireworkweb/node:12 yarn install');
+        $this->assertDockerRun('fireworkweb/node:12 yarn dev');
     }
 }

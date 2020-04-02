@@ -10,13 +10,13 @@ class NpmTest extends TestCase
     {
         $this->artisan('npm')->assertExitCode(0);
 
-        $this->assertDockerRun('fireworkweb/node:alpine npm -v');
+        $this->assertDockerRun('fireworkweb/node:12 npm -v');
     }
 
     public function testNpmCustom()
     {
         $this->artisan('npm install')->assertExitCode(0);
 
-        $this->assertDockerRun('fireworkweb/node:alpine npm install');
+        $this->assertDockerRun('fireworkweb/node:12 npm install');
     }
 }

@@ -10,13 +10,13 @@ class PhpQaTest extends TestCase
     {
         $this->artisan('php-qa')->assertExitCode(0);
 
-        $this->assertDockerRun('jakzal/phpqa:alpine php -v');
+        $this->assertDockerRun('jakzal/phpqa:1.34-alpine php -v');
     }
 
     public function testPhpQaCustom()
     {
         $this->artisan('php-qa something')->assertExitCode(0);
 
-        $this->assertDockerRun('jakzal/phpqa:alpine something');
+        $this->assertDockerRun('jakzal/phpqa:1.34-alpine something');
     }
 }

@@ -10,13 +10,13 @@ class YarnTest extends TestCase
     {
         $this->artisan('yarn')->assertExitCode(0);
 
-        $this->assertDockerRun('fireworkweb/node:alpine yarn');
+        $this->assertDockerRun('fireworkweb/node:12 yarn');
     }
 
     public function testYarnCustom()
     {
         $this->artisan('yarn install')->assertExitCode(0);
 
-        $this->assertDockerRun('fireworkweb/node:alpine yarn install');
+        $this->assertDockerRun('fireworkweb/node:12 yarn install');
     }
 }
