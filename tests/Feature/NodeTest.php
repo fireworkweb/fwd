@@ -10,13 +10,13 @@ class NodeTest extends TestCase
     {
         $this->artisan('node')->assertExitCode(0);
 
-        $this->assertDockerRun('fireworkweb/node:alpine node -v');
+        $this->assertDockerRun('fireworkweb/node:12 node');
     }
 
     public function testNodeCustom()
     {
         $this->artisan('node index.js')->assertExitCode(0);
 
-        $this->assertDockerRun("fireworkweb/node:alpine node 'index.js'");
+        $this->assertDockerRun("fireworkweb/node:12 node 'index.js'");
     }
 }
