@@ -1,0 +1,22 @@
+include:
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/vendor.yml
+
+.vendor-with-private:
+  extends: .vendor
+  before_script:
+    - cp .env.testing .env
+    - fwd start --services app --no-checks
+    - if [ -z "$SSH_KEY" ]; then
+        fwd docker-compose exec -T -e SSH_KEY="$SSH_KEY" app bash -c
+          "mkdir -p /root/.ssh
+          && chmod 700 /root/.ssh
+          && echo \"$SSH_KEY\" | tr -d '\r' > /root/.ssh/id_rsa
+          && chmod 600 /root/.ssh/id_rsa";
+      fi
+    - if [ -z "$CUSTOM_HOST" ]; then
+        fwd docker-compose exec -T -e CUSTOM_HOST="$CUSTOM_HOST" app bash -c
+          "mkdir -p /root/.ssh
+          && chmod 700 /root/.ssh
+          && ssh-keyscan -H $CUSTOM_HOST > /root/.ssh/known_hosts
+          && chmod 644 /root/.ssh/known_hosts";
+      fi

@@ -10,7 +10,7 @@
       - vendor/
   before_script:
     - cp .env.testing .env
-    - fwd start # @todo: being discussed at #128
+    - fwd start --services app --no-checks
   script:
     - fwd composer install --prefer-dist --no-progress --no-suggest --no-interaction -v --optimize-autoloader
   after_script:

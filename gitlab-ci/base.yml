@@ -9,6 +9,7 @@ variables:
 
 include:
   - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/vendor.yml
+  # - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/vendor-with-private.yml
   - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/assets.yml
   - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/eslint.yml
   - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/phpmnd.yml
@@ -23,6 +24,11 @@ include:
 # build
 vendor:
   extends: .vendor
+
+# vendor:
+#   extends: .vendor-with-private
+#   variables:
+#     CUSTOM_HOST: gitlab.example.com
 
 assets:
   extends: .assets
