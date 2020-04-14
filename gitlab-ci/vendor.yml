@@ -1,20 +1,22 @@
 .vendor:
   stage: build
-  image:
-    name: fireworkweb/app:7.2-alpine
-    entrypoint: [""]
+  image: fireworkweb/fwd:1.0-rc
+  services:
+    - docker:dind
   tags:
-    - docker
+    - dind
   cache:
     paths:
       - vendor/
-  script:
+  before_script:
     - cp .env.testing .env
-    - composer install  --prefer-dist --no-progress --no-suggest --no-interaction -v --optimize-autoloader
+    - fwd start --services app --no-checks
+  script:
+    - fwd composer install --prefer-dist --no-progress --no-suggest --no-interaction -v --optimize-autoloader
+  after_script:
+    - fwd stop --purge
   artifacts:
     paths:
       - vendor
     expire_in: 1 hour
-  variables:
-    GIT_STRATEGY: fetch
   dependencies: []

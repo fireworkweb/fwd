@@ -1,0 +1,66 @@
+stages:
+  - build
+  - QA
+  - test
+
+variables:
+  GIT_STRATEGY: fetch
+  FWD_COMPOSE_EXEC_FLAGS: -T
+
+include:
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/vendor.yml
+  # - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/vendor-with-private.yml
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/assets.yml
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/eslint.yml
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/phpmnd.yml
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/phpcpd.yml
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/php-cs-fixer.yml
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/phan.yml
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/phpmd.yml
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/security-check.yml
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/dusk.yml
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/phpunit.yml
+
+# build
+vendor:
+  extends: .vendor
+
+# vendor:
+#   extends: .vendor-with-private
+#   variables:
+#     CUSTOM_HOST: gitlab.example.com
+
+assets:
+  extends: .assets
+# build
+
+# QA
+eslint:
+  extends: .eslint
+
+php-cs-fixer:
+  extends: .php-cs-fixer
+
+phpmd:
+  extends: .phpmd
+
+security-check:
+  extends: .security-check
+
+phpmnd:
+  extends: .phpmnd
+
+phpcpd:
+  extends: .phpcpd
+
+phan:
+  extends: .phan
+# QA
+
+# test
+dusk:
+  extends: .dusk
+
+phpunit:
+  extends: .phpunit
+# test

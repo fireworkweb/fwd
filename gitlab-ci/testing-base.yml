@@ -1,0 +1,18 @@
+.testing-base:
+  stage: test
+  image: fireworkweb/fwd:1.0-rc
+  services:
+    - docker:dind
+  tags:
+    - dind
+  before_script:
+    - cp $TESTING_ENV_FILE .env
+    - fwd start
+    - fwd artisan migrate:fresh --seed
+  after_script:
+    - fwd docker-compose logs http > storage/logs/nginx.log
+    - fwd docker-compose logs app > storage/logs/php-fpm.log
+    - fwd docker-compose logs database > storage/logs/database.log
+    - fwd stop --purge
+  dependencies:
+    - vendor
