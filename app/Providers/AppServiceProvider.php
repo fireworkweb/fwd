@@ -6,6 +6,7 @@ use App\Checker;
 use App\CommandExecutor;
 use App\Environment;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\ViewServiceProvider;
 use Symfony\Component\Finder\Finder;
@@ -51,12 +52,12 @@ class AppServiceProvider extends ServiceProvider
     {
         app(Environment::class)->load();
 
-        if ($commands = $this->getCommands()) {
+        if ($commands = $this->getCustomCommands()) {
             $this->commands($commands);
         }
     }
 
-    protected function getCommands()
+    protected function getCustomCommands()
     {
         if (! is_dir(env('FWD_CUSTOM_PATH'))) {
             return;
@@ -65,6 +66,9 @@ class AppServiceProvider extends ServiceProvider
         return collect((new Finder())->in(env('FWD_CUSTOM_PATH'))->files())
             ->map(function (SplFileInfo $file) {
                 return $file->getPathname();
+            })
+            ->filter(function ($path) {
+                return $this->validateCustomCommand($path);
             })
             ->each(function ($path) {
                 require_once $path;
@@ -77,5 +81,46 @@ class AppServiceProvider extends ServiceProvider
             })
             ->values()
             ->toArray();
+    }
+
+    protected function validateCustomCommand(string $path): bool
+    {
+        $autoloadPath = base_path('vendor/autoload.php');
+
+        $fileContent = implode(PHP_EOL, [
+            '<?php',
+            "require '{$autoloadPath}';",
+            "require_once '{$path}';",
+        ]);
+
+        $hash = Str::random(10);
+        $fileName = "fwd-{$hash}.php";
+        $filePath = "/tmp/{$fileName}";
+
+        file_put_contents($filePath, $fileContent);
+
+        $pipes = [];
+
+        $proc = proc_open("php {$filePath}", [
+            ['pipe', 'r'],
+            ['pipe', 'w'],
+            ['pipe', 'w'],
+        ], $pipes);
+
+        $exitCode = proc_close($proc);
+        $isValid = 0 === $exitCode;
+
+        unlink($filePath);
+
+        if (! $isValid) {
+            echo implode(' ', [
+                'FAILED COMMAND:',
+                pathinfo($path, PATHINFO_FILENAME),
+                "({$path})",
+                PHP_EOL,
+            ]);
+        }
+
+        return $isValid;
     }
 }
