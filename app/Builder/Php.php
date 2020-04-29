@@ -8,7 +8,7 @@ class Php extends Builder
     {
         $phpService = env('FWD_PHP_SERVICE');
 
-        return "${phpService} php";
+        return "{$phpService} php";
     }
 
     public function makeWrapper() : ?Builder

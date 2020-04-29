@@ -8,7 +8,7 @@ class Composer extends Builder
     {
         $phpService = env('FWD_PHP_SERVICE');
 
-        return "${phpService} composer";
+        return "{$phpService} composer";
     }
 
     public function makeWrapper() : ?Builder
