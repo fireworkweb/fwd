@@ -12,13 +12,13 @@ class Unescaped
         $this->string = $string;
     }
 
-    public static function make(string $command) : self
-    {
-        return new static($command);
-    }
-
     public function __toString() : string
     {
         return $this->string;
+    }
+
+    public static function make(string $command) : self
+    {
+        return new static($command);
     }
 }

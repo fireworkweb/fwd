@@ -10,13 +10,13 @@ class NodeQaTest extends TestCase
     {
         $this->artisan('node-qa node -v')->assertExitCode(0);
 
-        $this->assertDockerRun('fireworkweb/node:qa node -v');
+        $this->assertDockerRun('fireworkweb/node:12-qa node -v');
     }
 
     public function testNodeQaCustom()
     {
         $this->artisan('node-qa eslint')->assertExitCode(0);
 
-        $this->assertDockerRun('fireworkweb/node:qa eslint');
+        $this->assertDockerRun('fireworkweb/node:12-qa eslint');
     }
 }

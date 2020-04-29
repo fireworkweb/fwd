@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Environment;
 use Tests\TestCase;
 
 class ResetTest extends TestCase
@@ -49,14 +48,7 @@ class ResetTest extends TestCase
 
     public function testResetWithDusk()
     {
-        $this->mock(Environment::class, function ($mock) {
-            $mock->shouldReceive('getContextEnv')
-                ->once()
-                ->with('.env.dusk.local')
-                ->andReturn(base_path('tests/fixtures/.env.dusk.local'));
-        })->makePartial();
-
-        $this->artisan('reset .env.dusk.local')->assertExitCode(0);
+        $this->artisan('reset tests/fixtures/.env.dusk.local')->assertExitCode(0);
 
         $this->asFwdUser()->assertDockerComposeExec('app composer install');
         $this->setAsUser(null);
@@ -71,8 +63,8 @@ class ResetTest extends TestCase
             'app php artisan migrate:fresh --seed'
         );
 
-        $this->assertDockerRun('fireworkweb/node:alpine yarn install');
-        $this->assertDockerRun('fireworkweb/node:alpine yarn dev');
+        $this->assertDockerRun('fireworkweb/node:12 yarn install');
+        $this->assertDockerRun('fireworkweb/node:12 yarn dev');
     }
 
     protected function assertReset($noSeed = false)
@@ -91,7 +83,7 @@ class ResetTest extends TestCase
             'app php artisan migrate:fresh ' . (! $noSeed ? '--seed' : '')
         );
 
-        $this->assertDockerRun('fireworkweb/node:alpine yarn install');
-        $this->assertDockerRun('fireworkweb/node:alpine yarn dev');
+        $this->assertDockerRun('fireworkweb/node:12 yarn install');
+        $this->assertDockerRun('fireworkweb/node:12 yarn dev');
     }
 }

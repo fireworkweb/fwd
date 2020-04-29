@@ -1,25 +1,25 @@
 version: "2"
 services:
   app:
-    image: "${FWD_IMAGE_APP}"
+    image: ${FWD_IMAGE_APP}
     volumes:
      - ${FWD_CONTEXT_PATH}:/app:cached
-     - "${FWD_SSH_KEY_PATH}:/home/developer/.ssh/id_rsa:cached"
+     - ${FWD_SSH_PATH}:/home/developer/.ssh:cached
     environment:
-      ASUSER: "${FWD_ASUSER}"
+      ASUSER: ${FWD_ASUSER}
   http:
-    image: "fireworkweb/http:alpine"
+    image: ${FWD_IMAGE_HTTP}
     ports:
      - "${FWD_HTTP_PORT}:80"
     volumes:
      - ${FWD_CONTEXT_PATH}:/app:cached
   chromedriver:
-    image: "fireworkweb/chromedriver:latest"
+    image: ${FWD_IMAGE_CHROMEDRIVER}
     shm_size: 256M
     links:
       - http:web
   database:
-    image: "$FWD_IMAGE_DATABASE"
+    image: ${FWD_IMAGE_DATABASE}
     ports:
      - "${FWD_DATABASE_PORT}:3306"
     environment:

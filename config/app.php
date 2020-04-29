@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -39,7 +38,7 @@ return [
     |
     */
 
-    'production' => false,
+    'env' => 'development',
 
     /*
     |--------------------------------------------------------------------------
@@ -55,5 +54,4 @@ return [
     'providers' => [
         App\Providers\AppServiceProvider::class,
     ],
-
 ];

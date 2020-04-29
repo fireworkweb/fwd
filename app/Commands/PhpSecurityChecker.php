@@ -2,10 +2,10 @@
 
 namespace App\Commands;
 
-use App\Builder\Php;
 use App\Commands\Traits\HasDynamicArgs;
+use App\Builder\PhpSecurityChecker as PhpSecurityCheckerBuilder;
 
-class Test extends Command
+class PhpSecurityChecker extends Command
 {
     use HasDynamicArgs;
 
@@ -14,14 +14,14 @@ class Test extends Command
      *
      * @var string
      */
-    protected $name = 'test';
+    protected $name = 'php-security-checker';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Run phpunit commands in the APP container.';
+    protected $description = 'Run security-checker command in the PHP-QA container.';
 
     /**
      * Execute the console command.
@@ -31,7 +31,7 @@ class Test extends Command
     public function handle()
     {
         return $this->commandExecutor->run(
-            Php::makeWithDefaultArgs('vendor/bin/phpunit', $this->getArgs())
+            PhpSecurityCheckerBuilder::makeWithDefaultArgs($this->getArgs())
         );
     }
 }

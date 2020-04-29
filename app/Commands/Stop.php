@@ -19,7 +19,7 @@ class Stop extends Command
      *
      * @var string
      */
-    protected $description = 'Get down all containers AND DESTROY THEM.';
+    protected $description = 'Get down containers AND DESTROY THEM.';
 
     /**
      * Execute the console command.
@@ -28,8 +28,8 @@ class Stop extends Command
      */
     public function handle()
     {
-        $task = TasksStop::make($this)->purge((bool) $this->option('purge'));
-
-        return $task->run();
+        return TasksStop::make($this)
+            ->purge((bool) $this->option('purge'))
+            ->run();
     }
 }

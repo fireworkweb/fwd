@@ -1,24 +1,14 @@
+include:
+  - https://raw.githubusercontent.com/fireworkweb/fwd/1.0-rc/gitlab-ci/testing-base.yml
+
 .phpunit:
-  stage: test
-  image: fireworkweb/fwd
-  services:
-    - docker:dind
-  tags:
-    - dind
+  extends: .testing-base
   script:
-    - cp .env.testing .env
-    - fwd start
-    - fwd test --colors=never -vvv # --coverage-text
-  after_script:
-    - fwd down -v
+    - fwd phpunit --colors=never -vvv
   artifacts:
     paths:
-      - storage/logs/
+      - storage/logs
     when: on_failure
     expire_in: 1 week
   variables:
-    GIT_STRATEGY: fetch
-    COMPOSE_EXEC_FLAGS: "-T"
-  dependencies:
-    - assets
-    - vendor
+    TESTING_ENV_FILE: .env.testing

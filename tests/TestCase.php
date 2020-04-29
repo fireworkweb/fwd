@@ -10,27 +10,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    protected $asUser = null;
-
-    /**
-     * Setup the test environment.
-     *
-     * @return void
-     */
-    protected function setUp(): void
-    {
-        // resets some env
-        app(Environment::class)
-            ->overloadEnv('.fwd')
-            ->overloadEnv('.fwd.testing');
-
-        parent::setup();
-
-        $this->mockCommandExecutor();
-
-        // resets intended execution user
-        $this->setAsUser(null);
-    }
+    protected $asUser;
 
     protected function setAsUser($user)
     {
@@ -66,7 +46,6 @@ abstract class TestCase extends BaseTestCase
         $params = [
             env('FWD_DOCKER_COMPOSE_BIN', 'docker-compose'),
             sprintf('-p %s exec', basename(getcwd())),
-            env('FWD_COMPOSE_EXEC_FLAGS'),
         ];
 
         if (! empty($this->asUser)) {
@@ -74,6 +53,7 @@ abstract class TestCase extends BaseTestCase
             $params[] = $this->asUser;
         }
 
+        $params[] = env('FWD_COMPOSE_EXEC_FLAGS');
         $params[] = $this->buildCommand($command);
 
         $this->assertCommandRun($params);
@@ -87,7 +67,7 @@ abstract class TestCase extends BaseTestCase
             sprintf('-e ASUSER=%s', env('FWD_ASUSER')),
             '-it --init --rm -w \'/app\'',
             sprintf('-v \'%s:/app:cached\'', env('FWD_CONTEXT_PATH')),
-            sprintf('-v \'%s:/home/developer/.ssh/id_rsa:cached\'', env('FWD_SSH_KEY_PATH')),
+            sprintf('-v \'%s:/home/fwd/.ssh:cached\'', env('FWD_SSH_PATH')),
             $this->buildCommand($command),
         ]);
     }
@@ -138,10 +118,51 @@ abstract class TestCase extends BaseTestCase
         return "{$this->dockerComposeString()} exec";
     }
 
+    protected function makeDockerComposeRunString(string $args = '', string $envs = ''): string
+    {
+        $flags = env('FWD_COMPOSE_RUN_FLAGS') ? ' ' . env('FWD_COMPOSE_RUN_FLAGS') : '';
+        $extraArgs = $envs ? " -e {$envs} " : ' ';
+
+        return trim($this->dockerComposeRunString($extraArgs) . $flags . ' ' . $args);
+    }
+
+    protected function makeDockerComposeRunUserString($user = null, string $args = ''): string
+    {
+        $flags = env('FWD_COMPOSE_RUN_FLAGS') ? ' ' . env('FWD_COMPOSE_RUN_FLAGS') : '';
+        $extraArgs = " --user {$user} ";
+
+        return trim($this->dockerComposeRunString($extraArgs) . $flags . ' ' . $args);
+    }
+
+    protected function dockerComposeRunString(string $extraArgs = ' '): string
+    {
+        return "{$this->dockerComposeString()} run" . $extraArgs . '--rm';
+    }
+
     protected function dockerComposeString(): string
     {
         $project = env('FWD_NAME');
 
         return "docker-compose -p {$project}";
+    }
+
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        // resets some env
+        app(Environment::class)
+            ->overloadEnv('.fwd')
+            ->overloadEnv('.fwd.testing');
+
+        parent::setup();
+
+        $this->mockCommandExecutor();
+
+        // resets intended execution user
+        $this->setAsUser(null);
     }
 }

@@ -3,20 +3,20 @@
 namespace App;
 
 use Dotenv\Dotenv;
-use Dotenv\Environment\DotenvFactory;
-use Dotenv\Environment\DotenvVariables;
 use Dotenv\Exception\InvalidFileException;
 use Dotenv\Exception\InvalidPathException;
+use Dotenv\Repository\RepositoryBuilder;
+use Dotenv\Repository\RepositoryInterface;
 use Illuminate\Support\Arr;
+use XdgBaseDir\Xdg;
 
 class Environment
 {
-    /** @var DotenvVariables $envVariables */
-    protected $envVariables;
-
     protected static $keys = [
         'FWD_IMAGE_APP',
+        'FWD_IMAGE_HTTP',
         'FWD_IMAGE_NODE',
+        'FWD_IMAGE_CHROMEDRIVER',
         'FWD_IMAGE_CACHE',
         'FWD_IMAGE_DATABASE',
         'FWD_IMAGE_NODE_QA',
@@ -32,9 +32,11 @@ class Environment
         'FWD_DOCKER_COMPOSE_BIN',
         'FWD_COMPOSE_EXEC_FLAGS',
         'FWD_DOCKER_RUN_FLAGS',
+        'FWD_SSH_PATH',
         'FWD_SSH_KEY_PATH',
         'FWD_CONTEXT_PATH',
         'FWD_CUSTOM_PATH',
+        'FWD_START_CHECK',
         'FWD_START_DEFAULT_SERVICES',
         'DB_DATABASE',
         'DB_USERNAME',
@@ -43,6 +45,39 @@ class Environment
         'FWD_COMPOSE_VERSION',
         'FWD_NETWORK',
     ];
+
+    /** @var Xdg $xdg */
+    protected $xdg;
+
+    /** @var RepositoryInterface $repositoryImmutable */
+    protected $repository;
+
+    public function __construct(Xdg $xdg)
+    {
+        $this->xdg = $xdg;
+    }
+
+    public function getConfigDir()
+    {
+        $path = sprintf('%s/%s', $this->xdg->getHomeConfigDir(), 'fwd');
+
+        if (! is_dir($path)) {
+            mkdir($path, 0755, true);
+        }
+
+        return $path;
+    }
+
+    public function getConfigDirFolder($folder)
+    {
+        $path = sprintf('%s/%s', $this->getConfigDir(), $folder);
+
+        if (! is_dir($path)) {
+            mkdir($path, 0755, true);
+        }
+
+        return $path;
+    }
 
     public function getKeys(): array
     {
@@ -116,12 +151,15 @@ class Environment
     protected function loadEnv(string $envFile, bool $overload = false): self
     {
         try {
-            $method = $overload ? 'overload' : 'safeLoad';
+            $repository = $overload
+                ? $this->repository()
+                : $this->repositoryImmutable();
 
             Dotenv::create(
+                $repository,
                 pathinfo($envFile, PATHINFO_DIRNAME),
                 pathinfo($envFile, PATHINFO_BASENAME)
-            )->{$method}();
+            )->load();
         } catch (InvalidPathException $e) {
             // do nothing
         } catch (InvalidFileException $e) {
@@ -134,10 +172,8 @@ class Environment
 
     protected function fixVariables(): self
     {
-        $envVariables = app(DotenvFactory::class)->create();
-
         if (empty(env('FWD_NAME'))) {
-            $envVariables->set(
+            $this->repository()->set(
                 'FWD_NAME',
                 basename(getcwd())
             );
@@ -145,32 +181,46 @@ class Environment
 
         if (empty(env('FWD_NETWORK'))) {
             // defines default network name
-            $envVariables->set(
+            $this->repository()->set(
                 'FWD_NETWORK',
                 'fwd_global'
             );
         }
 
-        $envVariables->set(
-            'FWD_SSH_KEY_PATH',
-            str_replace('$HOME', $_SERVER['HOME'], env('FWD_SSH_KEY_PATH'))
-        );
+        collect(static::$keys)
+            ->filter(function ($envVar) {
+                return mb_strpos($envVar, 'FWD_') !== false;
+            })
+            ->each(function ($envVar) {
+                $this->repository()->set(
+                    $envVar,
+                    str_replace(
+                        ['$HOME', '$PWD'],
+                        [$_SERVER['HOME'], getcwd()],
+                        env($envVar)
+                    )
+                );
+            });
 
-        $envVariables->set(
-            'FWD_CONTEXT_PATH',
-            str_replace('$PWD', getcwd(), env('FWD_CONTEXT_PATH'))
-        );
-
-        $envVariables->set(
-            'FWD_CUSTOM_PATH',
-            str_replace('$PWD', getcwd(), env('FWD_CUSTOM_PATH'))
-        );
-
-        $envVariables->set(
+        $this->repository()->set(
             'FWD_ASUSER',
             str_replace('$UID', posix_geteuid(), env('FWD_ASUSER'))
         );
 
         return $this;
+    }
+
+    protected function repository()
+    {
+        if (! $this->repository) {
+            $this->repository = RepositoryBuilder::create()->make();
+        }
+
+        return $this->repository;
+    }
+
+    protected function repositoryImmutable()
+    {
+        return RepositoryBuilder::create()->immutable()->make();
     }
 }

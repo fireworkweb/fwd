@@ -12,7 +12,9 @@ class PullTest extends TestCase
 
         $images = [
             env('FWD_IMAGE_APP'),
+            env('FWD_IMAGE_HTTP'),
             env('FWD_IMAGE_PHP_QA'),
+            env('FWD_IMAGE_CHROMEDRIVER'),
             env('FWD_IMAGE_NODE'),
             env('FWD_IMAGE_NODE_QA'),
             env('FWD_IMAGE_CACHE'),

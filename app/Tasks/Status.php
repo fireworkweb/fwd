@@ -74,20 +74,22 @@ class Status extends Task
 
         if ($isRunning) {
             $ps = $this->getOutput(Docker::make(
-                'ps', '-a',
-                '--filter', 'ID=' . $id,
+                'ps',
+                '-a',
+                '--filter',
+                'ID=' . $id,
                 '--format',
-                Escaped::make('{{.Status}} : {{.Ports}}')
+                Escaped::make('{{.Status}} | {{.Ports}}')
             ));
 
-            if (empty($ps) || strpos($ps, ':') === false) {
-                throw new RuntimeException('could not fetch docker ps status of container with ID: '.$id);
+            if (empty($ps) || mb_strpos($ps, '|') === false) {
+                throw new RuntimeException('could not fetch docker ps status of container with ID: ' . $id);
             }
 
             [
                 $info['state'],
                 $info['ports'],
-            ] = explode(' : ', $ps);
+            ] = array_map('trim', explode('|', $ps));
         }
 
         return $isRunning;

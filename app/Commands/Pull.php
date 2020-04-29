@@ -29,6 +29,8 @@ class Pull extends Command
 
         return $this->runCommands([
             [$callable, ['app', env('FWD_IMAGE_APP')]],
+            [$callable, ['http', env('FWD_IMAGE_HTTP')]],
+            [$callable, ['chromedriver', env('FWD_IMAGE_CHROMEDRIVER')]],
             [$callable, ['php-qa', env('FWD_IMAGE_PHP_QA')]],
             [$callable, ['node', env('FWD_IMAGE_NODE')]],
             [$callable, ['node-qa', env('FWD_IMAGE_NODE_QA')]],

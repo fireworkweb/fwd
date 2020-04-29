@@ -1,14 +1,14 @@
 # fireworkweb/fwd
 
-[![Build Status](https://travis-ci.com/fireworkweb/fwd.svg?branch=php)](https://travis-ci.com/fireworkweb/fwd)
-[![codecov](https://codecov.io/gh/fireworkweb/fwd/branch/php/graph/badge.svg)](https://codecov.io/gh/fireworkweb/fwd)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/fireworkweb/fwd/lint-test?label=build)](https://github.com/fireworkweb/fwd/actions)
+[![codecov](https://codecov.io/gh/fireworkweb/fwd/branch/1.0-rc/graph/badge.svg)](https://codecov.io/gh/fireworkweb/fwd)
 
 ## Installation & Requirements
 
 You need to have PHP 7.2+ installed in order to run `fwd`.
 
 ```bash
-curl -L https://github.com/fireworkweb/fwd/raw/php/builds/fwd -o /usr/local/bin/fwd
+curl -L "https://github.com/fireworkweb/fwd/raw/1.0-rc/builds/fwd" -o /usr/local/bin/fwd
 chmod +x /usr/local/bin/fwd
 ```
 

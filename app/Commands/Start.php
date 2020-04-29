@@ -31,16 +31,11 @@ class Start extends Command
      */
     public function handle()
     {
-        $timeout = ! $this->option('no-checks') ? $this->option('timeout') : 0;
-
-        $task = StartTask::make($this)
+        return StartTask::make($this)
             ->checks(! $this->option('no-checks'))
-            ->timeout($timeout);
-
-        if (! $this->option('all')) {
-            $task->services((string) $this->option('services'));
-        }
-
-        return $task->run();
+            ->timeout($this->option('timeout'))
+            ->services((string) $this->option('services'))
+            ->all($this->option('all'))
+            ->run();
     }
 }
