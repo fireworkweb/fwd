@@ -29,6 +29,6 @@ class ArtisanTest extends TestCase
 
         $this->artisan('artisan')->assertExitCode(0);
 
-        $this->asFwdUser()->assertDockerComposeExec("${phpService} php artisan");
+        $this->asFwdUser()->assertDockerComposeExec("{$phpService} php artisan");
     }
 }

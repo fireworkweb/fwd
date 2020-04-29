@@ -29,6 +29,6 @@ class ComposerTest extends TestCase
 
         $this->artisan('composer')->assertExitCode(0);
 
-        $this->asFwdUser()->assertDockerComposeExec("${phpService} composer");
+        $this->asFwdUser()->assertDockerComposeExec("{$phpService} composer");
     }
 }

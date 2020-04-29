@@ -29,6 +29,6 @@ class PhpTest extends TestCase
 
         $this->artisan('php')->assertExitCode(0);
 
-        $this->asFwdUser()->assertDockerComposeExec("${phpService} php -v");
+        $this->asFwdUser()->assertDockerComposeExec("{$phpService} php -v");
     }
 }

@@ -29,6 +29,6 @@ class ArtTest extends TestCase
 
         $this->artisan('art')->assertExitCode(0);
 
-        $this->asFwdUser()->assertDockerComposeExec("${phpService} php artisan");
+        $this->asFwdUser()->assertDockerComposeExec("{$phpService} php artisan");
     }
 }
