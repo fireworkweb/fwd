@@ -10,6 +10,7 @@ WORKDIR /app
 # installs PHP and dependencies
 RUN apk add --no-cache \
     curl \
+    openssh-client \
     php-cli \
     php-phar \
     php-openssl \
