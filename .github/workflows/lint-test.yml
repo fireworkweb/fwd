@@ -33,8 +33,10 @@ jobs:
           tools: php-cs-fixer
 
       - name: Install dependencies
-        run: |
-          composer install --prefer-dist --no-interaction
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Debug
+        run: ls -lah && ls -lah builds
 
       - name: Build fwd
         run: php fwd app:build --build-version=testing
