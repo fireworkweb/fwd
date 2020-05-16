@@ -4,7 +4,7 @@ services:
     image: ${FWD_IMAGE_APP}
     volumes:
      - ${FWD_CONTEXT_PATH}:/app:cached
-     - ${FWD_SSH_PATH}:/home/developer/.ssh:cached
+     - ${FWD_SSH_PATH}:/home/fwd/.ssh:cached
     environment:
       ASUSER: ${FWD_ASUSER}
   http:
