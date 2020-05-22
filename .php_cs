@@ -177,7 +177,7 @@ $rules = [
 
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
-    ->exclude(['bootstrap', 'builds', 'gitlab-ci', 'vendor'])
+    ->exclude(['bootstrap', 'builds', 'vendor'])
     ->name('*.php')
     ->ignoreDotFiles(true)
     ->ignoreVCS(true);
