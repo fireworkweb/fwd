@@ -29,14 +29,11 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring
-          coverage: xdebug
-          tools: php-cs-fixer
+          coverage: pcov
+          tools: prestissimo, php-cs-fixer
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction
-
-      - name: Debug
-        run: ls -lah && ls -lah builds && pwd
 
       - name: Build fwd
         run: php fwd app:build --build-version=testing
