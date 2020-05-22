@@ -25,16 +25,15 @@ jobs:
           key: dependencies-laravel-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v1
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring
-          coverage: xdebug
-          tools: php-cs-fixer
+          coverage: pcov
+          tools: prestissimo, php-cs-fixer
 
       - name: Install dependencies
-        run: |
-          composer install --prefer-dist --no-interaction
+        run: composer install --prefer-dist --no-interaction
 
       - name: Build fwd
         run: php fwd app:build --build-version=testing
