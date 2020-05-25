@@ -33,7 +33,7 @@ class Deploy extends Task
 
             return 0;
         } catch (RequestException $exception) {
-            $this->command->error("Deploy failed");
+            $this->command->error('Deploy failed');
 
             if ($exception->response->status() === 422) {
                 $this->command->error(
@@ -43,7 +43,7 @@ class Deploy extends Task
 
             return 1;
         } catch (\Exception $exception) {
-            $this->command->error("Deploy failed");
+            $this->command->error('Deploy failed');
             $this->command->error($exception->getMessage());
 
             return 1;
