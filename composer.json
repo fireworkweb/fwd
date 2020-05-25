@@ -22,6 +22,8 @@
     "require": {
         "php": "^7.2.5",
         "dnoegel/php-xdg-base-dir": "^0.1.1",
+        "guzzlehttp/guzzle": "^6.3.1",
+        "illuminate/http": "^7.0",
         "illuminate/view": "^7.0",
         "laravel-zero/framework": "^7.0",
         "padraic/phar-updater": "^1.0.6"
