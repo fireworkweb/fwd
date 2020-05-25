@@ -76,7 +76,6 @@ class Deploy extends Task
                 $url = self::URL . sprintf('/api/deploy/%s/status', $this->deploy->id);
                 $this->deploy = Http::get($url)->throw()->object();
 
-
                 if ($this->deploy->status === 'failed') {
                     throw new \Exception('Failed');
                 }
