@@ -44,6 +44,8 @@ class Environment
         'COMPOSE_API_VERSION',
         'FWD_COMPOSE_VERSION',
         'FWD_NETWORK',
+        'FWD_TOOLS_TOKEN',
+        'FWD_TOOLS_SLUG',
     ];
 
     /** @var Xdg $xdg */

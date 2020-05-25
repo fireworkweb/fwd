@@ -4,6 +4,7 @@ namespace App\Tasks;
 
 use App\Builder\Builder;
 use App\Environment;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -31,8 +32,19 @@ class Deploy extends Task
             $this->command->info('Access URL: ' . $this->deploy->url);
 
             return 0;
-        } catch (\Exception $e) {
-            $this->command->error("Deploy failed: {$e->getMessage()}");
+        } catch (RequestException $exception) {
+            $this->command->error("Deploy failed");
+
+            if ($exception->response->status() === 422) {
+                $this->command->error(
+                    collect($exception->response->object()->errors)->flatten()->implode(PHP_EOL)
+                );
+            }
+
+            return 1;
+        } catch (\Exception $exception) {
+            $this->command->error("Deploy failed");
+            $this->command->error($exception->getMessage());
 
             return 1;
         } finally {
@@ -58,12 +70,14 @@ class Deploy extends Task
     {
         return $this->runTask('Send Release File', function () {
             $environment = resolve(Environment::class);
+            $file = fopen($environment->getContextFile($this->file), 'r');
+            $data = ['slug' => env('FWD_TOOLS_SLUG')];
 
-            $this->deploy = Http::attach(
-                'deploy',
-                fopen($environment->getContextFile($this->file), 'r'),
-                'deploy.tgz'
-            )->post(self::URL . '/api/deploy/create')->throw()->object();
+            $this->deploy = $this->http()
+                ->attach('deploy', $file, 'deploy.tgz')
+                ->post(self::URL . '/api/deploy/create', $data)
+                ->throw()
+                ->object();
 
             return 0;
         });
@@ -73,8 +87,10 @@ class Deploy extends Task
     {
         return $this->runTask('Building', function () {
             return $this->runCallableWaitFor(function () {
-                $url = self::URL . sprintf('/api/deploy/%s/status', $this->deploy->id);
-                $this->deploy = Http::get($url)->throw()->object();
+                $this->deploy = $this->http()
+                    ->get(self::URL . sprintf('/api/deploy/%s/status', $this->deploy->id))
+                    ->throw()
+                    ->object();
 
                 if ($this->deploy->status === 'failed') {
                     throw new \Exception('Failed');
@@ -83,5 +99,11 @@ class Deploy extends Task
                 return $this->deploy->status === 'success' ? 0 : 1;
             }, 600);
         });
+    }
+
+    protected function http()
+    {
+        return Http::withToken(env('FWD_TOOLS_TOKEN'))
+            ->withHeaders(['Accept' => 'application/json']);
     }
 }

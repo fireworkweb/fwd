@@ -56,3 +56,7 @@ DB_PASSWORD="secret"
 COMPOSE_API_VERSION=1.25
 FWD_COMPOSE_VERSION=3.7
 # FWD_NETWORK="custom-network" # by default will be generated on the fly
+
+# Deploy
+# FWD_TOOLS_TOKEN=
+# FWD_TOOLS_SLUG=
