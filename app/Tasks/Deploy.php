@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class Deploy extends Task
 {
-    const URL = 'http://fwd.tools';
+    const URL = 'https://fwd.tools';
 
     protected $file;
     protected $deploy;
