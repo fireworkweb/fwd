@@ -89,6 +89,16 @@ class Checker
         );
     }
 
+    public function checkDockerIsRunning(): bool
+    {
+        $exitCode = $this->commandExecutor->runQuietly(
+            Docker::make('info'),
+            false
+        );
+
+        return $exitCode === 0;
+    }
+
     protected function version(Builder $builder)
     {
         $exitCode = $this->commandExecutor->runQuietly($builder);

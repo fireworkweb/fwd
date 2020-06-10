@@ -30,8 +30,10 @@ class Start extends Task
         ];
 
         if ($this->checks && env('FWD_START_CHECK')) {
-            array_unshift($tasks, [$this, 'checkDependencies']);
+            array_unshift($tasks, [$this, 'checkDockerDaemon'], [$this, 'checkDependencies']);
             $tasks[] = [$this, 'checkDatabase'];
+        } else {
+            array_unshift($tasks, [$this, 'checkDockerDaemon']);
         }
 
         return $this->runCallables($tasks);
@@ -149,5 +151,16 @@ class Start extends Task
                 );
             }, $this->timeout);
         });
+    }
+
+    public function checkDockerDaemon()
+    {
+        if (! app(Checker::class)->checkDockerIsRunning()) {
+            $this->command->error("Docker daemon doesn't seem to be running, run it first and retry.");
+
+            return 1;
+        }
+
+        return 0;
     }
 }
