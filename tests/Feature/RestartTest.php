@@ -93,6 +93,9 @@ class RestartTest extends TestCase
             $dockerApiVersion,
             $dockerComposeVersion
         ) {
+            $mock->shouldReceive('checkDockerIsRunning')
+                ->andReturn(true);
+
             $mock->shouldReceive('dockerVersion')
                 ->andReturn($dockerVersion);
 

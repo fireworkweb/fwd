@@ -39,6 +39,7 @@ class StartTest extends TestCase
     public function testStartOldVersionAllDependencies()
     {
         $this->mockChecker(
+            true,
             '0.0.0',
             '0.0.0',
             '0.0.0'
@@ -50,6 +51,7 @@ class StartTest extends TestCase
     public function testStartOldVersionDockerDependency()
     {
         $this->mockChecker(
+            true,
             '0.0.0',
             Checker::DOCKER_API_MIN_VERSION,
             Checker::DOCKER_COMPOSE_MIN_VERSION
@@ -61,6 +63,7 @@ class StartTest extends TestCase
     public function testStartOldVersionDockerAPIDependency()
     {
         $this->mockChecker(
+            true,
             Checker::DOCKER_MIN_VERSION,
             '0.0.0',
             Checker::DOCKER_COMPOSE_MIN_VERSION
@@ -72,6 +75,7 @@ class StartTest extends TestCase
     public function testStartOldVersionDockerComposeDependency()
     {
         $this->mockChecker(
+            true,
             Checker::DOCKER_MIN_VERSION,
             Checker::DOCKER_API_MIN_VERSION,
             '0.0.0'
@@ -80,16 +84,28 @@ class StartTest extends TestCase
         $this->artisan('start')->assertExitCode(1);
     }
 
+    public function testStartNotRunningDaemon()
+    {
+        $this->mockChecker(false);
+
+        $this->artisan('start')->assertExitCode(1);
+    }
+
     protected function mockChecker(
+        $dockerIsRunning = true,
         $dockerVersion = Checker::DOCKER_MIN_VERSION,
         $dockerApiVersion = Checker::DOCKER_API_MIN_VERSION,
         $dockerComposeVersion = Checker::DOCKER_COMPOSE_MIN_VERSION
     ) {
         $this->mock(Checker::class, function ($mock) use (
+            $dockerIsRunning,
             $dockerVersion,
             $dockerApiVersion,
             $dockerComposeVersion
         ) {
+            $mock->shouldReceive('checkDockerIsRunning')
+                ->andReturn($dockerIsRunning);
+
             $mock->shouldReceive('dockerVersion')
                 ->andReturn($dockerVersion);
 
