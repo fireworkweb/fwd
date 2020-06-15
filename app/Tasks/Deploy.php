@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class Deploy extends Task
 {
-    const URL = 'https://fwd.tools';
+    const URL = 'http://fwd.tools.localhost';
 
     protected $file;
     protected $deploy;
@@ -40,18 +40,21 @@ class Deploy extends Task
                     $this->command->error(
                         'Unauthenticated, check your FWD_TOOLS_TOKEN.'
                     );
+
                     break;
 
                 case 422:
                     $this->command->error(
                         collect($exception->response->object()->errors)->flatten()->implode(PHP_EOL)
                     );
+
                     break;
 
                 default:
                     $this->command->error(
                         'Something wrong on API, please contact admin.'
                     );
+
                     break;
             }
 
