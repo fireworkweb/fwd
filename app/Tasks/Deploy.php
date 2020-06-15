@@ -35,15 +35,29 @@ class Deploy extends Task
         } catch (RequestException $exception) {
             $this->command->error('Deploy failed');
 
-            if ($exception->response->status() === 422) {
-                $this->command->error(
-                    collect($exception->response->object()->errors)->flatten()->implode(PHP_EOL)
-                );
+            switch ($exception->response->status()) {
+                case 401:
+                    $this->command->error(
+                        'Unauthenticated, check your FWD_TOOLS_TOKEN.'
+                    );
+                    break;
+
+                case 422:
+                    $this->command->error(
+                        collect($exception->response->object()->errors)->flatten()->implode(PHP_EOL)
+                    );
+                    break;
+
+                default:
+                    $this->command->error(
+                        'Something wrong on API, please contact admin.'
+                    );
+                    break;
             }
 
             return 1;
         } catch (\Exception $exception) {
-            $this->command->error('Deploy failed');
+            $this->command->error('Something went wrong, deploy failed.');
             $this->command->error($exception->getMessage());
 
             return 1;
@@ -97,7 +111,7 @@ class Deploy extends Task
                 }
 
                 return $this->deploy->status === 'success' ? 0 : 1;
-            }, 600);
+            }, 600, 5000000);
         });
     }
 

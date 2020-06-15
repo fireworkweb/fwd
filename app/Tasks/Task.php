@@ -44,9 +44,9 @@ abstract class Task
             : $this->command->runTask($title, $task);
     }
 
-    protected function runCallableWaitFor(\Closure $closure, $timeout = 0): int
+    protected function runCallableWaitFor(\Closure $closure, $timeout = 0, int $delay = null): int
     {
-        $microSecondsDelay = (int) env('FWD_ATTEMPTS_DELAY');
+        $microSecondsDelay = ! is_null($delay) ? $delay : (int) env('FWD_ATTEMPTS_DELAY');
         $waitedMicroSeconds = 0;
 
         while ($exitCode = $closure()) {
