@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class Deploy extends Task
 {
-    const URL = 'http://fwd.tools.localhost';
+    const URL = 'https://fwd.tools';
 
     protected $file;
     protected $deploy;
