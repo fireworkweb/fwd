@@ -51,10 +51,7 @@ class ResetTest extends TestCase
         $this->artisan('reset tests/fixtures/.env.dusk.local')->assertExitCode(0);
 
         $this->asFwdUser()->assertDockerComposeExec('app composer install');
-        $this->setAsUser(null);
-        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root -e 'drop database if exists dusk'");
-        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root -e 'create database dusk'");
-        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root -e 'grant all on dusk.* to docker@\"%\"'");
+        $this->assertCommandRun(['fwd', 'reset-db', 'tests/fixtures/.env.dusk.local']);
 
         $this->asFwdUser()->assertDockerComposeExec(
             '-e DB_PASSWORD=\'secret\'',
@@ -71,10 +68,7 @@ class ResetTest extends TestCase
     {
         $this->asFwdUser()->assertDockerComposeExec('app composer install');
         $this->assertDockerComposeExec('cache redis-cli flushall');
-        $this->setAsUser(null);
-        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root -e 'drop database if exists docker'");
-        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root -e 'create database docker'");
-        $this->assertDockerComposeExec("-e MYSQL_PWD='secret' database mysql -u root -e 'grant all on docker.* to docker@\"%\"'");
+        $this->assertCommandRun(['fwd', 'reset-db']);
 
         $this->asFwdUser()->assertDockerComposeExec(
             '-e DB_PASSWORD=\'secret\'',

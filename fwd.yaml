@@ -1,0 +1,7 @@
+scripts:
+  reset:
+    - fwd reset-db
+    - fwd composer install
+    - fwd artisan migrate:fresh --seed
+    - fwd yarn install
+    - fwd yarn dev

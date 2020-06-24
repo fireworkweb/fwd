@@ -6,7 +6,7 @@ use App\Builder\Artisan;
 use App\Builder\Composer;
 use App\Builder\DockerComposeExec;
 use App\Builder\Escaped;
-use App\Builder\Mysql;
+use App\Builder\Fwd;
 use App\Builder\RedisCli;
 use App\Builder\Yarn;
 
@@ -42,9 +42,7 @@ class Reset extends Command
         $commands = [
             [$this, 'composerInstall'],
             [$this, 'cacheFlushAll'],
-            [$this, 'datatabaseDropDatabase'],
-            [$this, 'databaseCreateDatabase'],
-            [$this, 'databaseGrantDatabase'],
+            [$this, 'databaseReset'],
             [$this, 'artisanMigrateFresh'],
             [$this, 'yarnInstall'],
             [$this, 'yarnDev'],
@@ -79,35 +77,12 @@ class Reset extends Command
         });
     }
 
-    protected function datatabaseDropDatabase() : int
+    protected function databaseReset() : int
     {
-        return $this->runTask('MySQL Drop Database', function () {
-            return $this->commandExecutor->runQuietly(Mysql::make(
-                '-e',
-                Escaped::make(sprintf('drop database if exists %s', env('DB_DATABASE')))
-            ));
-        });
-    }
-
-    protected function databaseCreateDatabase() : int
-    {
-        return $this->runTask('MySQL Create Database', function () {
-            return $this->commandExecutor->runQuietly(Mysql::make(
-                '-e',
-                Escaped::make(sprintf('create database %s', env('DB_DATABASE')))
-            ));
-        });
-    }
-
-    protected function databaseGrantDatabase() : int
-    {
-        return $this->runTask('MySQL Grant Privileges', function () {
-            return $this->commandExecutor->runQuietly(Mysql::make(
-                '-e',
-                Escaped::make(vsprintf('grant all on %s.* to %s@"%%"', [
-                    env('DB_DATABASE'),
-                    env('DB_USERNAME'),
-                ]))
+        return $this->runTask('Database Reset', function () {
+            return $this->commandExecutor->runQuietly(Fwd::make(
+                'reset-db',
+                $this->argument('envFile')
             ));
         });
     }
