@@ -33,7 +33,7 @@ class Script extends Command
             Yaml::PARSE_OBJECT_FOR_MAP
         );
 
-        if (! $script = object_get($fwdYaml, 'scripts.'.$this->argument('name'))) {
+        if (! $script = object_get($fwdYaml, 'scripts.' . $this->argument('name'))) {
             $this->error('Script not found.');
 
             return 1;
