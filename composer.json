@@ -26,7 +26,8 @@
         "illuminate/http": "^7.0",
         "illuminate/view": "^7.0",
         "laravel-zero/framework": "^7.0",
-        "padraic/phar-updater": "^1.0.6"
+        "padraic/phar-updater": "^1.0.6",
+        "symfony/yaml": "^5.1"
     },
     "require-dev": {
         "mockery/mockery": "1.3.*",

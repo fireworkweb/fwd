@@ -112,7 +112,9 @@ class Environment
 
     public function getDefaultDockerCompose(string $version): string
     {
-        return sprintf('%s/docker-compose-v%s.yml', $this->getDefaultPath(), $version);
+        return $this->getDefaultFile(
+            sprintf('docker-compose-v%s.yml', $version)
+        );
     }
 
     public function getContextDockerCompose(): string
@@ -122,7 +124,7 @@ class Environment
 
     public function getDefaultFwd(): string
     {
-        return sprintf('%s/.fwd', $this->getDefaultPath());
+        return $this->getDefaultFile('.fwd');
     }
 
     public function getHomeFwd(): string
@@ -133,6 +135,11 @@ class Environment
     public function getContextEnv(string $env = '.env'): string
     {
         return $this->getContextFile($env);
+    }
+
+    public function getDefaultFile(string $file): string
+    {
+        return sprintf('%s/%s', $this->getDefaultPath(), $file);
     }
 
     public function getContextFile(string $file): string

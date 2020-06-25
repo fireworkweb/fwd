@@ -12,10 +12,12 @@ class InstallTest extends TestCase
     {
         $this->mockFwd();
         $this->mockDockerCompose();
+        $this->mockFwdYaml();
 
         $this->artisan('install')
             ->expectsOutput('File ".fwd" copied.')
-            ->expectsOutput('File "docker-compose.yml" copied.');
+            ->expectsOutput('File "docker-compose.yml" copied.')
+            ->expectsOutput('File "fwd.yaml" copied.');
 
         $this->assertCommandCalled('install');
     }
@@ -24,22 +26,12 @@ class InstallTest extends TestCase
     {
         $this->mockFwd(true);
         $this->mockDockerCompose(true);
+        $this->mockFwdYaml(true);
 
         $this->artisan('install')
-            ->expectsOutput('File ".fwd" already exists, skipping. (to override run again with --force)')
-            ->expectsOutput('File "docker-compose.yml" already exists, skipping. (to override run again with --force)');
-
-        $this->assertCommandCalled('install');
-    }
-
-    public function testDockerComposeExists()
-    {
-        $this->mockFwd();
-        $this->mockDockerCompose(true);
-
-        $this->artisan('install')
-            ->expectsOutput('File ".fwd" copied.')
-            ->expectsOutput('File "docker-compose.yml" already exists, skipping. (to override run again with --force)');
+            ->expectsOutput('File ".fwd" already exists, skipping. (to override run again with --force).')
+            ->expectsOutput('File "docker-compose.yml" already exists, skipping. (to override run again with --force).')
+            ->expectsOutput('File "fwd.yaml" already exists, skipping. (to override run again with --force).');
 
         $this->assertCommandCalled('install');
     }
@@ -48,10 +40,40 @@ class InstallTest extends TestCase
     {
         $this->mockFwd(true);
         $this->mockDockerCompose();
+        $this->mockFwdYaml();
 
         $this->artisan('install')
-            ->expectsOutput('File ".fwd" already exists, skipping. (to override run again with --force)')
-            ->expectsOutput('File "docker-compose.yml" copied.');
+            ->expectsOutput('File ".fwd" already exists, skipping. (to override run again with --force).')
+            ->expectsOutput('File "docker-compose.yml" copied.')
+            ->expectsOutput('File "fwd.yaml" copied.');
+
+        $this->assertCommandCalled('install');
+    }
+
+    public function testDockerComposeExists()
+    {
+        $this->mockFwd();
+        $this->mockDockerCompose(true);
+        $this->mockFwdYaml();
+
+        $this->artisan('install')
+            ->expectsOutput('File ".fwd" copied.')
+            ->expectsOutput('File "docker-compose.yml" already exists, skipping. (to override run again with --force).')
+            ->expectsOutput('File "fwd.yaml" copied.');
+
+        $this->assertCommandCalled('install');
+    }
+
+    public function testFwdYamlExists()
+    {
+        $this->mockFwd();
+        $this->mockDockerCompose();
+        $this->mockFwdYaml(true);
+
+        $this->artisan('install')
+            ->expectsOutput('File ".fwd" copied.')
+            ->expectsOutput('File "docker-compose.yml" copied.')
+            ->expectsOutput('File "fwd.yaml" already exists, skipping. (to override run again with --force).');
 
         $this->assertCommandCalled('install');
     }
@@ -60,11 +82,13 @@ class InstallTest extends TestCase
     {
         $this->mockFwd();
         $this->mockDockerCompose();
+        $this->mockFwdYaml();
         $this->mockLaravel();
 
         $this->artisan('install --preset=laravel')
             ->expectsOutput('File ".fwd" copied.')
             ->expectsOutput('File "docker-compose.yml" copied.')
+            ->expectsOutput('File "fwd.yaml" copied.')
             ->expectsOutput('File ".env" updated.');
 
         $this->assertCommandCalled('install --preset=laravel');
@@ -74,10 +98,12 @@ class InstallTest extends TestCase
     {
         $this->mockFwd(true);
         $this->mockDockerCompose(true);
+        $this->mockFwdYaml(true);
 
         $this->artisan('install --force')
             ->expectsOutput('File ".fwd" copied.')
-            ->expectsOutput('File "docker-compose.yml" copied.');
+            ->expectsOutput('File "docker-compose.yml" copied.')
+            ->expectsOutput('File "fwd.yaml" copied.');
 
         $this->assertCommandCalled('install --force');
     }
@@ -157,6 +183,19 @@ class InstallTest extends TestCase
 
         File::shouldReceive('copy')
             ->with($environment->getDefaultDockerCompose('3.7'), $environment->getContextDockerCompose())
+            ->andReturn(true);
+    }
+
+    protected function mockFwdYaml($exists = false)
+    {
+        $environment = app(Environment::class);
+
+        File::shouldReceive('exists')
+            ->with($environment->getContextFile('fwd.yaml'))
+            ->andReturn($exists);
+
+        File::shouldReceive('copy')
+            ->with($environment->getDefaultFile('fwd.yaml'), $environment->getContextFile('fwd.yaml'))
             ->andReturn(true);
     }
 

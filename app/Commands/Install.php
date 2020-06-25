@@ -53,7 +53,7 @@ class Install extends Command
 
             $this->info('File ".fwd" copied.');
         } else {
-            $this->warn('File ".fwd" already exists, skipping. (to override run again with --force)');
+            $this->warn('File ".fwd" already exists, skipping. (to override run again with --force).');
         }
 
         if ($this->option('force') || ! File::exists($this->environment->getContextDockerCompose())) {
@@ -70,7 +70,24 @@ class Install extends Command
 
             $this->info('File "docker-compose.yml" copied.');
         } else {
-            $this->warn('File "docker-compose.yml" already exists, skipping. (to override run again with --force)');
+            $this->warn('File "docker-compose.yml" already exists, skipping. (to override run again with --force).');
+        }
+
+        if ($this->option('force') || ! File::exists($this->environment->getContextFile('fwd.yaml'))) {
+            $copied = File::copy(
+                $this->environment->getDefaultFile('fwd.yaml'),
+                $this->environment->getContextFile('fwd.yaml')
+            );
+
+            if (false === $copied) {
+                $this->error('Failed to write local "fwd.yaml" file.');
+
+                return 1;
+            }
+
+            $this->info('File "fwd.yaml" copied.');
+        } else {
+            $this->warn('File "fwd.yaml" already exists, skipping. (to override run again with --force).');
         }
 
         $this->preset();
