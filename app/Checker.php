@@ -5,6 +5,7 @@ namespace App;
 use App\Builder\Builder;
 use App\Builder\Docker;
 use App\Builder\DockerCompose;
+use App\Builder\Escaped;
 
 class Checker
 {
@@ -33,7 +34,7 @@ class Checker
     {
         if (is_null($this->dockerVersion)) {
             $this->dockerVersion = $this->version(
-                Docker::make("version --format '{{.Server.Version}}'")
+                $this->dockerVersionCommandBuilder('{{.Server.Version}}')
             );
         }
 
@@ -44,7 +45,7 @@ class Checker
     {
         if (is_null($this->dockerApiVersion)) {
             $this->dockerApiVersion = $this->version(
-                Docker::make("version --format '{{.Server.APIVersion}}'")
+                $this->dockerVersionCommandBuilder('{{.Server.APIVersion}}')
             );
         }
 
@@ -97,6 +98,15 @@ class Checker
         );
 
         return $exitCode === 0;
+    }
+
+    protected function dockerVersionCommandBuilder(string $format): Builder
+    {
+        return Docker::make(
+            'version',
+            '--format',
+            Escaped::make($format)
+        );
     }
 
     protected function version(Builder $builder)
