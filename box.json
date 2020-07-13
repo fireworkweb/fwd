@@ -10,6 +10,7 @@
         "composer.json",
         "docker-compose-v2.yml",
         "docker-compose-v3.7.yml",
+        "fwd.yaml",
         ".fwd"
     ],
     "exclude-composer-files": false,
