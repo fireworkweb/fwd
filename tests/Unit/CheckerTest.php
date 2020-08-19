@@ -43,7 +43,7 @@ class CheckerTest extends TestCase
 
         $this->assertTrue($checker->checkDocker());
     }
-    
+
     public function testValidNewerDockerVersion()
     {
         $this->mockCommandExecutorOutput(0, '19.03.12');
