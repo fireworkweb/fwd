@@ -1,4 +1,15 @@
-# fireworkweb/fwd
+### fireworkweb/fwd
+
+# ATTENTION - `fwd` is dead, long like [`kool`](https://github.com/kool-dev/kool)
+
+The FWD project has been discontinued in favour of our new solution - [`kool`](https://github.com/kool-dev/kool). FWD has helped a lot for development teams to leverage Docker containers for local development. `kool` now continues the same mission with more power and flexibility, plus it aims at making [cloud native software development](https://kool.dev) easy for individuals and teams, as well as has a strong maintainer team behind commited to make it grow in adoption and features.
+
+The new [kool](https://github.com/kool-dev/kool) tool is available and should be used for any new projects. Also please take a look at the https://blog.kool.dev and look for now to migrate from `fwd` to `kool` (article soon to be published).
+
+Below you will find original `fwd` README for the sake of historic value.
+
+---
+
 
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/fireworkweb/fwd/lint-test?label=build)](https://github.com/fireworkweb/fwd/actions)
 [![codecov](https://codecov.io/gh/fireworkweb/fwd/branch/1.0-rc/graph/badge.svg)](https://codecov.io/gh/fireworkweb/fwd)
