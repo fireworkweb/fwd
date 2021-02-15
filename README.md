@@ -1,6 +1,6 @@
 ### fireworkweb/fwd
 
-# ATTENTION - `fwd` is dead, long like [`kool`](https://github.com/kool-dev/kool)
+# ATTENTION - `fwd` is dead, long live [`kool`](https://github.com/kool-dev/kool)
 
 The FWD project has been discontinued in favour of our new solution - [`kool`](https://github.com/kool-dev/kool). FWD has helped a lot for development teams to leverage Docker containers for local development. `kool` now continues the same mission with more power and flexibility, plus it aims at making [cloud native software development](https://kool.dev) easy for individuals and teams, as well as has a strong maintainer team behind commited to make it grow in adoption and features.
 
